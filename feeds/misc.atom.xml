@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2013-12-15T00:00:00+01:00</updated><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><updated>2013-12-15T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-12-15:znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
+channels and log conversations while one isn't connected. This note
+desrcibes how to launch ZNC in a &lt;a href="https://www.docker.io/"&gt;Docker&lt;/a&gt; container, so that it be
+launched on any Docker enabled platform. To quick start with Docker,
+one can follow the steps proposed to &lt;a href="http://docs.docker.io/en/latest/installation/ubuntulinux/"&gt;install Docker on an Ubuntu
+Linux&lt;/a&gt; (for instance in a VM).&lt;/p&gt;
+&lt;h2&gt;Using ZNC setup wizard&lt;/h2&gt;
+&lt;p&gt;Once Docker is installed on the system, we can prepare an image that
+will be used to run ZNC with the following &lt;code&gt;Dockerfile&lt;/code&gt; (Docker
+configuration file):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;FROM ubuntu:precise
+MAINTAINER Florent Flament
+
+# Using fr ubuntu mirrors and adding universe repository, to install znc
+RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise main restricted&amp;quot; \
+&amp;gt; /etc/apt/sources.list
+RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise universe&amp;quot; \
+&amp;gt;&amp;gt; /etc/apt/sources.list
+
+# Installing znc package
+RUN apt-get -y update
+RUN apt-get -y install znc
+
+# Creating directory to store znc configuration
+RUN mkdir -m 775 /var/znc
+RUN chgrp daemon /var/znc
+USER daemon
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's assume that the &lt;code&gt;Dockerfile&lt;/code&gt; is stored in the &lt;code&gt;znc-noconf&lt;/code&gt;
+directory. We can build the ZNC ready image with the following
+command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker build -t znc:noconf znc-noconf/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The next step is to configure ZNC. The following command will run the
+configuration wizard in a new container based on the previously
+generated image:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -i -t znc:noconf -d /var/znc -c
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After having answered to all the questions, ZNC will generate its
+configuration files. It will then be ready to run in daemon mode. Now
+we can save a Docker image including ZNC's configuration files.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ CONT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;docker ps -a | grep &lt;span class="s2"&gt;&amp;quot;minutes ago&amp;quot;&lt;/span&gt; | head -1 | awk &lt;span class="s1"&gt;&amp;#39;{print $1}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;docker commit &lt;span class="se"&gt;\&lt;/span&gt;
+&amp;gt; -run&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;{&amp;quot;Cmd&amp;quot;: [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;quot;, &amp;quot;/var/znc/&amp;quot;], &amp;quot;User&amp;quot;: &amp;quot;daemon&amp;quot;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&amp;gt; &lt;span class="nv"&gt;$CONT&lt;/span&gt; znc:ready
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The ZNC image is now ready, and can be launched. In addition to launch
+ZNC in a new container, the following command will map the host's 6697
+TCP port on the container's 6697 port (assuming that ZNC has been
+configured to listen to port 6697).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -d -p 6697:6697 znc:ready
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Using a previously made ZNC configuration file&lt;/h2&gt;
+&lt;p&gt;One can setup a ZNC Docker container even quicker if he already has a
+&lt;code&gt;znc.conf&lt;/code&gt; configuration file. One has to create a directory (for
+instance &lt;code&gt;myznc/&lt;/code&gt;) containing both: &lt;code&gt;znc.conf&lt;/code&gt; and a &lt;code&gt;Dockerfile&lt;/code&gt;, with
+the following content:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;FROM ubuntu:precise
+MAINTAINER Florent Flament
+
+# Using fr ubuntu mirrors and adding universe repository, to install znc
+RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise main restricted&amp;quot; \
+&amp;gt; /etc/apt/sources.list
+RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise universe&amp;quot; \
+&amp;gt;&amp;gt; /etc/apt/sources.list
+
+# Installing znc package
+RUN apt-get -y update
+RUN apt-get -y install znc
+
+# Creating directory to store znc configuration
+RUN mkdir -m 775 /var/znc
+# Generates key for SSL exchanges
+RUN /usr/bin/znc -d /var/znc -p
+# Copies ZNC configuration file
+ADD znc.conf /var/znc/configs/
+RUN chown -R daemon:daemon /var/znc
+USER daemon
+
+# Setting default container&amp;#39;s command
+CMD [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;quot;, &amp;quot;/var/znc/&amp;quot;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then the ZNC container can be launched right after having built the image:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker build -t znc:myznc myznc/
+&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -d -p 6697:6697 znc:myznc
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><updated>2013-11-30T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-11-30:ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
+system is quite forward. The installer asks you a few question about
+your country, keyboard, network, ... . Then it installs all the
+required packages on the system, and makes it bootable.&lt;/p&gt;
+&lt;p&gt;However, when playing with VMs (Virtual Machines), you may wish to
+install your distribution many times ; in which case the installation
+process (with the questions to answer) becomes somehow tedious.&lt;/p&gt;
+&lt;p&gt;There are several approaches to deal with this issue. This post will
+deal with the automatic installation of an Ubuntu 12.04 Precise, by
+using &lt;a href="http://www.debian.org/releases/stable/i386/apbs02.html.en"&gt;Debian preseeding mecanism&lt;/a&gt; with virt-install (virtinst
+package).&lt;/p&gt;
+&lt;p&gt;An alternative approach would be to do a manual full installation,
+then making several copies of the installed image. Each copy will be
+customized to be used for a new VM. These two methods have their pros
+and cons, and can be used together.&lt;/p&gt;
+&lt;p&gt;A running system with libvirt and virtinst packages is required. The
+key of a preseed automatic installation is to have the good
+&lt;code&gt;preseed.cfg&lt;/code&gt; file. This file will provide the Debian installer (also
+used by Ubuntu) with all the information it requires to install and
+configure the system, without the need to ask any question.&lt;/p&gt;
+&lt;h2&gt;Preseed file&lt;/h2&gt;
+&lt;p&gt;Here's my generic &lt;a href="http://www.florentflament.com/blog/static/preseed.cfg"&gt;preseed.cfg&lt;/a&gt; file. It is a mix of &lt;a href="http://www.debian.org/releases/squeeze/example-preseed.txt"&gt;Debian's
+example-preseed&lt;/a&gt; file and parameters gathered using Debian's
+suggested method after a manual installation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;debconf-get-selections --installer &amp;gt; file
+debconf-get-selections &amp;gt;&amp;gt; file
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The password for the &lt;code&gt;vmuser&lt;/code&gt; user has to be set, by changing the
+current CRACKMECRACKM encrypted password to a valid one. A valid
+crypted password can be generated with the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;python -c &lt;span class="s1"&gt;&amp;#39;from crypt import crypt; print crypt(&amp;quot;MYPASSWORD&amp;quot;, &amp;quot;SALT&amp;quot;)&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Some other parameters may be customized, like locale, user name, ...&lt;/p&gt;
+&lt;h2&gt;Empty image creation&lt;/h2&gt;
+&lt;p&gt;Then we need to create an empty disk that will be used to install the
+system. A 5GB disk should be enough for a minimal Ubuntu installation
+(depending on one's requirements).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;qemu-img create vm.qcow2 5G
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;virt-install&lt;/h2&gt;
+&lt;p&gt;Installing Ubuntu Precise on a VM can now be launched with the
+following unique command (to be customized):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;virt-install &lt;span class="se"&gt;\&lt;/span&gt;
+--name vm &lt;span class="se"&gt;\&lt;/span&gt;
+--ram 128 &lt;span class="se"&gt;\&lt;/span&gt;
+--location http://fr.archive.ubuntu.com/ubuntu/dists/precise-proposed/main/installer-i386/ &lt;span class="se"&gt;\&lt;/span&gt;
+--disk vm.qcow2,bus&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
+--graphics vnc,keymap&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;local&lt;/span&gt;,listen&lt;span class="o"&gt;=&lt;/span&gt;0.0.0.0,port&lt;span class="o"&gt;=&lt;/span&gt;5900 &lt;span class="se"&gt;\&lt;/span&gt;
+--network user,model&lt;span class="o"&gt;=&lt;/span&gt;virtion &lt;span class="se"&gt;\&lt;/span&gt;
+--initrd-inject preseed.cfg
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that the &lt;code&gt;precise-proposed&lt;/code&gt; Ubuntu distribution is used instead
+of the standard &lt;code&gt;precise&lt;/code&gt;. It addresses a &lt;a href="https://bugs.launchpad.net/ubuntu/+source/net-retriever/+bug/1067934"&gt;bug that makes the
+installation freeze for 10+ minutes&lt;/a&gt; during the components download
+phase.&lt;/p&gt;
+&lt;p&gt;After some 30 minutes the system installation should be completed.&lt;/p&gt;</summary><category term="Ubuntu"></category><category term="KVM"></category><category term="libvirt"></category></entry><entry><title>Macmini2,1 Linux dual boot</title><link href="http://www.florentflament.com/blog/macmini21-linux-dual-boot.html" rel="alternate"></link><updated>2013-11-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-11-03:macmini21-linux-dual-boot.html</id><summary type="html">&lt;p&gt;While online resources provide documentation about &lt;a href="https://wiki.debian.org/MacMiniIntel"&gt;how to install
+Linux on a Mac Mini&lt;/a&gt;, this guide focuses on the Apple Macmini2,1
+and its peculiarities. Please refer to &lt;a href="http://en.wikipedia.org/wiki/Macmini#Specifications"&gt;these tables&lt;/a&gt; to properly
+identify your hardware.&lt;/p&gt;
+&lt;h2&gt;About Macmini2,1&lt;/h2&gt;
+&lt;p&gt;Apple provides &lt;a href="http://support.apple.com/kb/HT1237"&gt;firmware updates&lt;/a&gt; for most of its hardware. Most
+Mac Minis do have an EFI Boot ROM update available there, but
+Macmini2,1 doesn't. The good news is that what is stated on this page
+is true, Macmini2,1 doesn't need any firmware update to be able to
+boot non MacOS OSes.&lt;/p&gt;
+&lt;p&gt;Macmini2,1 is powered by an Intel Core 2 Duo, which is a &lt;a href="http://en.wikipedia.org/wiki/Core_2_duo#64-bit_Core_microarchitecture_based"&gt;64-bit
+processor&lt;/a&gt;. However, when trying and installing a &lt;a href="http://www.debian.org/distrib/netinst"&gt;Debian
+distribution&lt;/a&gt; on the Mac Mini, I couldn't manage to boot the amd64
+ISO while the i386 could be launched without any issue [08/12/2013
+update: I eventually succeeded in installing an ubuntu amd64 image on
+the Macmini2,1 without any issue ...]&lt;/p&gt;
+&lt;p&gt;One may want to install Boot Camp to enable its computer to boot
+several OSes. Macmini2,1 was shipped with Mac OS X Tiger, which is
+&lt;a href="https://discussions.apple.com/message/17645953#17645953"&gt;not supported&lt;/a&gt; by official Boot Camp releases. Fortunately, Boot
+Camp is not required to set an OS X / Linux dual boot.&lt;/p&gt;
+&lt;h2&gt;Setting dual boot&lt;/h2&gt;
+&lt;p&gt;On original Max OS X installations, the whole hard disk is occupied by
+a unique partition. Therefore, we need to free some space for our new
+OS, by resizing the partition. The &lt;code&gt;diskutil&lt;/code&gt; command allows us to do
+that. In a shell, we have to launch the following command (where 20G
+means that we want to let 20 Gigabytes to our OS X partition. One may
+split the disk capacity according to its requirements):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo diskutil resizeVolume disk0s2 20G
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then we have to install &lt;a href="http://refit.sourceforge.net/"&gt;rEFit&lt;/a&gt; on the computer. It will allow us
+to choose the partition / device to boot, and to resynchronize GPT /
+MBR tables as will be covered in a next step.&lt;/p&gt;
+&lt;p&gt;We can now insert the Linux distribution installation CD into our Mac
+(I downloaded the last &lt;a href="http://www.debian.org/distrib/netinst"&gt;Debian stable i386 netinst ISO&lt;/a&gt; and burned
+it to a CD-RW with the Mac Mini's CD burner). When restarting the
+computer, rEFit will allow us to boot on the CD.&lt;/p&gt;
+&lt;p&gt;During the installation process, we have to create new partition(s)
+(for convenience, I chose a distinct / and /home partitions). When
+asked to install grub, choose &lt;code&gt;/dev/sda4&lt;/code&gt; (the partition that will be
+mounted as /).&lt;/p&gt;
+&lt;p&gt;Once the Linux installation is finished, reboot and use rEFit
+&lt;code&gt;Partition Tool&lt;/code&gt; to resync GPT / MBR tables. Then boot back to MacOS
+and use its &lt;code&gt;bless&lt;/code&gt; tool to make the new OS bootable:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo bless --device /dev/disk0s4 -setBoot
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Eventually, we can customize the rEFit configuration file
+&lt;code&gt;/efi/refit/refit.conf&lt;/code&gt; to make the boot sequence more convenient. The
+rEFit menu timeout can be set with the &lt;code&gt;timeout&lt;/code&gt; option. The option
+&lt;code&gt;default_selection&lt;/code&gt; (at the end of the file) allows us to choose the
+default OS to boot.&lt;/p&gt;
+&lt;p&gt;That's it ! Restart, rEFit allows us to choose between booting Mac OS
+X and Linux.&lt;/p&gt;</summary><category term="Apple"></category><category term="Linux"></category></entry></feed>

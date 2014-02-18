@@ -1,0 +1,1063 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/all.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-02-09T00:00:00+01:00</updated><entry><title>Customizing OpenStack RBAC policies</title><link href="http://www.florentflament.com/blog/customizing-openstack-rbac-policies.html" rel="alternate"></link><updated>2014-02-09T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-02-09:customizing-openstack-rbac-policies.html</id><summary type="html">&lt;p&gt;OpenStack uses a &lt;a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac"&gt;role based access control&lt;/a&gt; (RBAC) mechanism to
+manage accesses to its resources. With the current architecture,
+users' roles granted on each project and domain are stored into
+Keystone, and can be updated through &lt;a href="http://api.openstack.org/api-ref-identity.html#identity-v3"&gt;Keystone's API&lt;/a&gt;. However,
+policy enforcement (actually allowing or not the access to resources
+according to a user's roles) is performed independently in each
+service, based on the rules defined in each &lt;code&gt;policy.json&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;In a default OpenStack setup (like Devstack), two roles are created:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;The &lt;code&gt;Member&lt;/code&gt; role, which when granted to a user on a project, allows
+  him to manage resources (instances, volumes, ...) in this project.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The &lt;code&gt;admin&lt;/code&gt; role, which when granted to a user on any project,
+  offers to this user a total control over the whole OpenStack
+  platform. Although this is the current behavior, it has been &lt;a href="https://bugs.launchpad.net/keystone/+bug/968696"&gt;marked
+  as a bug&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;However, the OpenStack policy engine allows operators to specify fine
+grained set of rules to control access to resources of each OpenStack
+service (Keystone, Nova, Cinder, ...).&lt;/p&gt;
+&lt;h2&gt;Attributes available to build custom policies&lt;/h2&gt;
+&lt;p&gt;Four types of attributes can be used to set policy rules:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;User roles, which can be checked by using the following syntax:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;role:&amp;lt;requires_role&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Other user related attributes (stored into or obtained through the
+  token). The following attributes are available: user_id, domain_id
+  or project_id (depending on the scope), and can be checked against
+  constants or other attributes:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;project_id:&amp;lt;some_attribute&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;API call attributes are any data sent along with the API call. They
+  can be checked against constants or user attributes. For instance,
+  the following statement checks that a user being created is in the
+  same domain as his creator (note that API call attributes have to be
+  on the right side of the expression, while user attributes are on
+  the left side):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;domain_id:user.domain_id
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The fourth category of attributes are what I'd call contextual
+  attributes. These are the attributes of objects referenced (or
+  targeted) by an API call; i.e. any object whose id appear somewhere
+  in the API call. For instance, when granting a new role on a project
+  to a user, all attributes related to the role, the project and the
+  user are available to the policy engine, through the &lt;code&gt;target&lt;/code&gt;
+  keyword. The following syntax checks that the role of the context is
+  the &lt;code&gt;Member&lt;/code&gt; role:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&amp;#39;Member&amp;#39;:target.role.name
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Depending on the type of API calls, some of the following attributes
+will be available, according to the objects impacted by the action:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;domain:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;target.domain.enabled&lt;/li&gt;
+&lt;li&gt;target.domain.id&lt;/li&gt;
+&lt;li&gt;target.domain.name&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;group:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;target.group.description&lt;/li&gt;
+&lt;li&gt;target.group.domain_id&lt;/li&gt;
+&lt;li&gt;target.group.id&lt;/li&gt;
+&lt;li&gt;target.group.name&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;project:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;target.project.description&lt;/li&gt;
+&lt;li&gt;target.project.domain_id&lt;/li&gt;
+&lt;li&gt;target.project.enabled&lt;/li&gt;
+&lt;li&gt;target.project.id&lt;/li&gt;
+&lt;li&gt;target.project.name&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;role:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;target.role.id&lt;/li&gt;
+&lt;li&gt;target.role.name&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;user:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;target.user.default_project_id&lt;/li&gt;
+&lt;li&gt;target.user.description&lt;/li&gt;
+&lt;li&gt;target.user.domain_id&lt;/li&gt;
+&lt;li&gt;target.user.enabled&lt;/li&gt;
+&lt;li&gt;target.user.id&lt;/li&gt;
+&lt;li&gt;target.user.name&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Example: admin and super_admin&lt;/h2&gt;
+&lt;p&gt;The following example is taken from a User Story that we were
+considering at &lt;a href="http://www.cloudwatt.com"&gt;CloudWatt&lt;/a&gt;. As a cloud service provider, we wanted
+to be able to have 2 different levels of administrator roles:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;An &lt;code&gt;admin&lt;/code&gt; role, which allows its users to grant the &lt;code&gt;Member&lt;/code&gt; role
+  to any other user.&lt;/li&gt;
+&lt;li&gt;While the &lt;code&gt;super_admin&lt;/code&gt; role allows granting any role.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When added to Keystone's ̀&lt;code&gt;policy.json&lt;/code&gt; file, the following rules
+implements the two roles described previously:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&amp;quot;admin_grant_member&amp;quot;: &amp;quot;role:admin and &amp;#39;Member&amp;#39;:%(target.role.name)s&amp;quot;,
+&amp;quot;identity:create_grant&amp;quot;: &amp;quot;role:super_admin or rule:admin_grant_member&amp;quot;,
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first rule describes a new rule called &lt;code&gt;admin_grant_member&lt;/code&gt;, which
+checks that the user authenticated by the token has the &lt;code&gt;admin&lt;/code&gt; role
+(on its scope), and that the role in the context (the role the admin
+is trying to grant) is the &lt;code&gt;Member&lt;/code&gt; role (we used the &lt;code&gt;name&lt;/code&gt;
+attribute, but could use the role's id instead).&lt;/p&gt;
+&lt;p&gt;The second rule is checked whenever an API call is made to grant a
+role to a user (action &lt;code&gt;identity:create_grant&lt;/code&gt;). This rule tells the
+policy engine that in order for a user to be allowed to grant a role
+to another user, the user authenticated by the token must either have
+the &lt;code&gt;super_admin&lt;/code&gt; role, or satisfy the &lt;code&gt;admin_grant_member&lt;/code&gt; rule.&lt;/p&gt;
+&lt;p&gt;Put together these two rules actually meet the use case. Any user with
+the &lt;code&gt;admin&lt;/code&gt; role will only be able to grant the &lt;code&gt;Member&lt;/code&gt; role to other
+users, while users with the &lt;code&gt;super_admin&lt;/code&gt; role will be able to grant
+any role.&lt;/p&gt;
+&lt;h2&gt;Notes&lt;/h2&gt;
+&lt;p&gt;One of the most powerful rules that the OpenStack policy engine
+allows, are those limiting a user's actions to his own domain or
+project. These kind of rules are widely used in &lt;a href="https://github.com/openstack/keystone/blob/master/etc/policy.v3cloudsample.json"&gt;Keystone's
+policy.v3cloudsample.json&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Also note, that a recent patch merged into oslo-incubator implements
+the blueprint allowing the policy engine to &lt;a href="https://blueprints.launchpad.net/oslo/+spec/policy-constant-check"&gt;check contextual
+attributes against constant values&lt;/a&gt;. This patch will have to be
+synchronized into the OpenStack projects for them to benefit from this
+feature.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Keystone"></category><category term="Policies"></category></entry><entry><title>Setting Keystone v3 domains</title><link href="http://www.florentflament.com/blog/setting-keystone-v3-domains.html" rel="alternate"></link><updated>2014-01-18T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-01-18:setting-keystone-v3-domains.html</id><summary type="html">&lt;p&gt;The &lt;a href="http://api.openstack.org/api-ref-identity.html#identity-v3"&gt;Openstack Identity v3 API&lt;/a&gt;, provided by Keystone, offers
+features that were lacking in the previous version. Among these
+features, it introduces the concept of domains, allowing isolation of
+projects and users. For instance, an administrator allowed to create
+projects and users in a given domain, may not have any right in
+another one. While these features look very exciting, some
+configuration needs to be done to have a working identity v3 service
+with domains properly set.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac"&gt;Keystone API protection&lt;/a&gt; section of the developer's doc provides
+hints about how to set-up a multi-domain installation. Starting from
+there, I describe the full steps to have a multi-domain setup running,
+by using &lt;code&gt;curl&lt;/code&gt; to send http requests and &lt;code&gt;jq&lt;/code&gt; to parse the json
+answers.&lt;/p&gt;
+&lt;h2&gt;Setting an admin domain and a cloud admin&lt;/h2&gt;
+&lt;p&gt;First, we have to start on a fresh non multi-domain installation with
+the &lt;a href="https://github.com/openstack/keystone/blob/master/etc/policy.json"&gt;default policy file&lt;/a&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;With the &lt;code&gt;admin&lt;/code&gt; user we can create the &lt;code&gt;admin_domain&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ADMIN_TOKEN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -i &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;{&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;quot;auth&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;quot;identity&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;            &amp;quot;methods&amp;quot;: [&lt;/span&gt;
+&lt;span class="s1"&gt;                &amp;quot;password&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;            ],&lt;/span&gt;
+&lt;span class="s1"&gt;            &amp;quot;password&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                &amp;quot;user&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                    &amp;quot;domain&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                        &amp;quot;name&amp;quot;: &amp;quot;Default&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;                    },&lt;/span&gt;
+&lt;span class="s1"&gt;                    &amp;quot;name&amp;quot;: &amp;quot;admin&amp;quot;,&lt;/span&gt;
+&lt;span class="s1"&gt;                    &amp;quot;password&amp;quot;: &amp;quot;password&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;                }&lt;/span&gt;
+&lt;span class="s1"&gt;            }&lt;/span&gt;
+&lt;span class="s1"&gt;        },&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;quot;scope&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;            &amp;quot;project&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                &amp;quot;domain&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                    &amp;quot;name&amp;quot;: &amp;quot;Default&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;                },&lt;/span&gt;
+&lt;span class="s1"&gt;                &amp;quot;name&amp;quot;: &amp;quot;admin&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;            }&lt;/span&gt;
+&lt;span class="s1"&gt;        }&lt;/span&gt;
+&lt;span class="s1"&gt;    }&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | grep ^X-Subject-Token: | awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;{&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;quot;domain&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;quot;enabled&amp;quot;: true,&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;quot;name&amp;quot;: &amp;quot;admin_domain&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;    }&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | jq .domain.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of domain cloud: $ID_ADMIN_DOMAIN&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Then we can create our &lt;code&gt;cloud_admin&lt;/code&gt; user, within the &lt;code&gt;admin_domain&lt;/code&gt;
+  domain.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_CLOUD_ADMIN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;{&lt;/span&gt;
+&lt;span class="s2"&gt;    \&amp;quot;user\&amp;quot;: {&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;description\&amp;quot;: \&amp;quot;Cloud administrator\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;$ID_ADMIN_DOMAIN\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;enabled\&amp;quot;: true,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;name\&amp;quot;: \&amp;quot;cloud_admin\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;password\&amp;quot;: \&amp;quot;password\&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;    }&lt;/span&gt;
+&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; | jq .user.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of user cloud_admin: $ID_CLOUD_ADMIN&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;And we grant to our user &lt;code&gt;cloud_admin&lt;/code&gt; the &lt;code&gt;admin&lt;/code&gt; role on domain
+  &lt;code&gt;admin_domain&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/roles?name&lt;span class="o"&gt;=&lt;/span&gt;admin &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+| jq .roles&lt;span class="o"&gt;[&lt;/span&gt;0&lt;span class="o"&gt;]&lt;/span&gt;.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+
+curl -X PUT http://localhost:5000/v3/domains/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_CLOUD_ADMIN&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -i &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt;
+
+curl http://localhost:5000/v3/domains/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_CLOUD_ADMIN&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles&lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADMIN_TOKEN&amp;quot;&lt;/span&gt; | jq .roles
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Once the &lt;code&gt;admin_domain&lt;/code&gt; has been created with its &lt;code&gt;cloud_admin&lt;/code&gt;
+  user, we can enforce a domain based policy. In order to do that, we
+  have to copy the &lt;a href="https://github.com/openstack/keystone/blob/master/etc/policy.v3cloudsample.json"&gt;policy.v3cloudsample.json&lt;/a&gt; file over our former
+  &lt;code&gt;/etc/keystone/policy.json&lt;/code&gt;, while replacing the string
+  &lt;code&gt;admin_domain_id&lt;/code&gt; by the ID of the &lt;code&gt;admin_domain&lt;/code&gt; we just
+  created. Locate the &lt;code&gt;policy.v3cloudsample.json&lt;/code&gt; file into the &lt;code&gt;etc&lt;/code&gt;
+  directory of Keystone's source.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sed s/admin_domain_id/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/ &lt;span class="se"&gt;\&lt;/span&gt;
+    &amp;lt; policy.v3cloudsample.json &lt;span class="se"&gt;\&lt;/span&gt;
+    &amp;gt; /etc/keystone/policy.json
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Warning, current version (commit
+19620076f587f925c5d2fa59780c1a80dde15db2) of policy.v3cloudsample.json
+doesn't allow &lt;code&gt;cloud_admin&lt;/code&gt; to manage users in other domains than its
+own (see &lt;a href="https://bugs.launchpad.net/keystone/+bug/1267187"&gt;bug 1267187&lt;/a&gt;). Until the patch is merged, I suggest using
+this &lt;a href="https://review.openstack.org/#/c/65510/"&gt;policy.c3cloudsample.json under review&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Creating domains and admins&lt;/h2&gt;
+&lt;p&gt;From now on, the &lt;code&gt;admin&lt;/code&gt; user can only manage projects and users in
+the &lt;code&gt;Default&lt;/code&gt; domain. To create other domains we will have to
+authenticate with the &lt;code&gt;cloud_admin&lt;/code&gt; user created above.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Getting a token scoped on the &lt;code&gt;admin_domain&lt;/code&gt;, for user &lt;code&gt;cloud_admin&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;CLOUD_ADMIN_TOKEN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -i &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;{&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;quot;auth&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;quot;identity&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;            &amp;quot;methods&amp;quot;: [&lt;/span&gt;
+&lt;span class="s1"&gt;                &amp;quot;password&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;            ],&lt;/span&gt;
+&lt;span class="s1"&gt;            &amp;quot;password&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                &amp;quot;user&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                    &amp;quot;domain&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                        &amp;quot;name&amp;quot;: &amp;quot;admin_domain&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;                    },&lt;/span&gt;
+&lt;span class="s1"&gt;                    &amp;quot;name&amp;quot;: &amp;quot;cloud_admin&amp;quot;,&lt;/span&gt;
+&lt;span class="s1"&gt;                    &amp;quot;password&amp;quot;: &amp;quot;password&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;                }&lt;/span&gt;
+&lt;span class="s1"&gt;            }&lt;/span&gt;
+&lt;span class="s1"&gt;        },&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;quot;scope&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;            &amp;quot;domain&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                &amp;quot;name&amp;quot;: &amp;quot;admin_domain&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;            }&lt;/span&gt;
+&lt;span class="s1"&gt;        }&lt;/span&gt;
+&lt;span class="s1"&gt;    }&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | grep ^X-Subject-Token: | awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Creating domains &lt;code&gt;dom1&lt;/code&gt; and &lt;code&gt;dom2&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;{&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;quot;domain&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;quot;enabled&amp;quot;: true,&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;quot;name&amp;quot;: &amp;quot;dom1&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;    }&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | jq .domain.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of dom1: $ID_DOM1&amp;quot;&lt;/span&gt;
+
+&lt;span class="nv"&gt;ID_DOM2&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;{&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;quot;domain&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;quot;enabled&amp;quot;: true,&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;quot;name&amp;quot;: &amp;quot;dom2&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;    }&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | jq .domain.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of dom2: $ID_DOM2&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Now we will create a user &lt;code&gt;adm1&lt;/code&gt; in domain &lt;code&gt;dom1&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;{&lt;/span&gt;
+&lt;span class="s2"&gt;    \&amp;quot;user\&amp;quot;: {&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;description\&amp;quot;: \&amp;quot;Administrator of domain dom1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;$ID_DOM1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;enabled\&amp;quot;: true,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;name\&amp;quot;: \&amp;quot;adm1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;password\&amp;quot;: \&amp;quot;password\&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;    }&lt;/span&gt;
+&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; | jq .user.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of user adm1: $ID_ADM1&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We will also grant the &lt;code&gt;admin&lt;/code&gt; role on domain &lt;code&gt;dom1&lt;/code&gt; to this &lt;code&gt;adm1&lt;/code&gt;
+  user.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;curl -X PUT http://localhost:5000/v3/domains/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -i &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt;
+
+curl http://localhost:5000/v3/domains/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&amp;quot;&lt;/span&gt; | jq .roles
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Creating projects and users&lt;/h2&gt;
+&lt;p&gt;The &lt;code&gt;adm1&lt;/code&gt; user can now fully manage domain &lt;code&gt;dom1&lt;/code&gt;. He is allowed to
+manage as many projects and users as he wishes within &lt;code&gt;dom1&lt;/code&gt;, while
+not being able to access resources of domain &lt;code&gt;dom2&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Now we authenticate as user &lt;code&gt;adm1&lt;/code&gt; with a scope on &lt;code&gt;dom1&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ADM1_TOKEN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -i &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;{&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;quot;auth&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;quot;identity&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;            &amp;quot;methods&amp;quot;: [&lt;/span&gt;
+&lt;span class="s1"&gt;                &amp;quot;password&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;            ],&lt;/span&gt;
+&lt;span class="s1"&gt;            &amp;quot;password&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                &amp;quot;user&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                    &amp;quot;domain&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                        &amp;quot;name&amp;quot;: &amp;quot;dom1&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;                    },&lt;/span&gt;
+&lt;span class="s1"&gt;                    &amp;quot;name&amp;quot;: &amp;quot;adm1&amp;quot;,&lt;/span&gt;
+&lt;span class="s1"&gt;                    &amp;quot;password&amp;quot;: &amp;quot;password&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;                }&lt;/span&gt;
+&lt;span class="s1"&gt;            }&lt;/span&gt;
+&lt;span class="s1"&gt;        },&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;quot;scope&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;            &amp;quot;domain&amp;quot;: {&lt;/span&gt;
+&lt;span class="s1"&gt;                &amp;quot;name&amp;quot;: &amp;quot;dom1&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;            }&lt;/span&gt;
+&lt;span class="s1"&gt;        }&lt;/span&gt;
+&lt;span class="s1"&gt;    }&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | grep ^X-Subject-Token: | awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We create a project &lt;code&gt;prj1&lt;/code&gt; in domain &lt;code&gt;dom1&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_PRJ1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/projects &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;{&lt;/span&gt;
+&lt;span class="s2"&gt;    \&amp;quot;project\&amp;quot;: {&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;enabled\&amp;quot;: true,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;$ID_DOM1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;name\&amp;quot;: \&amp;quot;prj1\&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;    }\&lt;/span&gt;
+&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; | jq .project.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of prj1: $ID_PRJ1&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;When trying and creating a project in domain &lt;code&gt;dom2&lt;/code&gt;, it fails.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;curl http://localhost:5000/v3/projects &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;{&lt;/span&gt;
+&lt;span class="s2"&gt;    \&amp;quot;project\&amp;quot;: {&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;enabled\&amp;quot;: true,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;$ID_DOM2\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;name\&amp;quot;: \&amp;quot;prj2\&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;    }\&lt;/span&gt;
+&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; | jq .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Creating a standard user &lt;code&gt;usr1&lt;/code&gt; in domain &lt;code&gt;dom1&lt;/code&gt;, with default project &lt;code&gt;prj1&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_USR1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;{&lt;/span&gt;
+&lt;span class="s2"&gt;    \&amp;quot;user\&amp;quot;: {&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;default_project_id\&amp;quot;: \&amp;quot;$ID_PRJ1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;description\&amp;quot;: \&amp;quot;Just a user of dom1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;$ID_DOM1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;enabled\&amp;quot;: true,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;name\&amp;quot;: \&amp;quot;usr1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;password\&amp;quot;: \&amp;quot;password\&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;    }&lt;/span&gt;
+&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; | jq .user.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of user usr1: $ID_USR1&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Granting &lt;code&gt;Member&lt;/code&gt; role to user &lt;code&gt;usr1&lt;/code&gt; on project &lt;code&gt;prj1&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;MEMBER_ROLE_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/roles?name&lt;span class="o"&gt;=&lt;/span&gt;Member &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+| jq .roles&lt;span class="o"&gt;[&lt;/span&gt;0&lt;span class="o"&gt;]&lt;/span&gt;.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+
+curl -X PUT http://localhost:5000/v3/projects/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_PRJ1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_USR1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;MEMBER_ROLE_ID&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -i &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt;
+
+curl http://localhost:5000/v3/projects/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_PRJ1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_USR1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles &lt;span class="se"&gt;\&lt;/span&gt;
+    -s &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; | jq .roles
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The domain administrator &lt;code&gt;adm1&lt;/code&gt; ended up creating a project &lt;code&gt;prj1&lt;/code&gt; and
+a user &lt;code&gt;usr1&lt;/code&gt; member of the project. &lt;code&gt;usr1&lt;/code&gt; can now get a token scoped
+on &lt;code&gt;prj1&lt;/code&gt; and manage resources into this project.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Keystone"></category></entry><entry><title>Openstack volume in-use although VM doesn't exist</title><link href="http://www.florentflament.com/blog/openstack-volume-in-use-although-vm-doesnt-exist.html" rel="alternate"></link><updated>2014-01-04T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-01-04:openstack-volume-in-use-although-vm-doesnt-exist.html</id><summary type="html">&lt;p&gt;A user at &lt;a href="http://www.cloudwatt.com"&gt;Cloudwatt&lt;/a&gt; had an issue about Cinder volumes with
+status &lt;code&gt;in-use&lt;/code&gt;, attached to VMs that didn't exist anymore. I could
+find similar bugs referenced in launchpad &lt;a href="https://bugs.launchpad.net/cinder/+bug/1201418"&gt;here&lt;/a&gt; and &lt;a href="https://bugs.launchpad.net/nova/+bug/1096197"&gt;there&lt;/a&gt;,
+both with status &lt;code&gt;invalid&lt;/code&gt;... But I didn't succeed in reproducing the
+bug (using both the Horizon dashboard and the CLIs) until I got
+feedback about what our user was doing.&lt;/p&gt;
+&lt;h2&gt;The issue&lt;/h2&gt;
+&lt;p&gt;The issue appears when one tries to attach a volume by using the
+&lt;code&gt;python-cinderclient&lt;/code&gt; library in some Python code. There are actually
+some weird methods for both version of the API.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/openstack/python-cinderclient/blob/master/cinderclient/v1/volumes.py"&gt;cinderclient.v1.volumes.VolumeManager.attach&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/openstack/python-cinderclient/blob/master/cinderclient/v1/volumes.py"&gt;cinderclient.v2.volumes.VolumeManager.attach&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These methods call the Cinder &lt;code&gt;POST /volumes/{volume_id}/action&lt;/code&gt; API,
+which is neither documented &lt;a href="http://docs.openstack.org/api/openstack-block-storage/2.0/content/Volumes.html"&gt;here&lt;/a&gt; nor &lt;a href="http://api.openstack.org/api-ref-blockstorage.html"&gt;there&lt;/a&gt;. They can be used
+to "set attachment metadata", which according to my opinion has no
+good reason to be performed directly by a user.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;cinderclient.v1.client&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;novaclient.v1_1.client&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Creating manager&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;username&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;password&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;project_name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;auth_url&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cinderclient&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;v1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Client&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;novaclient&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;v1_1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Client&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Getting an image and a flavor to launch our VM&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;img&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;images&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="p"&gt;()[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;fla&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;flavors&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="p"&gt;()[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Creating our resources (vm and volume)&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;MyVm&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;img&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fla&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vol&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;display_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;MyVol&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Waiting for VM to be spawned&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;ACTIVE&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;    &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Try an attach the volume using the VolumeManager.attach method&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;attach&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/dev/vdb&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Response&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;202&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;attachments&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s"&gt;u&amp;#39;device&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;/dev/vdb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;server_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;volume_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;host_name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Well it looks like it is attached&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;os-extended-volumes:volumes_attached&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;[]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# But actually it isn&amp;#39;t&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;The solution&lt;/h2&gt;
+&lt;p&gt;The solution is to use the appropriate method to attach a volume to an
+instance. This should be done by using the
+&lt;a href="https://github.com/openstack/python-novaclient/blob/master/novaclient/v1_1/volumes.py"&gt;novaclient.v1_1.volumes.VolumeManager.create_server_volume&lt;/a&gt;
+method. It actually allows to "attach a volume to a server", which is
+what we want to do (And yes the method's name is not super clear).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Let&amp;#39;s continue on the example above&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="c"&gt;# First by clearing our volume attachment&amp;#39;s metadata&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="c"&gt;# to recover a consistent state&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt; 
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;detach&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Response&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;202&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;attachments&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;[]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;os-extended-volumes:volumes_attached&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;[]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Now we can use the VolumeManager.create_server_volume method&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="c"&gt;# to really attach our volume to our vm&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_server_volume&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/dev/vdb&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Volume&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;f024883d&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="n"&gt;b35&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4894&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="n"&gt;fbf&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;51498e6&lt;/span&gt;&lt;span class="n"&gt;c3c09&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;attachments&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s"&gt;u&amp;#39;device&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;/dev/vdb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;server_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;volume_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;host_name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;os-extended-volumes:volumes_attached&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s"&gt;u&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;The bug&lt;/h2&gt;
+&lt;p&gt;Although, we could argue that the inconsistent state is due to a bad
+usage of the client libraries, I do believe that Cinder API (and
+therefore python-cinderclient) should not allow the user to put its
+resources in an inconsistent state. Moreover, it isn't possible to
+recover from such state by using the Horizon dashboard or the CLIs. To
+do so, one has to either use the Python client libraries, or update
+entries in the database manually...&lt;/p&gt;
+&lt;h2&gt;Recovering from inconsistent state&lt;/h2&gt;
+&lt;p&gt;One way to recover from a "volume attached to non-existent VM"
+inconsistent state, is to manually update entries in the Cinder
+database.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;mysql cinder
+Reading table information &lt;span class="k"&gt;for &lt;/span&gt;completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MySQL monitor.  Commands end with ; or &lt;span class="se"&gt;\g&lt;/span&gt;.
+Your MySQL connection id is 1900
+Server version: 5.5.34-0ubuntu0.12.04.1-log &lt;span class="o"&gt;(&lt;/span&gt;Ubuntu&lt;span class="o"&gt;)&lt;/span&gt;
+
+Copyright &lt;span class="o"&gt;(&lt;/span&gt;c&lt;span class="o"&gt;)&lt;/span&gt; 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type &lt;span class="s1"&gt;&amp;#39;help;&amp;#39;&lt;/span&gt; or &lt;span class="s1"&gt;&amp;#39;\h&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;for &lt;/span&gt;help. Type &lt;span class="s1"&gt;&amp;#39;\c&amp;#39;&lt;/span&gt; to clear the current input statement.
+
+mysql&amp;gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes;
++--------------------------------------+---------+---------------+------------+--------------------------------------+
+| id                                   | status  | attach_status | mountpoint | instance_uuid                        |
++--------------------------------------+---------+---------------+------------+--------------------------------------+
+| 0580142b-bfb5-4113-8676-4fb783ec05f2 | deleted | detached      | NULL       | NULL                                 |
+| 1085d96e-ae82-484b-8495-27cc2f25c9c3 | deleted | detached      | NULL       | NULL                                 |
+| 4fbff7ce-2c9f-4116-ad1e-12f78001da2d | deleted | detached      | NULL       | NULL                                 |
+| 57b32eaf-7b71-49bf-a8fd-4115567a6cda | in-use  | attached      | /dev/vdb   | fa53d190-426b-4ce6-8d36-1af408c25225 |
+| 60a7eb30-9849-4b8d-9ca1-8f554b9a4045 | deleted | detached      | NULL       | NULL                                 |
+| a34ca08a-2e6b-4820-b472-91aa27b47261 | deleted | detached      | NULL       | NULL                                 |
+| d827daa5-c8d7-427b-a53c-8be918a1a6fb | deleted | detached      | NULL       | NULL                                 |
++--------------------------------------+---------+---------------+------------+--------------------------------------+
+7 rows in &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0.00 sec&lt;span class="o"&gt;)&lt;/span&gt;
+
+mysql&amp;gt; UPDATE volumes SET &lt;span class="nv"&gt;status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;available&amp;quot;&lt;/span&gt;, &lt;span class="nv"&gt;attach_status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;detached&amp;quot;&lt;/span&gt;, &lt;span class="nv"&gt;mountpoint&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;NULL, &lt;span class="nv"&gt;instance_uuid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;NULL WHERE &lt;span class="nv"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;57b32eaf-7b71-49bf-a8fd-4115567a6cda&amp;quot;&lt;/span&gt;;
+Query OK, 1 row affected &lt;span class="o"&gt;(&lt;/span&gt;0.00 sec&lt;span class="o"&gt;)&lt;/span&gt;
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql&amp;gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes;
++--------------------------------------+-----------+---------------+------------+---------------+
+| id                                   | status    | attach_status | mountpoint | instance_uuid |
++--------------------------------------+-----------+---------------+------------+---------------+
+| 0580142b-bfb5-4113-8676-4fb783ec05f2 | deleted   | detached      | NULL       | NULL          |
+| 1085d96e-ae82-484b-8495-27cc2f25c9c3 | deleted   | detached      | NULL       | NULL          |
+| 4fbff7ce-2c9f-4116-ad1e-12f78001da2d | deleted   | detached      | NULL       | NULL          |
+| 57b32eaf-7b71-49bf-a8fd-4115567a6cda | available | detached      | NULL       | NULL          |
+| 60a7eb30-9849-4b8d-9ca1-8f554b9a4045 | deleted   | detached      | NULL       | NULL          |
+| a34ca08a-2e6b-4820-b472-91aa27b47261 | deleted   | detached      | NULL       | NULL          |
+| d827daa5-c8d7-427b-a53c-8be918a1a6fb | deleted   | detached      | NULL       | NULL          |
++--------------------------------------+-----------+---------------+------------+---------------+
+7 rows in &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0.00 sec&lt;span class="o"&gt;)&lt;/span&gt;
+
+mysql&amp;gt; Bye
+&lt;span class="nv"&gt;$ &lt;/span&gt;cinder list
++--------------------------------------+-----------+------+------+-------------+----------+-------------+
+|                  ID                  |   Status  | Name | Size | Volume Type | Bootable | Attached to |
++--------------------------------------+-----------+------+------+-------------+----------+-------------+
+| 57b32eaf-7b71-49bf-a8fd-4115567a6cda | available | vol1 |  1   |     None    |  &lt;span class="nb"&gt;false&lt;/span&gt;   |             |
++--------------------------------------+-----------+------+------+-------------+----------+-------------+
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="OpenStack"></category><category term="Cinder"></category><category term="bug"></category></entry><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><updated>2013-12-15T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-12-15:znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
+channels and log conversations while one isn't connected. This note
+desrcibes how to launch ZNC in a &lt;a href="https://www.docker.io/"&gt;Docker&lt;/a&gt; container, so that it be
+launched on any Docker enabled platform. To quick start with Docker,
+one can follow the steps proposed to &lt;a href="http://docs.docker.io/en/latest/installation/ubuntulinux/"&gt;install Docker on an Ubuntu
+Linux&lt;/a&gt; (for instance in a VM).&lt;/p&gt;
+&lt;h2&gt;Using ZNC setup wizard&lt;/h2&gt;
+&lt;p&gt;Once Docker is installed on the system, we can prepare an image that
+will be used to run ZNC with the following &lt;code&gt;Dockerfile&lt;/code&gt; (Docker
+configuration file):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;FROM ubuntu:precise
+MAINTAINER Florent Flament
+
+# Using fr ubuntu mirrors and adding universe repository, to install znc
+RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise main restricted&amp;quot; \
+&amp;gt; /etc/apt/sources.list
+RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise universe&amp;quot; \
+&amp;gt;&amp;gt; /etc/apt/sources.list
+
+# Installing znc package
+RUN apt-get -y update
+RUN apt-get -y install znc
+
+# Creating directory to store znc configuration
+RUN mkdir -m 775 /var/znc
+RUN chgrp daemon /var/znc
+USER daemon
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's assume that the &lt;code&gt;Dockerfile&lt;/code&gt; is stored in the &lt;code&gt;znc-noconf&lt;/code&gt;
+directory. We can build the ZNC ready image with the following
+command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker build -t znc:noconf znc-noconf/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The next step is to configure ZNC. The following command will run the
+configuration wizard in a new container based on the previously
+generated image:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -i -t znc:noconf -d /var/znc -c
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After having answered to all the questions, ZNC will generate its
+configuration files. It will then be ready to run in daemon mode. Now
+we can save a Docker image including ZNC's configuration files.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ CONT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;docker ps -a | grep &lt;span class="s2"&gt;&amp;quot;minutes ago&amp;quot;&lt;/span&gt; | head -1 | awk &lt;span class="s1"&gt;&amp;#39;{print $1}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;docker commit &lt;span class="se"&gt;\&lt;/span&gt;
+&amp;gt; -run&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;{&amp;quot;Cmd&amp;quot;: [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;quot;, &amp;quot;/var/znc/&amp;quot;], &amp;quot;User&amp;quot;: &amp;quot;daemon&amp;quot;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&amp;gt; &lt;span class="nv"&gt;$CONT&lt;/span&gt; znc:ready
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The ZNC image is now ready, and can be launched. In addition to launch
+ZNC in a new container, the following command will map the host's 6697
+TCP port on the container's 6697 port (assuming that ZNC has been
+configured to listen to port 6697).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -d -p 6697:6697 znc:ready
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Using a previously made ZNC configuration file&lt;/h2&gt;
+&lt;p&gt;One can setup a ZNC Docker container even quicker if he already has a
+&lt;code&gt;znc.conf&lt;/code&gt; configuration file. One has to create a directory (for
+instance &lt;code&gt;myznc/&lt;/code&gt;) containing both: &lt;code&gt;znc.conf&lt;/code&gt; and a &lt;code&gt;Dockerfile&lt;/code&gt;, with
+the following content:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;FROM ubuntu:precise
+MAINTAINER Florent Flament
+
+# Using fr ubuntu mirrors and adding universe repository, to install znc
+RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise main restricted&amp;quot; \
+&amp;gt; /etc/apt/sources.list
+RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise universe&amp;quot; \
+&amp;gt;&amp;gt; /etc/apt/sources.list
+
+# Installing znc package
+RUN apt-get -y update
+RUN apt-get -y install znc
+
+# Creating directory to store znc configuration
+RUN mkdir -m 775 /var/znc
+# Generates key for SSL exchanges
+RUN /usr/bin/znc -d /var/znc -p
+# Copies ZNC configuration file
+ADD znc.conf /var/znc/configs/
+RUN chown -R daemon:daemon /var/znc
+USER daemon
+
+# Setting default container&amp;#39;s command
+CMD [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;quot;, &amp;quot;/var/znc/&amp;quot;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then the ZNC container can be launched right after having built the image:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker build -t znc:myznc myznc/
+&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -d -p 6697:6697 znc:myznc
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><updated>2013-11-30T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-11-30:ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
+system is quite forward. The installer asks you a few question about
+your country, keyboard, network, ... . Then it installs all the
+required packages on the system, and makes it bootable.&lt;/p&gt;
+&lt;p&gt;However, when playing with VMs (Virtual Machines), you may wish to
+install your distribution many times ; in which case the installation
+process (with the questions to answer) becomes somehow tedious.&lt;/p&gt;
+&lt;p&gt;There are several approaches to deal with this issue. This post will
+deal with the automatic installation of an Ubuntu 12.04 Precise, by
+using &lt;a href="http://www.debian.org/releases/stable/i386/apbs02.html.en"&gt;Debian preseeding mecanism&lt;/a&gt; with virt-install (virtinst
+package).&lt;/p&gt;
+&lt;p&gt;An alternative approach would be to do a manual full installation,
+then making several copies of the installed image. Each copy will be
+customized to be used for a new VM. These two methods have their pros
+and cons, and can be used together.&lt;/p&gt;
+&lt;p&gt;A running system with libvirt and virtinst packages is required. The
+key of a preseed automatic installation is to have the good
+&lt;code&gt;preseed.cfg&lt;/code&gt; file. This file will provide the Debian installer (also
+used by Ubuntu) with all the information it requires to install and
+configure the system, without the need to ask any question.&lt;/p&gt;
+&lt;h2&gt;Preseed file&lt;/h2&gt;
+&lt;p&gt;Here's my generic &lt;a href="http://www.florentflament.com/blog/static/preseed.cfg"&gt;preseed.cfg&lt;/a&gt; file. It is a mix of &lt;a href="http://www.debian.org/releases/squeeze/example-preseed.txt"&gt;Debian's
+example-preseed&lt;/a&gt; file and parameters gathered using Debian's
+suggested method after a manual installation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;debconf-get-selections --installer &amp;gt; file
+debconf-get-selections &amp;gt;&amp;gt; file
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The password for the &lt;code&gt;vmuser&lt;/code&gt; user has to be set, by changing the
+current CRACKMECRACKM encrypted password to a valid one. A valid
+crypted password can be generated with the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;python -c &lt;span class="s1"&gt;&amp;#39;from crypt import crypt; print crypt(&amp;quot;MYPASSWORD&amp;quot;, &amp;quot;SALT&amp;quot;)&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Some other parameters may be customized, like locale, user name, ...&lt;/p&gt;
+&lt;h2&gt;Empty image creation&lt;/h2&gt;
+&lt;p&gt;Then we need to create an empty disk that will be used to install the
+system. A 5GB disk should be enough for a minimal Ubuntu installation
+(depending on one's requirements).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;qemu-img create vm.qcow2 5G
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;virt-install&lt;/h2&gt;
+&lt;p&gt;Installing Ubuntu Precise on a VM can now be launched with the
+following unique command (to be customized):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;virt-install &lt;span class="se"&gt;\&lt;/span&gt;
+--name vm &lt;span class="se"&gt;\&lt;/span&gt;
+--ram 128 &lt;span class="se"&gt;\&lt;/span&gt;
+--location http://fr.archive.ubuntu.com/ubuntu/dists/precise-proposed/main/installer-i386/ &lt;span class="se"&gt;\&lt;/span&gt;
+--disk vm.qcow2,bus&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
+--graphics vnc,keymap&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;local&lt;/span&gt;,listen&lt;span class="o"&gt;=&lt;/span&gt;0.0.0.0,port&lt;span class="o"&gt;=&lt;/span&gt;5900 &lt;span class="se"&gt;\&lt;/span&gt;
+--network user,model&lt;span class="o"&gt;=&lt;/span&gt;virtion &lt;span class="se"&gt;\&lt;/span&gt;
+--initrd-inject preseed.cfg
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that the &lt;code&gt;precise-proposed&lt;/code&gt; Ubuntu distribution is used instead
+of the standard &lt;code&gt;precise&lt;/code&gt;. It addresses a &lt;a href="https://bugs.launchpad.net/ubuntu/+source/net-retriever/+bug/1067934"&gt;bug that makes the
+installation freeze for 10+ minutes&lt;/a&gt; during the components download
+phase.&lt;/p&gt;
+&lt;p&gt;After some 30 minutes the system installation should be completed.&lt;/p&gt;</summary><category term="Ubuntu"></category><category term="KVM"></category><category term="libvirt"></category></entry><entry><title>Ceph and Cinder multi-backend</title><link href="http://www.florentflament.com/blog/ceph-and-cinder-multi-backend.html" rel="alternate"></link><updated>2013-11-17T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-11-17:ceph-and-cinder-multi-backend.html</id><summary type="html">&lt;p&gt;&lt;a href="http://ceph.com/docs/master/"&gt;Ceph's documentation&lt;/a&gt; is quite extensive. However, when trying and
+&lt;a href="http://ceph.com/docs/master/rbd/rbd-openstack/"&gt;installing Ceph on a running Openstack platform&lt;/a&gt;, I met two main
+issues: How to deal with a multi-backend setup? And how to deal with
+several nova-compute nodes?  This note will focus on the steps that I
+followed in order to have Ceph running as a Cinder backend (among
+other backends), using &lt;a href="http://ceph.com/docs/master/rados/operations/authentication/"&gt;cephx authentication&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Ceph node&lt;/h2&gt;
+&lt;p&gt;As described on Ceph's documentation, one has to create a pool on the
+Ceph nodes (Ceph's doc provides extensive &lt;a href="http://ceph.com/docs/master/rados/operations/placement-groups/"&gt;documentation about the
+number of placement groups that should be used&lt;/a&gt;). The following
+command has to be launched on any Ceph node:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ceph osd pool create volumes 128
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Because of cephx authentication, we have to create a new user with the
+appropriate rights for cinder and nova to be able to access Ceph's
+storage. The following command has to be launched on a Ceph node:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ceph auth get-or-create client.volumes mon &lt;span class="s1"&gt;&amp;#39;allow r&amp;#39;&lt;/span&gt; osd &lt;span class="s1"&gt;&amp;#39;allow class-read object_prefix rbd_children, allow rwx pool=volumes, allow rx pool=images&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The keyring (token used to identify Ceph users) has to be copied on
+cinder-volume nodes. The keyring file can be created with the
+following command on a Ceph node:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ceph auth get-or-create client.volumes &amp;gt; ceph.client.images.keyring
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Cinder-volume nodes&lt;/h2&gt;
+&lt;p&gt;The file created above has to be copied on the cinder-volume nodes, in
+the directory &lt;code&gt;/etc/ceph&lt;/code&gt; with the propoer uid and gid:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;chown cinder:cinder /etc/ceph/ceph.client.images.keyring
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ceph's configuration file &lt;code&gt;/etc/ceph/ceph.conf&lt;/code&gt; has to be copied at
+the same location.&lt;/p&gt;
+&lt;p&gt;Then we have to install the following packages on these nodes:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sudo apt-get install python-ceph ceph-common
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Cinder configuration file &lt;code&gt;/etc/cinder/cinder.conf&lt;/code&gt; has to be updated,
+by &lt;a href="https://wiki.openstack.org/wiki/Cinder-multi-backend"&gt;setting a new backend&lt;/a&gt;. A new backend that we'll call &lt;code&gt;ceph&lt;/code&gt;
+will be added to the &lt;code&gt;enabled_backends&lt;/code&gt; parameter, and the
+corresponding backend section will be created:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;enabled_backends&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;former&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;backend&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;ceph&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;former&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;backend&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ceph&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;volume_driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volume&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;drivers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rbd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RBDDriver&lt;/span&gt;
+&lt;span class="n"&gt;volume_backend_name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ceph&lt;/span&gt;
+&lt;span class="n"&gt;rbd_pool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;volumes&lt;/span&gt;
+&lt;span class="n"&gt;glance_api_version&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+&lt;span class="n"&gt;rbd_user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;volumes&lt;/span&gt;
+&lt;span class="n"&gt;rbd_secret_uuid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;uuid_of_secret&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;rbd_secret_uuid&lt;/code&gt; value cannot be set right now, this parameter
+will allow nova to mount Ceph block devices. We will update this value
+in a next step.&lt;/p&gt;
+&lt;p&gt;If the &lt;code&gt;scheduler_driver&lt;/code&gt; parameter is not set to FilterScheduler, it
+has to be updated:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;scheduler_driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;scheduler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter_scheduler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;FilterScheduler&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Once the configuration file updated, cinder-volume service has to be
+restarted to load the new configuration:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sudo service cinder-volume restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And a new volume-type has to be added to Cinder, with the following
+command, which has to be called with an adminitrator credentials
+(OS_USERNAME, OS_TENANT_NAME and OS_PASSWORD):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;cinder &lt;span class="nb"&gt;type&lt;/span&gt;-create ceph
+cinder &lt;span class="nb"&gt;type&lt;/span&gt;-key ceph &lt;span class="nb"&gt;set &lt;/span&gt;&lt;span class="nv"&gt;volume_backend_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;ceph
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At that point, we should be able to create new Cinder volumes using
+Ceph as a backend, with the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;cinder create --volume-type ceph --display-name ceph-test 1
+cinder list
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Nova-compute nodes&lt;/h2&gt;
+&lt;p&gt;Now we have to configure our nova-compute nodes to allow our VMs to
+mount Ceph block devices. To do that, we have to dump Ceph's
+authentication token to a file that we'll use on each nova-compute
+node. On a Ceph node:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ceph auth get-key client.volumes &amp;gt; client.volumes.key
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We will also need a &lt;code&gt;secret.xml&lt;/code&gt; file that will be used on each
+compute node, with the following initial content:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;secret&lt;/span&gt; &lt;span class="na"&gt;ephemeral=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;no&amp;#39;&lt;/span&gt; &lt;span class="na"&gt;private=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;no&amp;#39;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;usage&lt;/span&gt; &lt;span class="na"&gt;type=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;ceph&amp;#39;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;name&amp;gt;&lt;/span&gt;client.volumes secret&lt;span class="nt"&gt;&amp;lt;/name&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;/usage&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/secret&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now we can copy these two files (&lt;code&gt;client.volumes.key&lt;/code&gt; and
+&lt;code&gt;secret.xml&lt;/code&gt;) on any nova-compute node. We'll call this node our first
+nova-compute node. On this first node we will define a secret with the
+following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;virsh secret-define --file secret.xml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The UUID_OF_SECRET displayed has to be copied somewhere, since it will
+be used multiple times to configure nova-compute, as well as
+cinder-volume. We can then update the secret's value with the
+following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;virsh secret-set-value --secret UUID_OF_SECRET --base64 &lt;span class="k"&gt;$(&lt;/span&gt;cat client.volumes.key&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If using several nova-compute nodes, the &lt;code&gt;secret.xml&lt;/code&gt; file has to be
+updated on the first nova-compute node (in order to ensure that the
+same UUID_OF_SECRET will be used on each nova-compute node), with the
+following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;virsh secret-dumpxml UUID_OF_SECRET &amp;gt; secret.xml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then with the new &lt;code&gt;secret.xml&lt;/code&gt; file and the &lt;code&gt;client.volumes.key&lt;/code&gt;
+ file, the previous operation has to be repeated on each nova-compute
+ node (except the first one that is already configured):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;virsh secret-define --file secret.xml
+virsh secret-set-value --secret UUID_OF_SECRET --base64 &lt;span class="k"&gt;$(&lt;/span&gt;cat client.volumes.key&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Finally, cinder-volume configuration files &lt;code&gt;/etc/cinder/cinder.conf&lt;/code&gt;
+have to be updated with the proper UUID_OF_SECRET value:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;rbd_secret_uuid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;UUID_OF_SECRET&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And cinder-volume service restarted:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sudo service cinder-volume restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After that point, any VM should be able to mount volumes using Ceph
+backend!&lt;/p&gt;</summary><category term="Ceph"></category><category term="OpenStack"></category><category term="Cinder"></category></entry><entry><title>Macmini2,1 Linux dual boot</title><link href="http://www.florentflament.com/blog/macmini21-linux-dual-boot.html" rel="alternate"></link><updated>2013-11-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-11-03:macmini21-linux-dual-boot.html</id><summary type="html">&lt;p&gt;While online resources provide documentation about &lt;a href="https://wiki.debian.org/MacMiniIntel"&gt;how to install
+Linux on a Mac Mini&lt;/a&gt;, this guide focuses on the Apple Macmini2,1
+and its peculiarities. Please refer to &lt;a href="http://en.wikipedia.org/wiki/Macmini#Specifications"&gt;these tables&lt;/a&gt; to properly
+identify your hardware.&lt;/p&gt;
+&lt;h2&gt;About Macmini2,1&lt;/h2&gt;
+&lt;p&gt;Apple provides &lt;a href="http://support.apple.com/kb/HT1237"&gt;firmware updates&lt;/a&gt; for most of its hardware. Most
+Mac Minis do have an EFI Boot ROM update available there, but
+Macmini2,1 doesn't. The good news is that what is stated on this page
+is true, Macmini2,1 doesn't need any firmware update to be able to
+boot non MacOS OSes.&lt;/p&gt;
+&lt;p&gt;Macmini2,1 is powered by an Intel Core 2 Duo, which is a &lt;a href="http://en.wikipedia.org/wiki/Core_2_duo#64-bit_Core_microarchitecture_based"&gt;64-bit
+processor&lt;/a&gt;. However, when trying and installing a &lt;a href="http://www.debian.org/distrib/netinst"&gt;Debian
+distribution&lt;/a&gt; on the Mac Mini, I couldn't manage to boot the amd64
+ISO while the i386 could be launched without any issue [08/12/2013
+update: I eventually succeeded in installing an ubuntu amd64 image on
+the Macmini2,1 without any issue ...]&lt;/p&gt;
+&lt;p&gt;One may want to install Boot Camp to enable its computer to boot
+several OSes. Macmini2,1 was shipped with Mac OS X Tiger, which is
+&lt;a href="https://discussions.apple.com/message/17645953#17645953"&gt;not supported&lt;/a&gt; by official Boot Camp releases. Fortunately, Boot
+Camp is not required to set an OS X / Linux dual boot.&lt;/p&gt;
+&lt;h2&gt;Setting dual boot&lt;/h2&gt;
+&lt;p&gt;On original Max OS X installations, the whole hard disk is occupied by
+a unique partition. Therefore, we need to free some space for our new
+OS, by resizing the partition. The &lt;code&gt;diskutil&lt;/code&gt; command allows us to do
+that. In a shell, we have to launch the following command (where 20G
+means that we want to let 20 Gigabytes to our OS X partition. One may
+split the disk capacity according to its requirements):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo diskutil resizeVolume disk0s2 20G
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then we have to install &lt;a href="http://refit.sourceforge.net/"&gt;rEFit&lt;/a&gt; on the computer. It will allow us
+to choose the partition / device to boot, and to resynchronize GPT /
+MBR tables as will be covered in a next step.&lt;/p&gt;
+&lt;p&gt;We can now insert the Linux distribution installation CD into our Mac
+(I downloaded the last &lt;a href="http://www.debian.org/distrib/netinst"&gt;Debian stable i386 netinst ISO&lt;/a&gt; and burned
+it to a CD-RW with the Mac Mini's CD burner). When restarting the
+computer, rEFit will allow us to boot on the CD.&lt;/p&gt;
+&lt;p&gt;During the installation process, we have to create new partition(s)
+(for convenience, I chose a distinct / and /home partitions). When
+asked to install grub, choose &lt;code&gt;/dev/sda4&lt;/code&gt; (the partition that will be
+mounted as /).&lt;/p&gt;
+&lt;p&gt;Once the Linux installation is finished, reboot and use rEFit
+&lt;code&gt;Partition Tool&lt;/code&gt; to resync GPT / MBR tables. Then boot back to MacOS
+and use its &lt;code&gt;bless&lt;/code&gt; tool to make the new OS bootable:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo bless --device /dev/disk0s4 -setBoot
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Eventually, we can customize the rEFit configuration file
+&lt;code&gt;/efi/refit/refit.conf&lt;/code&gt; to make the boot sequence more convenient. The
+rEFit menu timeout can be set with the &lt;code&gt;timeout&lt;/code&gt; option. The option
+&lt;code&gt;default_selection&lt;/code&gt; (at the end of the file) allows us to choose the
+default OS to boot.&lt;/p&gt;
+&lt;p&gt;That's it ! Restart, rEFit allows us to choose between booting Mac OS
+X and Linux.&lt;/p&gt;</summary><category term="Apple"></category><category term="Linux"></category></entry></feed>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ZNC in Docker container</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Florent Flament">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="./theme/css/bootstrap.min.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="./theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="./theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="./theme/css/pygments.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="./theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="./theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./theme/images/apple-touch-icon-114x114.png">
+
+    <link href="./" type="application/atom+xml" rel="alternate" title="Florent Flament's Tech Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="./index.html">Florent Flament's Tech Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="./category/misc.html">
+						<i class="icon-folder-open icon-large"></i>misc
+					</a>
+                  </li>
+                  <li >
+                    <a href="./category/openstack.html">
+						<i class="icon-folder-open icon-large"></i>OpenStack
+					</a>
+                  </li>
+
+                          <ul class="nav pull-right">
+                                <li><a href="./archives.html"><i class="icon-th-list"></i>Archives</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to ZNC in Docker container">
+                                        ZNC in Docker container
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2013-12-15T00:00:00">
+        <i class="icon-calendar"></i>Sun 15 December 2013
+</abbr>
+<span class="label">By</span>
+<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
+<span class="label">Category</span>
+<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
+
+
+<span class="label">Tags</span>
+	<a href="./tag/znc.html"><i class="icon-tag"></i>ZNC</a>
+	<a href="./tag/docker.html"><i class="icon-tag"></i>Docker</a>
+	<a href="./tag/irc.html"><i class="icon-tag"></i>IRC</a>
+</footer><!-- /.post-info -->                </div>
+                <p><a href="http://wiki.znc.in/ZNC">ZNC</a> is a popular IRC bouncer, which stays connected to IRC
+channels and log conversations while one isn't connected. This note
+desrcibes how to launch ZNC in a <a href="https://www.docker.io/">Docker</a> container, so that it be
+launched on any Docker enabled platform. To quick start with Docker,
+one can follow the steps proposed to <a href="http://docs.docker.io/en/latest/installation/ubuntulinux/">install Docker on an Ubuntu
+Linux</a> (for instance in a VM).</p>
+<h2>Using ZNC setup wizard</h2>
+<p>Once Docker is installed on the system, we can prepare an image that
+will be used to run ZNC with the following <code>Dockerfile</code> (Docker
+configuration file):</p>
+<div class="highlight"><pre>FROM ubuntu:precise
+MAINTAINER Florent Flament
+
+# Using fr ubuntu mirrors and adding universe repository, to install znc
+RUN echo &quot;deb http://fr.archive.ubuntu.com/ubuntu precise main restricted&quot; \
+&gt; /etc/apt/sources.list
+RUN echo &quot;deb http://fr.archive.ubuntu.com/ubuntu precise universe&quot; \
+&gt;&gt; /etc/apt/sources.list
+
+# Installing znc package
+RUN apt-get -y update
+RUN apt-get -y install znc
+
+# Creating directory to store znc configuration
+RUN mkdir -m 775 /var/znc
+RUN chgrp daemon /var/znc
+USER daemon
+</pre></div>
+
+
+<p>Let's assume that the <code>Dockerfile</code> is stored in the <code>znc-noconf</code>
+directory. We can build the ZNC ready image with the following
+command:</p>
+<div class="highlight"><pre><span class="nv">$ </span>docker build -t znc:noconf znc-noconf/
+</pre></div>
+
+
+<p>The next step is to configure ZNC. The following command will run the
+configuration wizard in a new container based on the previously
+generated image:</p>
+<div class="highlight"><pre><span class="nv">$ </span>docker run -i -t znc:noconf -d /var/znc -c
+</pre></div>
+
+
+<p>After having answered to all the questions, ZNC will generate its
+configuration files. It will then be ready to run in daemon mode. Now
+we can save a Docker image including ZNC's configuration files.</p>
+<div class="highlight"><pre><span class="nv">$ CONT</span><span class="o">=</span><span class="k">$(</span>docker ps -a | grep <span class="s2">&quot;minutes ago&quot;</span> | head -1 | awk <span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<span class="nv">$ </span>docker commit <span class="se">\</span>
+&gt; -run<span class="o">=</span><span class="s1">&#39;{&quot;Cmd&quot;: [&quot;/usr/bin/znc&quot;, &quot;-f&quot;, &quot;-d&quot;, &quot;/var/znc/&quot;], &quot;User&quot;: &quot;daemon&quot;}&#39;</span> <span class="se">\</span>
+&gt; <span class="nv">$CONT</span> znc:ready
+</pre></div>
+
+
+<p>The ZNC image is now ready, and can be launched. In addition to launch
+ZNC in a new container, the following command will map the host's 6697
+TCP port on the container's 6697 port (assuming that ZNC has been
+configured to listen to port 6697).</p>
+<div class="highlight"><pre><span class="nv">$ </span>docker run -d -p 6697:6697 znc:ready
+</pre></div>
+
+
+<h2>Using a previously made ZNC configuration file</h2>
+<p>One can setup a ZNC Docker container even quicker if he already has a
+<code>znc.conf</code> configuration file. One has to create a directory (for
+instance <code>myznc/</code>) containing both: <code>znc.conf</code> and a <code>Dockerfile</code>, with
+the following content:</p>
+<div class="highlight"><pre>FROM ubuntu:precise
+MAINTAINER Florent Flament
+
+# Using fr ubuntu mirrors and adding universe repository, to install znc
+RUN echo &quot;deb http://fr.archive.ubuntu.com/ubuntu precise main restricted&quot; \
+&gt; /etc/apt/sources.list
+RUN echo &quot;deb http://fr.archive.ubuntu.com/ubuntu precise universe&quot; \
+&gt;&gt; /etc/apt/sources.list
+
+# Installing znc package
+RUN apt-get -y update
+RUN apt-get -y install znc
+
+# Creating directory to store znc configuration
+RUN mkdir -m 775 /var/znc
+# Generates key for SSL exchanges
+RUN /usr/bin/znc -d /var/znc -p
+# Copies ZNC configuration file
+ADD znc.conf /var/znc/configs/
+RUN chown -R daemon:daemon /var/znc
+USER daemon
+
+# Setting default container&#39;s command
+CMD [&quot;/usr/bin/znc&quot;, &quot;-f&quot;, &quot;-d&quot;, &quot;/var/znc/&quot;]
+</pre></div>
+
+
+<p>Then the ZNC container can be launched right after having built the image:</p>
+<div class="highlight"><pre><span class="nv">$ </span>docker build -t znc:myznc myznc/
+<span class="nv">$ </span>docker run -d -p 6697:6697 znc:myznc
+</pre></div>
+                </div><!-- /.entry-content -->
+                <div class="comments">
+                <h2>Comments !</h2>
+                        <div id="disqus_thread"></div>
+                        <script type="text/javascript">
+                           var disqus_identifier = "znc-in-docker-container.html";
+                           (function() {
+                                var dsq = document.createElement('script');
+                                dsq.type = 'text/javascript'; dsq.async = true;
+                                dsq.src = 'http://florentflament.disqus.com/embed.js';
+                                (document.getElementsByTagName('head')[0] ||
+                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
+                          })();
+                        </script>
+                </div>
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://adam.younglogic.com/"><i class="icon-external-link"></i>Adam Young's Web Log</a></li>
+    <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
+    <li><a href="http://www.jamielennox.net/"><i class="icon-external-link"></i>Jamie Lennox's Blog</a></li>
+    <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
+
+<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
+<li>
+<a href="./category/misc.html">
+    <i class="icon-folder-open icon-large"></i>misc
+</a>
+</li>
+<li>
+<a href="./category/openstack.html">
+    <i class="icon-folder-open icon-large"></i>OpenStack
+</a>
+</li>
+
+<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
+<li class="tag-4">
+    <a href="./tag/kvm.html">
+        <i class="icon-tag icon-large"></i>KVM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/libvirt.html">
+        <i class="icon-tag icon-large"></i>libvirt
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/bug.html">
+        <i class="icon-tag icon-large"></i>bug
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/znc.html">
+        <i class="icon-tag icon-large"></i>ZNC
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/keystone.html">
+        <i class="icon-tag icon-large"></i>Keystone
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/apple.html">
+        <i class="icon-tag icon-large"></i>Apple
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ubuntu.html">
+        <i class="icon-tag icon-large"></i>Ubuntu
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ceph.html">
+        <i class="icon-tag icon-large"></i>Ceph
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/linux.html">
+        <i class="icon-tag icon-large"></i>Linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/policies.html">
+        <i class="icon-tag icon-large"></i>Policies
+    </a>
+</li>
+<li class="tag-1">
+    <a href="./tag/openstack.html">
+        <i class="icon-tag icon-large"></i>OpenStack
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/cinder.html">
+        <i class="icon-tag icon-large"></i>Cinder
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/irc.html">
+        <i class="icon-tag icon-large"></i>IRC
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/docker.html">
+        <i class="icon-tag icon-large"></i>Docker
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <address id="about">
+        </address><!-- /#about -->
+        <p>Powered by <a href="http://blog.getpelican.com/">Pelican<i class="icon-external-link"></i></a></p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+	var pageTracker = _gat._getTracker("UA-23791515-4");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<script type="text/javascript">
+    var disqus_shortname = 'florentflament';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./theme/js/jquery-1.7.2.min.js"></script>
+    <script src="./theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

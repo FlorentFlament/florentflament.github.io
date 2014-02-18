@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Customizing OpenStack RBAC policies</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Florent Flament">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="./theme/css/bootstrap.min.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="./theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="./theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="./theme/css/pygments.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="./theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="./theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./theme/images/apple-touch-icon-114x114.png">
+
+    <link href="./" type="application/atom+xml" rel="alternate" title="Florent Flament's Tech Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="./index.html">Florent Flament's Tech Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li >
+                    <a href="./category/misc.html">
+						<i class="icon-folder-open icon-large"></i>misc
+					</a>
+                  </li>
+                  <li class="active">
+                    <a href="./category/openstack.html">
+						<i class="icon-folder-open icon-large"></i>OpenStack
+					</a>
+                  </li>
+
+                          <ul class="nav pull-right">
+                                <li><a href="./archives.html"><i class="icon-th-list"></i>Archives</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Customizing OpenStack RBAC policies">
+                                        Customizing OpenStack RBAC policies
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2014-02-09T00:00:00">
+        <i class="icon-calendar"></i>Sun 09 February 2014
+</abbr>
+<span class="label">By</span>
+<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
+<span class="label">Category</span>
+<a href="./category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
+
+
+<span class="label">Tags</span>
+	<a href="./tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
+	<a href="./tag/keystone.html"><i class="icon-tag"></i>Keystone</a>
+	<a href="./tag/policies.html"><i class="icon-tag"></i>Policies</a>
+</footer><!-- /.post-info -->                </div>
+                <p>OpenStack uses a <a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac">role based access control</a> (RBAC) mechanism to
+manage accesses to its resources. With the current architecture,
+users' roles granted on each project and domain are stored into
+Keystone, and can be updated through <a href="http://api.openstack.org/api-ref-identity.html#identity-v3">Keystone's API</a>. However,
+policy enforcement (actually allowing or not the access to resources
+according to a user's roles) is performed independently in each
+service, based on the rules defined in each <code>policy.json</code> file.</p>
+<p>In a default OpenStack setup (like Devstack), two roles are created:</p>
+<ul>
+<li>
+<p>The <code>Member</code> role, which when granted to a user on a project, allows
+  him to manage resources (instances, volumes, ...) in this project.</p>
+</li>
+<li>
+<p>The <code>admin</code> role, which when granted to a user on any project,
+  offers to this user a total control over the whole OpenStack
+  platform. Although this is the current behavior, it has been <a href="https://bugs.launchpad.net/keystone/+bug/968696">marked
+  as a bug</a>.</p>
+</li>
+</ul>
+<p>However, the OpenStack policy engine allows operators to specify fine
+grained set of rules to control access to resources of each OpenStack
+service (Keystone, Nova, Cinder, ...).</p>
+<h2>Attributes available to build custom policies</h2>
+<p>Four types of attributes can be used to set policy rules:</p>
+<ul>
+<li>
+<p>User roles, which can be checked by using the following syntax:</p>
+<div class="highlight"><pre>role:&lt;requires_role&gt;
+</pre></div>
+
+
+</li>
+<li>
+<p>Other user related attributes (stored into or obtained through the
+  token). The following attributes are available: user_id, domain_id
+  or project_id (depending on the scope), and can be checked against
+  constants or other attributes:</p>
+<div class="highlight"><pre>project_id:&lt;some_attribute&gt;
+</pre></div>
+
+
+</li>
+<li>
+<p>API call attributes are any data sent along with the API call. They
+  can be checked against constants or user attributes. For instance,
+  the following statement checks that a user being created is in the
+  same domain as his creator (note that API call attributes have to be
+  on the right side of the expression, while user attributes are on
+  the left side):</p>
+<div class="highlight"><pre>domain_id:user.domain_id
+</pre></div>
+
+
+</li>
+<li>
+<p>The fourth category of attributes are what I'd call contextual
+  attributes. These are the attributes of objects referenced (or
+  targeted) by an API call; i.e. any object whose id appear somewhere
+  in the API call. For instance, when granting a new role on a project
+  to a user, all attributes related to the role, the project and the
+  user are available to the policy engine, through the <code>target</code>
+  keyword. The following syntax checks that the role of the context is
+  the <code>Member</code> role:</p>
+<div class="highlight"><pre>&#39;Member&#39;:target.role.name
+</pre></div>
+
+
+</li>
+</ul>
+<p>Depending on the type of API calls, some of the following attributes
+will be available, according to the objects impacted by the action:</p>
+<ul>
+<li>
+<p>domain:</p>
+<ul>
+<li>target.domain.enabled</li>
+<li>target.domain.id</li>
+<li>target.domain.name</li>
+</ul>
+</li>
+<li>
+<p>group:</p>
+<ul>
+<li>target.group.description</li>
+<li>target.group.domain_id</li>
+<li>target.group.id</li>
+<li>target.group.name</li>
+</ul>
+</li>
+<li>
+<p>project:</p>
+<ul>
+<li>target.project.description</li>
+<li>target.project.domain_id</li>
+<li>target.project.enabled</li>
+<li>target.project.id</li>
+<li>target.project.name</li>
+</ul>
+</li>
+<li>
+<p>role:</p>
+<ul>
+<li>target.role.id</li>
+<li>target.role.name</li>
+</ul>
+</li>
+<li>
+<p>user:</p>
+<ul>
+<li>target.user.default_project_id</li>
+<li>target.user.description</li>
+<li>target.user.domain_id</li>
+<li>target.user.enabled</li>
+<li>target.user.id</li>
+<li>target.user.name</li>
+</ul>
+</li>
+</ul>
+<h2>Example: admin and super_admin</h2>
+<p>The following example is taken from a User Story that we were
+considering at <a href="http://www.cloudwatt.com">CloudWatt</a>. As a cloud service provider, we wanted
+to be able to have 2 different levels of administrator roles:</p>
+<ul>
+<li>An <code>admin</code> role, which allows its users to grant the <code>Member</code> role
+  to any other user.</li>
+<li>While the <code>super_admin</code> role allows granting any role.</li>
+</ul>
+<p>When added to Keystone's ̀<code>policy.json</code> file, the following rules
+implements the two roles described previously:</p>
+<div class="highlight"><pre>&quot;admin_grant_member&quot;: &quot;role:admin and &#39;Member&#39;:%(target.role.name)s&quot;,
+&quot;identity:create_grant&quot;: &quot;role:super_admin or rule:admin_grant_member&quot;,
+</pre></div>
+
+
+<p>The first rule describes a new rule called <code>admin_grant_member</code>, which
+checks that the user authenticated by the token has the <code>admin</code> role
+(on its scope), and that the role in the context (the role the admin
+is trying to grant) is the <code>Member</code> role (we used the <code>name</code>
+attribute, but could use the role's id instead).</p>
+<p>The second rule is checked whenever an API call is made to grant a
+role to a user (action <code>identity:create_grant</code>). This rule tells the
+policy engine that in order for a user to be allowed to grant a role
+to another user, the user authenticated by the token must either have
+the <code>super_admin</code> role, or satisfy the <code>admin_grant_member</code> rule.</p>
+<p>Put together these two rules actually meet the use case. Any user with
+the <code>admin</code> role will only be able to grant the <code>Member</code> role to other
+users, while users with the <code>super_admin</code> role will be able to grant
+any role.</p>
+<h2>Notes</h2>
+<p>One of the most powerful rules that the OpenStack policy engine
+allows, are those limiting a user's actions to his own domain or
+project. These kind of rules are widely used in <a href="https://github.com/openstack/keystone/blob/master/etc/policy.v3cloudsample.json">Keystone's
+policy.v3cloudsample.json</a>.</p>
+<p>Also note, that a recent patch merged into oslo-incubator implements
+the blueprint allowing the policy engine to <a href="https://blueprints.launchpad.net/oslo/+spec/policy-constant-check">check contextual
+attributes against constant values</a>. This patch will have to be
+synchronized into the OpenStack projects for them to benefit from this
+feature.</p>
+                </div><!-- /.entry-content -->
+                <div class="comments">
+                <h2>Comments !</h2>
+                        <div id="disqus_thread"></div>
+                        <script type="text/javascript">
+                           var disqus_identifier = "customizing-openstack-rbac-policies.html";
+                           (function() {
+                                var dsq = document.createElement('script');
+                                dsq.type = 'text/javascript'; dsq.async = true;
+                                dsq.src = 'http://florentflament.disqus.com/embed.js';
+                                (document.getElementsByTagName('head')[0] ||
+                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
+                          })();
+                        </script>
+                </div>
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://adam.younglogic.com/"><i class="icon-external-link"></i>Adam Young's Web Log</a></li>
+    <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
+    <li><a href="http://www.jamielennox.net/"><i class="icon-external-link"></i>Jamie Lennox's Blog</a></li>
+    <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
+
+<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
+<li>
+<a href="./category/misc.html">
+    <i class="icon-folder-open icon-large"></i>misc
+</a>
+</li>
+<li>
+<a href="./category/openstack.html">
+    <i class="icon-folder-open icon-large"></i>OpenStack
+</a>
+</li>
+
+<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
+<li class="tag-4">
+    <a href="./tag/kvm.html">
+        <i class="icon-tag icon-large"></i>KVM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/libvirt.html">
+        <i class="icon-tag icon-large"></i>libvirt
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/bug.html">
+        <i class="icon-tag icon-large"></i>bug
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/znc.html">
+        <i class="icon-tag icon-large"></i>ZNC
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/keystone.html">
+        <i class="icon-tag icon-large"></i>Keystone
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/apple.html">
+        <i class="icon-tag icon-large"></i>Apple
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ubuntu.html">
+        <i class="icon-tag icon-large"></i>Ubuntu
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ceph.html">
+        <i class="icon-tag icon-large"></i>Ceph
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/linux.html">
+        <i class="icon-tag icon-large"></i>Linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/policies.html">
+        <i class="icon-tag icon-large"></i>Policies
+    </a>
+</li>
+<li class="tag-1">
+    <a href="./tag/openstack.html">
+        <i class="icon-tag icon-large"></i>OpenStack
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/cinder.html">
+        <i class="icon-tag icon-large"></i>Cinder
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/irc.html">
+        <i class="icon-tag icon-large"></i>IRC
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/docker.html">
+        <i class="icon-tag icon-large"></i>Docker
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <address id="about">
+        </address><!-- /#about -->
+        <p>Powered by <a href="http://blog.getpelican.com/">Pelican<i class="icon-external-link"></i></a></p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+	var pageTracker = _gat._getTracker("UA-23791515-4");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<script type="text/javascript">
+    var disqus_shortname = 'florentflament';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./theme/js/jquery-1.7.2.min.js"></script>
+    <script src="./theme/js/bootstrap.min.js"></script>
+  </body>
+</html>

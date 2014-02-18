@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Setting Keystone v3 domains</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Florent Flament">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="./theme/css/bootstrap.min.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="./theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="./theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="./theme/css/pygments.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="./theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="./theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./theme/images/apple-touch-icon-114x114.png">
+
+    <link href="./" type="application/atom+xml" rel="alternate" title="Florent Flament's Tech Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="./index.html">Florent Flament's Tech Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li >
+                    <a href="./category/misc.html">
+						<i class="icon-folder-open icon-large"></i>misc
+					</a>
+                  </li>
+                  <li class="active">
+                    <a href="./category/openstack.html">
+						<i class="icon-folder-open icon-large"></i>OpenStack
+					</a>
+                  </li>
+
+                          <ul class="nav pull-right">
+                                <li><a href="./archives.html"><i class="icon-th-list"></i>Archives</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Setting Keystone v3 domains">
+                                        Setting Keystone v3 domains
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2014-01-18T00:00:00">
+        <i class="icon-calendar"></i>Sat 18 January 2014
+</abbr>
+<span class="label">By</span>
+<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
+<span class="label">Category</span>
+<a href="./category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
+
+
+<span class="label">Tags</span>
+	<a href="./tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
+	<a href="./tag/keystone.html"><i class="icon-tag"></i>Keystone</a>
+</footer><!-- /.post-info -->                </div>
+                <p>The <a href="http://api.openstack.org/api-ref-identity.html#identity-v3">Openstack Identity v3 API</a>, provided by Keystone, offers
+features that were lacking in the previous version. Among these
+features, it introduces the concept of domains, allowing isolation of
+projects and users. For instance, an administrator allowed to create
+projects and users in a given domain, may not have any right in
+another one. While these features look very exciting, some
+configuration needs to be done to have a working identity v3 service
+with domains properly set.</p>
+<p><a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac">Keystone API protection</a> section of the developer's doc provides
+hints about how to set-up a multi-domain installation. Starting from
+there, I describe the full steps to have a multi-domain setup running,
+by using <code>curl</code> to send http requests and <code>jq</code> to parse the json
+answers.</p>
+<h2>Setting an admin domain and a cloud admin</h2>
+<p>First, we have to start on a fresh non multi-domain installation with
+the <a href="https://github.com/openstack/keystone/blob/master/etc/policy.json">default policy file</a>.</p>
+<ul>
+<li>
+<p>With the <code>admin</code> user we can create the <code>admin_domain</code>.</p>
+<div class="highlight"><pre><span class="nv">ADMIN_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
+    -s <span class="se">\</span>
+    -i <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+    -d <span class="s1">&#39;</span>
+<span class="s1">{</span>
+<span class="s1">    &quot;auth&quot;: {</span>
+<span class="s1">        &quot;identity&quot;: {</span>
+<span class="s1">            &quot;methods&quot;: [</span>
+<span class="s1">                &quot;password&quot;</span>
+<span class="s1">            ],</span>
+<span class="s1">            &quot;password&quot;: {</span>
+<span class="s1">                &quot;user&quot;: {</span>
+<span class="s1">                    &quot;domain&quot;: {</span>
+<span class="s1">                        &quot;name&quot;: &quot;Default&quot;</span>
+<span class="s1">                    },</span>
+<span class="s1">                    &quot;name&quot;: &quot;admin&quot;,</span>
+<span class="s1">                    &quot;password&quot;: &quot;password&quot;</span>
+<span class="s1">                }</span>
+<span class="s1">            }</span>
+<span class="s1">        },</span>
+<span class="s1">        &quot;scope&quot;: {</span>
+<span class="s1">            &quot;project&quot;: {</span>
+<span class="s1">                &quot;domain&quot;: {</span>
+<span class="s1">                    &quot;name&quot;: &quot;Default&quot;</span>
+<span class="s1">                },</span>
+<span class="s1">                &quot;name&quot;: &quot;admin&quot;</span>
+<span class="s1">            }</span>
+<span class="s1">        }</span>
+<span class="s1">    }</span>
+<span class="s1">}&#39;</span> | grep ^X-Subject-Token: | awk <span class="s1">&#39;{print $2}&#39;</span> <span class="k">)</span>
+
+<span class="nv">ID_ADMIN_DOMAIN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/domains <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+    -d <span class="s1">&#39;</span>
+<span class="s1">{</span>
+<span class="s1">    &quot;domain&quot;: {</span>
+<span class="s1">    &quot;enabled&quot;: true,</span>
+<span class="s1">    &quot;name&quot;: &quot;admin_domain&quot;</span>
+<span class="s1">    }</span>
+<span class="s1">}&#39;</span> | jq .domain.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;ID of domain cloud: $ID_ADMIN_DOMAIN&quot;</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>Then we can create our <code>cloud_admin</code> user, within the <code>admin_domain</code>
+  domain.</p>
+<div class="highlight"><pre><span class="nv">ID_CLOUD_ADMIN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/users <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+    -d <span class="s2">&quot;</span>
+<span class="s2">{</span>
+<span class="s2">    \&quot;user\&quot;: {</span>
+<span class="s2">        \&quot;description\&quot;: \&quot;Cloud administrator\&quot;,</span>
+<span class="s2">        \&quot;domain_id\&quot;: \&quot;$ID_ADMIN_DOMAIN\&quot;,</span>
+<span class="s2">        \&quot;enabled\&quot;: true,</span>
+<span class="s2">        \&quot;name\&quot;: \&quot;cloud_admin\&quot;,</span>
+<span class="s2">        \&quot;password\&quot;: \&quot;password\&quot;</span>
+<span class="s2">    }</span>
+<span class="s2">}&quot;</span> | jq .user.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;ID of user cloud_admin: $ID_CLOUD_ADMIN&quot;</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>And we grant to our user <code>cloud_admin</code> the <code>admin</code> role on domain
+  <code>admin_domain</code>.</p>
+<div class="highlight"><pre><span class="nv">ADMIN_ROLE_ID</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/roles?name<span class="o">=</span>admin <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+| jq .roles<span class="o">[</span>0<span class="o">]</span>.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+
+curl -X PUT http://localhost:5000/v3/domains/<span class="k">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_CLOUD_ADMIN</span><span class="k">}</span>/roles/<span class="k">${</span><span class="nv">ADMIN_ROLE_ID</span><span class="k">}</span> <span class="se">\</span>
+    -s <span class="se">\</span>
+    -i <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span>
+
+curl http://localhost:5000/v3/domains/<span class="k">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_CLOUD_ADMIN</span><span class="k">}</span>/roles<span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $ADMIN_TOKEN&quot;</span> | jq .roles
+</pre></div>
+
+
+</li>
+<li>
+<p>Once the <code>admin_domain</code> has been created with its <code>cloud_admin</code>
+  user, we can enforce a domain based policy. In order to do that, we
+  have to copy the <a href="https://github.com/openstack/keystone/blob/master/etc/policy.v3cloudsample.json">policy.v3cloudsample.json</a> file over our former
+  <code>/etc/keystone/policy.json</code>, while replacing the string
+  <code>admin_domain_id</code> by the ID of the <code>admin_domain</code> we just
+  created. Locate the <code>policy.v3cloudsample.json</code> file into the <code>etc</code>
+  directory of Keystone's source.</p>
+<div class="highlight"><pre>sed s/admin_domain_id/<span class="k">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="k">}</span>/ <span class="se">\</span>
+    &lt; policy.v3cloudsample.json <span class="se">\</span>
+    &gt; /etc/keystone/policy.json
+</pre></div>
+
+
+</li>
+</ul>
+<p>Warning, current version (commit
+19620076f587f925c5d2fa59780c1a80dde15db2) of policy.v3cloudsample.json
+doesn't allow <code>cloud_admin</code> to manage users in other domains than its
+own (see <a href="https://bugs.launchpad.net/keystone/+bug/1267187">bug 1267187</a>). Until the patch is merged, I suggest using
+this <a href="https://review.openstack.org/#/c/65510/">policy.c3cloudsample.json under review</a>.</p>
+<h2>Creating domains and admins</h2>
+<p>From now on, the <code>admin</code> user can only manage projects and users in
+the <code>Default</code> domain. To create other domains we will have to
+authenticate with the <code>cloud_admin</code> user created above.</p>
+<ul>
+<li>
+<p>Getting a token scoped on the <code>admin_domain</code>, for user <code>cloud_admin</code>.</p>
+<div class="highlight"><pre><span class="nv">CLOUD_ADMIN_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
+    -s <span class="se">\</span>
+    -i <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+    -d <span class="s1">&#39;</span>
+<span class="s1">{</span>
+<span class="s1">    &quot;auth&quot;: {</span>
+<span class="s1">        &quot;identity&quot;: {</span>
+<span class="s1">            &quot;methods&quot;: [</span>
+<span class="s1">                &quot;password&quot;</span>
+<span class="s1">            ],</span>
+<span class="s1">            &quot;password&quot;: {</span>
+<span class="s1">                &quot;user&quot;: {</span>
+<span class="s1">                    &quot;domain&quot;: {</span>
+<span class="s1">                        &quot;name&quot;: &quot;admin_domain&quot;</span>
+<span class="s1">                    },</span>
+<span class="s1">                    &quot;name&quot;: &quot;cloud_admin&quot;,</span>
+<span class="s1">                    &quot;password&quot;: &quot;password&quot;</span>
+<span class="s1">                }</span>
+<span class="s1">            }</span>
+<span class="s1">        },</span>
+<span class="s1">        &quot;scope&quot;: {</span>
+<span class="s1">            &quot;domain&quot;: {</span>
+<span class="s1">                &quot;name&quot;: &quot;admin_domain&quot;</span>
+<span class="s1">            }</span>
+<span class="s1">        }</span>
+<span class="s1">    }</span>
+<span class="s1">}&#39;</span> | grep ^X-Subject-Token: | awk <span class="s1">&#39;{print $2}&#39;</span> <span class="k">)</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>Creating domains <code>dom1</code> and <code>dom2</code>.</p>
+<div class="highlight"><pre><span class="nv">ID_DOM1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/domains <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+    -d <span class="s1">&#39;</span>
+<span class="s1">{</span>
+<span class="s1">    &quot;domain&quot;: {</span>
+<span class="s1">        &quot;enabled&quot;: true,</span>
+<span class="s1">        &quot;name&quot;: &quot;dom1&quot;</span>
+<span class="s1">    }</span>
+<span class="s1">}&#39;</span> | jq .domain.id | tr -d <span class="s1">&#39;&quot;&#39;</span><span class="k">)</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;ID of dom1: $ID_DOM1&quot;</span>
+
+<span class="nv">ID_DOM2</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/domains <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+    -d <span class="s1">&#39;</span>
+<span class="s1">{</span>
+<span class="s1">    &quot;domain&quot;: {</span>
+<span class="s1">        &quot;enabled&quot;: true,</span>
+<span class="s1">        &quot;name&quot;: &quot;dom2&quot;</span>
+<span class="s1">    }</span>
+<span class="s1">}&#39;</span> | jq .domain.id | tr -d <span class="s1">&#39;&quot;&#39;</span><span class="k">)</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;ID of dom2: $ID_DOM2&quot;</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>Now we will create a user <code>adm1</code> in domain <code>dom1</code>.</p>
+<div class="highlight"><pre><span class="nv">ID_ADM1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/users <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+    -d <span class="s2">&quot;</span>
+<span class="s2">{</span>
+<span class="s2">    \&quot;user\&quot;: {</span>
+<span class="s2">        \&quot;description\&quot;: \&quot;Administrator of domain dom1\&quot;,</span>
+<span class="s2">        \&quot;domain_id\&quot;: \&quot;$ID_DOM1\&quot;,</span>
+<span class="s2">        \&quot;enabled\&quot;: true,</span>
+<span class="s2">        \&quot;name\&quot;: \&quot;adm1\&quot;,</span>
+<span class="s2">        \&quot;password\&quot;: \&quot;password\&quot;</span>
+<span class="s2">    }</span>
+<span class="s2">}&quot;</span> | jq .user.id | tr -d <span class="s1">&#39;&quot;&#39;</span><span class="k">)</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;ID of user adm1: $ID_ADM1&quot;</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>We will also grant the <code>admin</code> role on domain <code>dom1</code> to this <code>adm1</code>
+  user.</p>
+<div class="highlight"><pre>curl -X PUT http://localhost:5000/v3/domains/<span class="k">${</span><span class="nv">ID_DOM1</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_ADM1</span><span class="k">}</span>/roles/<span class="k">${</span><span class="nv">ADMIN_ROLE_ID</span><span class="k">}</span> <span class="se">\</span>
+    -s <span class="se">\</span>
+    -i <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span>
+
+curl http://localhost:5000/v3/domains/<span class="k">${</span><span class="nv">ID_DOM1</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_ADM1</span><span class="k">}</span>/roles <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&quot;</span> | jq .roles
+</pre></div>
+
+
+</li>
+</ul>
+<h2>Creating projects and users</h2>
+<p>The <code>adm1</code> user can now fully manage domain <code>dom1</code>. He is allowed to
+manage as many projects and users as he wishes within <code>dom1</code>, while
+not being able to access resources of domain <code>dom2</code>.</p>
+<ul>
+<li>
+<p>Now we authenticate as user <code>adm1</code> with a scope on <code>dom1</code>.</p>
+<div class="highlight"><pre><span class="nv">ADM1_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
+    -s <span class="se">\</span>
+    -i <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+    -d <span class="s1">&#39;</span>
+<span class="s1">{</span>
+<span class="s1">    &quot;auth&quot;: {</span>
+<span class="s1">        &quot;identity&quot;: {</span>
+<span class="s1">            &quot;methods&quot;: [</span>
+<span class="s1">                &quot;password&quot;</span>
+<span class="s1">            ],</span>
+<span class="s1">            &quot;password&quot;: {</span>
+<span class="s1">                &quot;user&quot;: {</span>
+<span class="s1">                    &quot;domain&quot;: {</span>
+<span class="s1">                        &quot;name&quot;: &quot;dom1&quot;</span>
+<span class="s1">                    },</span>
+<span class="s1">                    &quot;name&quot;: &quot;adm1&quot;,</span>
+<span class="s1">                    &quot;password&quot;: &quot;password&quot;</span>
+<span class="s1">                }</span>
+<span class="s1">            }</span>
+<span class="s1">        },</span>
+<span class="s1">        &quot;scope&quot;: {</span>
+<span class="s1">            &quot;domain&quot;: {</span>
+<span class="s1">                &quot;name&quot;: &quot;dom1&quot;</span>
+<span class="s1">            }</span>
+<span class="s1">        }</span>
+<span class="s1">    }</span>
+<span class="s1">}&#39;</span> | grep ^X-Subject-Token: | awk <span class="s1">&#39;{print $2}&#39;</span> <span class="k">)</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>We create a project <code>prj1</code> in domain <code>dom1</code>.</p>
+<div class="highlight"><pre><span class="nv">ID_PRJ1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/projects <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+    -d <span class="s2">&quot;</span>
+<span class="s2">{</span>
+<span class="s2">    \&quot;project\&quot;: {</span>
+<span class="s2">        \&quot;enabled\&quot;: true,</span>
+<span class="s2">        \&quot;domain_id\&quot;: \&quot;$ID_DOM1\&quot;,</span>
+<span class="s2">        \&quot;name\&quot;: \&quot;prj1\&quot;</span>
+<span class="s2">    }\</span>
+<span class="s2">}&quot;</span> | jq .project.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;ID of prj1: $ID_PRJ1&quot;</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>When trying and creating a project in domain <code>dom2</code>, it fails.</p>
+<div class="highlight"><pre>curl http://localhost:5000/v3/projects <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+    -d <span class="s2">&quot;</span>
+<span class="s2">{</span>
+<span class="s2">    \&quot;project\&quot;: {</span>
+<span class="s2">        \&quot;enabled\&quot;: true,</span>
+<span class="s2">        \&quot;domain_id\&quot;: \&quot;$ID_DOM2\&quot;,</span>
+<span class="s2">        \&quot;name\&quot;: \&quot;prj2\&quot;</span>
+<span class="s2">    }\</span>
+<span class="s2">}&quot;</span> | jq .
+</pre></div>
+
+
+</li>
+<li>
+<p>Creating a standard user <code>usr1</code> in domain <code>dom1</code>, with default project <code>prj1</code>.</p>
+<div class="highlight"><pre><span class="nv">ID_USR1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/users <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+    -d <span class="s2">&quot;</span>
+<span class="s2">{</span>
+<span class="s2">    \&quot;user\&quot;: {</span>
+<span class="s2">        \&quot;default_project_id\&quot;: \&quot;$ID_PRJ1\&quot;,</span>
+<span class="s2">        \&quot;description\&quot;: \&quot;Just a user of dom1\&quot;,</span>
+<span class="s2">        \&quot;domain_id\&quot;: \&quot;$ID_DOM1\&quot;,</span>
+<span class="s2">        \&quot;enabled\&quot;: true,</span>
+<span class="s2">        \&quot;name\&quot;: \&quot;usr1\&quot;,</span>
+<span class="s2">        \&quot;password\&quot;: \&quot;password\&quot;</span>
+<span class="s2">    }</span>
+<span class="s2">}&quot;</span> | jq .user.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;ID of user usr1: $ID_USR1&quot;</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>Granting <code>Member</code> role to user <code>usr1</code> on project <code>prj1</code>.</p>
+<div class="highlight"><pre><span class="nv">MEMBER_ROLE_ID</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+curl http://localhost:5000/v3/roles?name<span class="o">=</span>Member <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> <span class="se">\</span>
+| jq .roles<span class="o">[</span>0<span class="o">]</span>.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+
+curl -X PUT http://localhost:5000/v3/projects/<span class="k">${</span><span class="nv">ID_PRJ1</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_USR1</span><span class="k">}</span>/roles/<span class="k">${</span><span class="nv">MEMBER_ROLE_ID</span><span class="k">}</span> <span class="se">\</span>
+    -s <span class="se">\</span>
+    -i <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;Content-Type: application/json&quot;</span>
+
+curl http://localhost:5000/v3/projects/<span class="k">${</span><span class="nv">ID_PRJ1</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_USR1</span><span class="k">}</span>/roles <span class="se">\</span>
+    -s <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> | jq .roles
+</pre></div>
+
+
+</li>
+</ul>
+<p>The domain administrator <code>adm1</code> ended up creating a project <code>prj1</code> and
+a user <code>usr1</code> member of the project. <code>usr1</code> can now get a token scoped
+on <code>prj1</code> and manage resources into this project.</p>
+                </div><!-- /.entry-content -->
+                <div class="comments">
+                <h2>Comments !</h2>
+                        <div id="disqus_thread"></div>
+                        <script type="text/javascript">
+                           var disqus_identifier = "setting-keystone-v3-domains.html";
+                           (function() {
+                                var dsq = document.createElement('script');
+                                dsq.type = 'text/javascript'; dsq.async = true;
+                                dsq.src = 'http://florentflament.disqus.com/embed.js';
+                                (document.getElementsByTagName('head')[0] ||
+                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
+                          })();
+                        </script>
+                </div>
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://adam.younglogic.com/"><i class="icon-external-link"></i>Adam Young's Web Log</a></li>
+    <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
+    <li><a href="http://www.jamielennox.net/"><i class="icon-external-link"></i>Jamie Lennox's Blog</a></li>
+    <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
+
+<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
+<li>
+<a href="./category/misc.html">
+    <i class="icon-folder-open icon-large"></i>misc
+</a>
+</li>
+<li>
+<a href="./category/openstack.html">
+    <i class="icon-folder-open icon-large"></i>OpenStack
+</a>
+</li>
+
+<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
+<li class="tag-4">
+    <a href="./tag/kvm.html">
+        <i class="icon-tag icon-large"></i>KVM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/libvirt.html">
+        <i class="icon-tag icon-large"></i>libvirt
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/bug.html">
+        <i class="icon-tag icon-large"></i>bug
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/znc.html">
+        <i class="icon-tag icon-large"></i>ZNC
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/keystone.html">
+        <i class="icon-tag icon-large"></i>Keystone
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/apple.html">
+        <i class="icon-tag icon-large"></i>Apple
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ubuntu.html">
+        <i class="icon-tag icon-large"></i>Ubuntu
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ceph.html">
+        <i class="icon-tag icon-large"></i>Ceph
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/linux.html">
+        <i class="icon-tag icon-large"></i>Linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/policies.html">
+        <i class="icon-tag icon-large"></i>Policies
+    </a>
+</li>
+<li class="tag-1">
+    <a href="./tag/openstack.html">
+        <i class="icon-tag icon-large"></i>OpenStack
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/cinder.html">
+        <i class="icon-tag icon-large"></i>Cinder
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/irc.html">
+        <i class="icon-tag icon-large"></i>IRC
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/docker.html">
+        <i class="icon-tag icon-large"></i>Docker
+    </a>
+</li>
+
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <address id="about">
+        </address><!-- /#about -->
+        <p>Powered by <a href="http://blog.getpelican.com/">Pelican<i class="icon-external-link"></i></a></p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+	var pageTracker = _gat._getTracker("UA-23791515-4");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<script type="text/javascript">
+    var disqus_shortname = 'florentflament';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./theme/js/jquery-1.7.2.min.js"></script>
+    <script src="./theme/js/bootstrap.min.js"></script>
+  </body>
+</html>
