@@ -1,0 +1,2 @@
+Redirect / /blog/index.html
+Redirect /blog/ /blog/index.html
