@@ -96,7 +96,50 @@ CMD [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;
 &lt;p&gt;Then the ZNC container can be launched right after having built the image:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker build -t znc:myznc myznc/
 &lt;span class="nv"&gt;$ &lt;/span&gt;docker run -d -p 6697:6697 znc:myznc
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><updated>2013-11-30T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-11-30:ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Update 2014/02/25&lt;/h2&gt;
+&lt;p&gt;Here's an example of ZNC configuration file listening for SSL incoming
+connexions:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;Listener4&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;6697&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;User&lt;/span&gt; &lt;span class="nx"&gt;USER1&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="n"&gt;Pass&lt;/span&gt;       &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;PASSWORDHASHHERE&lt;/span&gt;
+        &lt;span class="n"&gt;Admin&lt;/span&gt;      &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;
+        &lt;span class="n"&gt;Nick&lt;/span&gt;       &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;NICK1&lt;/span&gt;
+        &lt;span class="n"&gt;AltNick&lt;/span&gt;    &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;NICK2&lt;/span&gt;
+        &lt;span class="n"&gt;Ident&lt;/span&gt;      &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;NICK1&lt;/span&gt;
+        &lt;span class="n"&gt;RealName&lt;/span&gt;   &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;REALNAME&lt;/span&gt;
+        &lt;span class="n"&gt;Buffer&lt;/span&gt;     &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;500&lt;/span&gt;
+        &lt;span class="n"&gt;KeepBuffer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;
+        &lt;span class="n"&gt;ChanModes&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="nx"&gt;stn&lt;/span&gt;
+        &lt;span class="n"&gt;LoadModule&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;admin&lt;/span&gt;
+        &lt;span class="n"&gt;Server&lt;/span&gt;     &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;irc.freenode.net&lt;/span&gt; &lt;span class="mi"&gt;6667&lt;/span&gt; 
+        &lt;span class="n"&gt;BindHost&lt;/span&gt;   &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.0.0.0&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nb"&gt;User&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;User&lt;/span&gt; &lt;span class="nx"&gt;USER2&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="n"&gt;Pass&lt;/span&gt;       &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;PASSWORDHASHHERE&lt;/span&gt;
+        &lt;span class="n"&gt;Admin&lt;/span&gt;      &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;
+        &lt;span class="n"&gt;Nick&lt;/span&gt;       &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;NICK1&lt;/span&gt;
+        &lt;span class="n"&gt;AltNick&lt;/span&gt;    &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;NICK2&lt;/span&gt;
+        &lt;span class="n"&gt;Ident&lt;/span&gt;      &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;NICK1&lt;/span&gt;
+        &lt;span class="n"&gt;RealName&lt;/span&gt;   &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;REALNAME&lt;/span&gt;
+        &lt;span class="n"&gt;Buffer&lt;/span&gt;     &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;500&lt;/span&gt;
+        &lt;span class="n"&gt;KeepBuffer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;
+        &lt;span class="n"&gt;ChanModes&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="nx"&gt;stn&lt;/span&gt;
+        &lt;span class="n"&gt;LoadModule&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;admin&lt;/span&gt;
+        &lt;span class="n"&gt;Server&lt;/span&gt;     &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;CUSTOMIRCSERVER&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;6697&lt;/span&gt; &lt;span class="nx"&gt;IRCSERVERPASSWORD&lt;/span&gt;
+        &lt;span class="n"&gt;BindHost&lt;/span&gt;   &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.0.0.0&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nb"&gt;User&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;PASSWORDHASHHERE&lt;/code&gt; can be generated by using &lt;code&gt;znc -s&lt;/code&gt;. IRC clients
+(like xchat) have to be set up by specifying in the "Server Password"
+field a user's credentials &lt;code&gt;&amp;lt;user&amp;gt;:&amp;lt;password&amp;gt;&lt;/code&gt; (i.e
+USER1:PASSORDHASHHERE).&lt;/p&gt;</summary><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><updated>2013-11-30T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-11-30:ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
 system is quite forward. The installer asks you a few question about
 your country, keyboard, network, ... . Then it installs all the
 required packages on the system, and makes it bootable.&lt;/p&gt;
