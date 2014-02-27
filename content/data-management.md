@@ -5,7 +5,7 @@ Tags: Data management
 When using several computers (or devices) from different locations,
 the question of data management arises. Basically, I wish being able
 to access my data from any computer; I wish my data to be protected,
-accordingly to its privacy and I wish my data to be backuped
+accordingly to its privacy and I wish my data to be backed up
 appropriately.
 
 With the arrival of Cloud technologies, some of the requirements
@@ -27,7 +27,7 @@ also borrow some terminology from security guys:
   code, or any information that we want to make available to everyone.
 
 * Grey data: this is all the data that I'd gladly share with my
-  friends, but do not want my worse ennemy to have access to. Fall in
+  friends, but do not want my worse enemy to have access to. Fall in
   this category: interesting documents that I found online or public
   information based notes that are not good enough to make a blog
   post.
@@ -58,7 +58,7 @@ into.
   or [Bitbucket][1]. Blogs can be published on [WordPress][2], [GitHub
   Pages][3] or some personal web site. These services provide both
   availability of the data from anywhere, and easy / automatic backup
-  (especially when using a versionning tools like git on GitHub).
+  (especially when using a versioning tools like git on GitHub).
 
 * Grey data: These data would typically be stored online on a
   "personal" account, which access is restricted by a password. We
@@ -69,7 +69,7 @@ into.
   stored online and available from multiple locations, backup possibly
   performed automatically (by default the OpenStack object storage
   module, Swift, uses three copies of each file stored in its data
-  store) and possibly versionned (Swift provides an option to
+  store) and possibly versioned (Swift provides an option to
   automatically keep several version of each file). A distributed
   network filesystem on [Ceph][6], may be another approach.
 
@@ -80,7 +80,7 @@ into.
   put it online at all; or store this data online encrypted with
   strong cryptography algorithms (for instance by using
   [duplicity][7]). Having its data stored online (encrypted) allows us
-  to benefit from automatic backup and ubiquity, but is risquier that
+  to benefit from automatic backup and ubiquity, but is riskier that
   the local storage solution. When stored online encrypted, a security
   breach in the software used to protect the data would allow
   attackers to recover all of the private data. When stored locally,
@@ -94,11 +94,11 @@ into.
   if the data is stolen, it cannot be read. Backup has to be done
   locally.
   
-[0] https://github.com/
-[1] https://bitbucket.org/
-[2] https://wordpress.org/
-[3] http://pages.github.com/
-[4] http://www.cloudwatt.com/
-[5] http://www.dropbox.com/
-[6] http://ceph.com/
-[7] http://duplicity.nongnu.org/
+[0]: https://github.com/
+[1]: https://bitbucket.org/
+[2]: https://wordpress.org/
+[3]: http://pages.github.com/
+[4]: http://www.cloudwatt.com/
+[5]: http://www.dropbox.com/
+[6]: http://ceph.com/
+[7]: http://duplicity.nongnu.org/
