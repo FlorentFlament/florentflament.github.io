@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Macmini2,1 Linux dual boot</title>
+    <title>Data management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
@@ -95,8 +95,8 @@
                         <h1>
                                 <a href=""
                                         rel="bookmark"
-                                        title="Permalink to Macmini2,1 Linux dual boot">
-                                        Macmini2,1 Linux dual boot
+                                        title="Permalink to Data management">
+                                        Data management
                                 </a>
                         </h1>
                 </header>
@@ -104,8 +104,8 @@
                 <div class="well">
 <footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2013-11-03T00:00:00">
-        <i class="icon-calendar"></i>Sun 03 November 2013
+<abbr class="published" title="2014-02-27T00:00:00">
+        <i class="icon-calendar"></i>Thu 27 February 2014
 </abbr>
 <span class="label">By</span>
 <a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
@@ -114,71 +114,109 @@
 
 
 <span class="label">Tags</span>
-	<a href="./tag/apple.html"><i class="icon-tag"></i>Apple</a>
-	<a href="./tag/linux.html"><i class="icon-tag"></i>Linux</a>
+	<a href="./tag/data-management.html"><i class="icon-tag"></i>Data management</a>
 </footer><!-- /.post-info -->                </div>
-                <p>While online resources provide documentation about <a href="https://wiki.debian.org/MacMiniIntel">how to install
-Linux on a Mac Mini</a>, this guide focuses on the Apple Macmini2,1
-and its peculiarities. Please refer to <a href="http://en.wikipedia.org/wiki/Macmini#Specifications">these tables</a> to properly
-identify your hardware.</p>
-<h2>About Macmini2,1</h2>
-<p>Apple provides <a href="http://support.apple.com/kb/HT1237">firmware updates</a> for most of its hardware. Most
-Mac Minis do have an EFI Boot ROM update available there, but
-Macmini2,1 doesn't. The good news is that what is stated on this page
-is true, Macmini2,1 doesn't need any firmware update to be able to
-boot non MacOS OSes.</p>
-<p>Macmini2,1 is powered by an Intel Core 2 Duo, which is a <a href="http://en.wikipedia.org/wiki/Core_2_duo#64-bit_Core_microarchitecture_based">64-bit
-processor</a>. However, when trying and installing a <a href="http://www.debian.org/distrib/netinst">Debian
-distribution</a> on the Mac Mini, I couldn't manage to boot the amd64
-ISO while the i386 could be launched without any issue [08/12/2013
-update: I eventually succeeded in installing an ubuntu amd64 image on
-the Macmini2,1 without any issue ...]</p>
-<p>One may want to install Boot Camp to enable its computer to boot
-several OSes. Macmini2,1 was shipped with Mac OS X Tiger, which is
-<a href="https://discussions.apple.com/message/17645953#17645953">not supported</a> by official Boot Camp releases. Fortunately, Boot
-Camp is not required to set an OS X / Linux dual boot.</p>
-<h2>Setting dual boot</h2>
-<p>On original Max OS X installations, the whole hard disk is occupied by
-a unique partition. Therefore, we need to free some space for our new
-OS, by resizing the partition. The <code>diskutil</code> command allows us to do
-that. In a shell, we have to launch the following command (where 20G
-means that we want to let 20 Gigabytes to our OS X partition. One may
-split the disk capacity according to its requirements):</p>
-<div class="highlight"><pre><span class="nv">$ </span>sudo diskutil resizeVolume disk0s2 20G
-</pre></div>
-
-
-<p>Then we have to install <a href="http://refit.sourceforge.net/">rEFit</a> on the computer. It will allow us
-to choose the partition / device to boot, and to resynchronize GPT /
-MBR tables as will be covered in a next step.</p>
-<p>We can now insert the Linux distribution installation CD into our Mac
-(I downloaded the last <a href="http://www.debian.org/distrib/netinst">Debian stable i386 netinst ISO</a> and burned
-it to a CD-RW with the Mac Mini's CD burner). When restarting the
-computer, rEFit will allow us to boot on the CD.</p>
-<p>During the installation process, we have to create new partition(s)
-(for convenience, I chose a distinct / and /home partitions). When
-asked to install grub, choose <code>/dev/sda4</code> (the partition that will be
-mounted as /).</p>
-<p>Once the Linux installation is finished, reboot and use rEFit
-<code>Partition Tool</code> to resync GPT / MBR tables. Then boot back to MacOS
-and use its <code>bless</code> tool to make the new OS bootable:</p>
-<div class="highlight"><pre><span class="nv">$ </span>sudo bless --device /dev/disk0s4 -setBoot
-</pre></div>
-
-
-<p>Eventually, we can customize the rEFit configuration file
-<code>/efi/refit/refit.conf</code> to make the boot sequence more convenient. The
-rEFit menu timeout can be set with the <code>timeout</code> option. The option
-<code>default_selection</code> (at the end of the file) allows us to choose the
-default OS to boot.</p>
-<p>That's it ! Restart, rEFit allows us to choose between booting Mac OS
-X and Linux.</p>
+                <p>When using several computers (or devices) from different locations,
+the question of data management arises. Basically, I wish being able
+to access my data from any computer; I wish my data to be protected,
+accordingly to its privacy and I wish my data to be backed up
+appropriately.</p>
+<p>With the arrival of Cloud technologies, some of the requirements
+become easier to satisfy. For instance, when using online storage,
+data is automatically backed up. But in the same time, the question of
+data management takes all of its meaning, because we surely don't want
+any information to become public. Hence comes the need to classify its
+data according to its privacy level, and to use appropriate storage
+backend according to data privacy levels.</p>
+<h2>Data classification</h2>
+<p>I chose four levels of classification, because it makes sense to me
+and map well with storage backend that will be described later. I'll
+also borrow some terminology from security guys:</p>
+<ul>
+<li>
+<p>White data (i.e. public data): this is a blog post, Open Source
+  code, or any information that we want to make available to everyone.</p>
+</li>
+<li>
+<p>Grey data: this is all the data that I'd gladly share with my
+  friends, but do not want my worse enemy to have access to. Fall in
+  this category: interesting documents that I found online or public
+  information based notes that are not good enough to make a blog
+  post.</p>
+</li>
+<li>
+<p>Black data: private data, that only trusted people should have
+  access to. I'd put in this category any personal documents, from
+  emails (some being potentially private) and picture of my holidays
+  to administrative documents (ID scans, ...).</p>
+</li>
+<li>
+<p>Red data: data that only I should have access to, typically
+  credentials (passwords, keys, ...).</p>
+</li>
+</ul>
+<p>Note that the content of these categories may depend on each one's
+perception of data privacy. For instance, I put pictures of holidays
+in the 'Black data', but we can also consider that pictures of
+landscapes may go into the 'Gray data' category.</p>
+<h2>Storage backend</h2>
+<p>So where to store our data? Well now that we've classified our data,
+we can choose where we will store it according to the category it is
+into.</p>
+<ul>
+<li>
+<p>White data: The easiest. There are many services on internet that
+  will host your public data for free, or almost. For instance, Open
+  Source code can be stored into public repositories like <a href="https://github.com/">GitHub</a>,
+  or <a href="https://bitbucket.org/">Bitbucket</a>. Blogs can be published on <a href="https://wordpress.org/">WordPress</a>, <a href="http://pages.github.com/">GitHub
+  Pages</a> or some personal web site. These services provide both
+  availability of the data from anywhere, and easy / automatic backup
+  (especially when using a versioning tools like git on GitHub).</p>
+</li>
+<li>
+<p>Grey data: These data would typically be stored online on a
+  "personal" account, which access is restricted by a password. We
+  assume that the service provider has full access to the clear data,
+  and that this data may be compromised by an attacker. With new cloud
+  services available, like free online storage provided by
+  <a href="http://www.cloudwatt.com/">Cloudwatt</a> or <a href="http://www.dropbox.com/">Dropbox</a>, it becomes very easy to have files
+  stored online and available from multiple locations, backup possibly
+  performed automatically (by default the OpenStack object storage
+  module, Swift, uses three copies of each file stored in its data
+  store) and possibly versioned (Swift provides an option to
+  automatically keep several version of each file). A distributed
+  network filesystem on <a href="http://ceph.com/">Ceph</a>, may be another approach.</p>
+</li>
+<li>
+<p>Black data: This data should be stored in a way that provides a fair
+  level of data protection, since we typically don't want our service
+  provider or hackers to have access to it. There are two completely
+  opposite solutions for this: keep this private data locally and not
+  put it online at all; or store this data online encrypted with
+  strong cryptography algorithms (for instance by using
+  <a href="http://duplicity.nongnu.org/">duplicity</a>). Having its data stored online (encrypted) allows us
+  to benefit from automatic backup and ubiquity, but is riskier that
+  the local storage solution. When stored online encrypted, a security
+  breach in the software used to protect the data would allow
+  attackers to recover all of the private data. When stored locally,
+  backup has to be done by ourselves and the data may not be as easily
+  available from different locations.</p>
+</li>
+<li>
+<p>Red data: Data in this category are typically keys used to decrypt
+  Black data, or passwords to access online services. This data should
+  be very well protected. The best way to achieve such level of
+  protection is to keep this data locally AND encrypted. This way even
+  if the data is stolen, it cannot be read. Backup has to be done
+  locally.</p>
+</li>
+</ul>
                 </div><!-- /.entry-content -->
                 <div class="comments">
                 <h2>Comments !</h2>
                         <div id="disqus_thread"></div>
                         <script type="text/javascript">
-                           var disqus_identifier = "macmini21-linux-dual-boot.html";
+                           var disqus_identifier = "data-management.html";
                            (function() {
                                 var dsq = document.createElement('script');
                                 dsq.type = 'text/javascript'; dsq.async = true;

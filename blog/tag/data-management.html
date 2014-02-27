@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Florent Flament's Tech Blog - OpenStack</title>
+    <title>Florent Flament's Tech Blog - Data management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
@@ -69,7 +69,7 @@
 						<i class="icon-folder-open icon-large"></i>misc
 					</a>
                   </li>
-                  <li class="active">
+                  <li >
                     <a href="../category/openstack.html">
 						<i class="icon-folder-open icon-large"></i>OpenStack
 					</a>
@@ -90,109 +90,28 @@
       <div class="row">
         <div class="span9" id="content">
         <div class="article">
-                <h1><a href="../customizing-openstack-rbac-policies.html">Customizing OpenStack RBAC policies</a></h1>
+                <h1><a href="../data-management.html">Data management</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2014-02-09T00:00:00">
-        <i class="icon-calendar"></i>Sun 09 February 2014
+<abbr class="published" title="2014-02-27T00:00:00">
+        <i class="icon-calendar"></i>Thu 27 February 2014
 </abbr>
 <span class="label">By</span>
 <a href="../author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
 <span class="label">Category</span>
-<a href="../category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
+<a href="../category/misc.html"><i class="icon-folder-open"></i>misc</a>.
 
 
 <span class="label">Tags</span>
-	<a href="../tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
-	<a href="../tag/keystone.html"><i class="icon-tag"></i>Keystone</a>
-	<a href="../tag/policies.html"><i class="icon-tag"></i>Policies</a>
+	<a href="../tag/data-management.html"><i class="icon-tag"></i>Data management</a>
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>OpenStack uses a <a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac">role based access control</a> (RBAC) mechanism to
-manage accesses to its resources. With the current architecture,
-users' roles granted on each project and domain are stored into
-Keystone, and can be updated through <a href="http://api.openstack.org/api-ref-identity.html#identity-v3">Keystone's API</a>. However,
-policy enforcement (actually allowing or not the access to resources ...</p>
-                        <a class="btn primary xsmall" href="../customizing-openstack-rbac-policies.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-        <div class="article">
-                <h1><a href="../setting-keystone-v3-domains.html">Setting Keystone v3 domains</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2014-01-18T00:00:00">
-        <i class="icon-calendar"></i>Sat 18 January 2014
-</abbr>
-<span class="label">By</span>
-<a href="../author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="../category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
-
-
-<span class="label">Tags</span>
-	<a href="../tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
-	<a href="../tag/keystone.html"><i class="icon-tag"></i>Keystone</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p>The <a href="http://api.openstack.org/api-ref-identity.html#identity-v3">Openstack Identity v3 API</a>, provided by Keystone, offers
-features that were lacking in the previous version. Among these
-features, it introduces the concept of domains, allowing isolation of
-projects and users. For instance, an administrator allowed to create
-projects and users in a given domain, may not have any ...</p>
-                        <a class="btn primary xsmall" href="../setting-keystone-v3-domains.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-        <div class="article">
-                <h1><a href="../openstack-volume-in-use-although-vm-doesnt-exist.html">Openstack volume in-use although VM doesn't exist</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2014-01-04T00:00:00">
-        <i class="icon-calendar"></i>Sat 04 January 2014
-</abbr>
-<span class="label">By</span>
-<a href="../author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="../category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
-
-
-<span class="label">Tags</span>
-	<a href="../tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
-	<a href="../tag/cinder.html"><i class="icon-tag"></i>Cinder</a>
-	<a href="../tag/bug.html"><i class="icon-tag"></i>bug</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p>A user at <a href="http://www.cloudwatt.com">Cloudwatt</a> had an issue about Cinder volumes with
-status <code>in-use</code>, attached to VMs that didn't exist anymore. I could
-find similar bugs referenced in launchpad <a href="https://bugs.launchpad.net/cinder/+bug/1201418">here</a> and <a href="https://bugs.launchpad.net/nova/+bug/1096197">there</a>,
-both with status <code>invalid</code>... But I didn't succeed in reproducing the
-bug (using both the Horizon dashboard ...</p>
-                        <a class="btn primary xsmall" href="../openstack-volume-in-use-although-vm-doesnt-exist.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-        <div class="article">
-                <h1><a href="../ceph-and-cinder-multi-backend.html">Ceph and Cinder multi-backend</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2013-11-17T00:00:00">
-        <i class="icon-calendar"></i>Sun 17 November 2013
-</abbr>
-<span class="label">By</span>
-<a href="../author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="../category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
-
-
-<span class="label">Tags</span>
-	<a href="../tag/ceph.html"><i class="icon-tag"></i>Ceph</a>
-	<a href="../tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
-	<a href="../tag/cinder.html"><i class="icon-tag"></i>Cinder</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p><a href="http://ceph.com/docs/master/">Ceph's documentation</a> is quite extensive. However, when trying and
-<a href="http://ceph.com/docs/master/rbd/rbd-openstack/">installing Ceph on a running Openstack platform</a>, I met two main
-issues: How to deal with a multi-backend setup? And how to deal with
-several nova-compute nodes?  This note will focus on the steps that I
-followed in order to ...</p>
-                        <a class="btn primary xsmall" href="../ceph-and-cinder-multi-backend.html">more ...</a>
+                <div class="summary"><p>When using several computers (or devices) from different locations,
+the question of data management arises. Basically, I wish being able
+to access my data from any computer; I wish my data to be protected,
+accordingly to its privacy and I wish my data to be backed up
+appropriately.</p>
+<p>With the ...</p>
+                        <a class="btn primary xsmall" href="../data-management.html">more ...</a>
                 </div>
         </div>
         <hr />

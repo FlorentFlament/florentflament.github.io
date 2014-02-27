@@ -1,5 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2013-12-15T00:00:00+01:00</updated><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><updated>2013-12-15T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-12-15:znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-02-27T00:00:00+01:00</updated><entry><title>Data management</title><link href="http://www.florentflament.com/blog/data-management.html" rel="alternate"></link><updated>2014-02-27T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-02-27:data-management.html</id><summary type="html">&lt;p&gt;When using several computers (or devices) from different locations,
+the question of data management arises. Basically, I wish being able
+to access my data from any computer; I wish my data to be protected,
+accordingly to its privacy and I wish my data to be backed up
+appropriately.&lt;/p&gt;
+&lt;p&gt;With the arrival of Cloud technologies, some of the requirements
+become easier to satisfy. For instance, when using online storage,
+data is automatically backed up. But in the same time, the question of
+data management takes all of its meaning, because we surely don't want
+any information to become public. Hence comes the need to classify its
+data according to its privacy level, and to use appropriate storage
+backend according to data privacy levels.&lt;/p&gt;
+&lt;h2&gt;Data classification&lt;/h2&gt;
+&lt;p&gt;I chose four levels of classification, because it makes sense to me
+and map well with storage backend that will be described later. I'll
+also borrow some terminology from security guys:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;White data (i.e. public data): this is a blog post, Open Source
+  code, or any information that we want to make available to everyone.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Grey data: this is all the data that I'd gladly share with my
+  friends, but do not want my worse enemy to have access to. Fall in
+  this category: interesting documents that I found online or public
+  information based notes that are not good enough to make a blog
+  post.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Black data: private data, that only trusted people should have
+  access to. I'd put in this category any personal documents, from
+  emails (some being potentially private) and picture of my holidays
+  to administrative documents (ID scans, ...).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Red data: data that only I should have access to, typically
+  credentials (passwords, keys, ...).&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Note that the content of these categories may depend on each one's
+perception of data privacy. For instance, I put pictures of holidays
+in the 'Black data', but we can also consider that pictures of
+landscapes may go into the 'Gray data' category.&lt;/p&gt;
+&lt;h2&gt;Storage backend&lt;/h2&gt;
+&lt;p&gt;So where to store our data? Well now that we've classified our data,
+we can choose where we will store it according to the category it is
+into.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;White data: The easiest. There are many services on internet that
+  will host your public data for free, or almost. For instance, Open
+  Source code can be stored into public repositories like &lt;a href="https://github.com/"&gt;GitHub&lt;/a&gt;,
+  or &lt;a href="https://bitbucket.org/"&gt;Bitbucket&lt;/a&gt;. Blogs can be published on &lt;a href="https://wordpress.org/"&gt;WordPress&lt;/a&gt;, &lt;a href="http://pages.github.com/"&gt;GitHub
+  Pages&lt;/a&gt; or some personal web site. These services provide both
+  availability of the data from anywhere, and easy / automatic backup
+  (especially when using a versioning tools like git on GitHub).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Grey data: These data would typically be stored online on a
+  "personal" account, which access is restricted by a password. We
+  assume that the service provider has full access to the clear data,
+  and that this data may be compromised by an attacker. With new cloud
+  services available, like free online storage provided by
+  &lt;a href="http://www.cloudwatt.com/"&gt;Cloudwatt&lt;/a&gt; or &lt;a href="http://www.dropbox.com/"&gt;Dropbox&lt;/a&gt;, it becomes very easy to have files
+  stored online and available from multiple locations, backup possibly
+  performed automatically (by default the OpenStack object storage
+  module, Swift, uses three copies of each file stored in its data
+  store) and possibly versioned (Swift provides an option to
+  automatically keep several version of each file). A distributed
+  network filesystem on &lt;a href="http://ceph.com/"&gt;Ceph&lt;/a&gt;, may be another approach.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Black data: This data should be stored in a way that provides a fair
+  level of data protection, since we typically don't want our service
+  provider or hackers to have access to it. There are two completely
+  opposite solutions for this: keep this private data locally and not
+  put it online at all; or store this data online encrypted with
+  strong cryptography algorithms (for instance by using
+  &lt;a href="http://duplicity.nongnu.org/"&gt;duplicity&lt;/a&gt;). Having its data stored online (encrypted) allows us
+  to benefit from automatic backup and ubiquity, but is riskier that
+  the local storage solution. When stored online encrypted, a security
+  breach in the software used to protect the data would allow
+  attackers to recover all of the private data. When stored locally,
+  backup has to be done by ourselves and the data may not be as easily
+  available from different locations.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Red data: Data in this category are typically keys used to decrypt
+  Black data, or passwords to access online services. This data should
+  be very well protected. The best way to achieve such level of
+  protection is to keep this data locally AND encrypted. This way even
+  if the data is stolen, it cannot be read. Backup has to be done
+  locally.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="Data management"></category></entry><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><updated>2013-12-15T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-12-15:znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
 channels and log conversations while one isn't connected. This note
 desrcibes how to launch ZNC in a &lt;a href="https://www.docker.io/"&gt;Docker&lt;/a&gt; container, so that it be
 launched on any Docker enabled platform. To quick start with Docker,
