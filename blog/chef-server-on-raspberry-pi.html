@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Florent Flament's Tech Blog</title>
+    <title>Chef Server on Raspberry Pi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
@@ -64,7 +64,7 @@
           <div class="nav-collapse">
             <ul class="nav">
                           <li class="divider-vertical"></li>
-                  <li >
+                  <li class="active">
                     <a href="./category/misc.html">
 						<i class="icon-folder-open icon-large"></i>misc
 					</a>
@@ -89,99 +89,117 @@
     <div class="container-fluid">
       <div class="row">
         <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Chef Server on Raspberry Pi">
+                                        Chef Server on Raspberry Pi
+                                </a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2014-03-03T00:00:00">
+        <i class="icon-calendar"></i>Mon 03 March 2014
+</abbr>
+<span class="label">By</span>
+<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
+<span class="label">Category</span>
+<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
+
+
+<span class="label">Tags</span>
+	<a href="./tag/chef.html"><i class="icon-tag"></i>Chef</a>
+	<a href="./tag/raspberry-pi.html"><i class="icon-tag"></i>Raspberry Pi</a>
+	<a href="./tag/raspbian.html"><i class="icon-tag"></i>Raspbian</a>
+</footer><!-- /.post-info -->                </div>
+                <p><a href="http://www.raspberrypi.org/">Raspberry Pi</a> devices are cheap, quiet, and powerful enough to run
+a Debian based Linux Operating System called <a href="http://www.raspbian.org/">Raspbian</a>. Such
+device would be very convenient to manage one's personal
+infrastructure, composed of some physical and / or virtual machines,
+by running Chef Server.</p>
+<p>While, the official Chef website mostly documents <a href="http://www.getchef.com/chef/install/#tab2">the installation of
+Chef Server on Ubuntu and (Red Hat) Enterprise Linux</a>, Chef Server
+is available through its API and already packaged for Raspbian as
+package <code>chef-server-api</code>.</p>
+<p>The installation of Chef Server on a Raspberry Pi is therefore quite
+forward. The steps to follow, that are described below, are somehow
+inspired from these <a href="http://www.cschramm.net/howtos/installing-chef-server-debian/">instructions to have Chef Server installed on
+Debian using binary packages</a>.</p>
+<h2>Installation procedure</h2>
 <ul>
-<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-4">
-	<a href="./tag/raspbian.html">
-		<i class="icon-tag icon-large"></i>Raspbian
-	</a>
+<li>
+<p>Start from a fresh installation of Raspbian on a Raspberry Pi. From
+NOOBS menu, install Raspbian (Using NOOBS v1.2.1).</p>
 </li>
-<li class="tag-4">
-	<a href="./tag/policies.html">
-		<i class="icon-tag icon-large"></i>Policies
-	</a>
+<li>
+<p>Install Chef Server binary package:</p>
+<div class="highlight"><pre><span class="nv">$ </span>sudo apt-get update
+<span class="nv">$ </span>sudo apt-get install chef-server-api
+</pre></div>
+
+
 </li>
-<li class="tag-2">
-	<a href="./tag/keystone.html">
-		<i class="icon-tag icon-large"></i>Keystone
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/bug.html">
-		<i class="icon-tag icon-large"></i>bug
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/data-management.html">
-		<i class="icon-tag icon-large"></i>Data management
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/raspberry-pi.html">
-		<i class="icon-tag icon-large"></i>Raspberry Pi
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/linux.html">
-		<i class="icon-tag icon-large"></i>Linux
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/apple.html">
-		<i class="icon-tag icon-large"></i>Apple
-	</a>
-</li>
-<li class="tag-2">
-	<a href="./tag/cinder.html">
-		<i class="icon-tag icon-large"></i>Cinder
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/irc.html">
-		<i class="icon-tag icon-large"></i>IRC
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/docker.html">
-		<i class="icon-tag icon-large"></i>Docker
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/ubuntu.html">
-		<i class="icon-tag icon-large"></i>Ubuntu
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/chef.html">
-		<i class="icon-tag icon-large"></i>Chef
-	</a>
-</li>
-<li class="tag-1">
-	<a href="./tag/openstack.html">
-		<i class="icon-tag icon-large"></i>OpenStack
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/ceph.html">
-		<i class="icon-tag icon-large"></i>Ceph
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/znc.html">
-		<i class="icon-tag icon-large"></i>ZNC
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/libvirt.html">
-		<i class="icon-tag icon-large"></i>libvirt
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/kvm.html">
-		<i class="icon-tag icon-large"></i>KVM
-	</a>
+<li>
+<p>Configure Chef Server, by answering to the two questions that will
+  be asked:</p>
+<ul>
+<li>URL of Chef server: http://CHEF_SERVER_IP:4000</li>
+<li>Chef AMQP user password: RANDOM_PASSWORD (Avoid using special
+  characters)</li>
+</ul>
 </li>
 </ul>
+<p>Note: Some services won't start, like jetty. <code>chef-server</code> will also
+be said to have failed, but Chef Server APIs will be working anyway.</p>
+<ul>
+<li>
+<p>Testing:</p>
+<div class="highlight"><pre>root@raspberrypi:~# knife configure -i
+WARNING: No knife configuration file found
+Where should I put the config file? [/root/.chef/knife.rb] 
+Please enter the chef server URL: [http://raspberrypi:4000] http://CHEF_SERVER_IP:4000
+Please enter a clientname for the new client: [pi] root
+Please enter the existing admin clientname: [chef-webui] 
+Please enter the location of the existing admin client&#39;s private key: [/etc/chef/webui.pem] 
+Please enter the validation clientname: [chef-validator] 
+Please enter the location of the validation key: [/etc/chef/validation.pem] 
+Please enter the path to a chef repository (or leave blank): 
+Creating initial API user...
+Created client[root]
+Configuration file written to /root/.chef/knife.rb
+root@raspberrypi:~# knife client list
+  chef-validator
+  chef-webui
+  root
+root@raspberrypi:~#
+</pre></div>
+
+
+</li>
+</ul>
+                </div><!-- /.entry-content -->
+                <div class="comments">
+                <h2>Comments !</h2>
+                        <div id="disqus_thread"></div>
+                        <script type="text/javascript">
+                           var disqus_identifier = "chef-server-on-raspberry-pi.html";
+                           (function() {
+                                var dsq = document.createElement('script');
+                                dsq.type = 'text/javascript'; dsq.async = true;
+                                dsq.src = 'http://florentflament.disqus.com/embed.js';
+                                (document.getElementsByTagName('head')[0] ||
+                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
+                          })();
+                        </script>
+                </div>
+        </article>
+</section>
         </div><!--/span-->
 
                 <div class="span3 well sidebar-nav" id="sidebar">
