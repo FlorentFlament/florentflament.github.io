@@ -70,7 +70,7 @@ following unique command (to be customized):
 	--location http://fr.archive.ubuntu.com/ubuntu/dists/precise-proposed/main/installer-i386/ \
 	--disk vm.qcow2,bus=virtio \
 	--graphics vnc,keymap=local,listen=0.0.0.0,port=5900 \
-	--network user,model=virtion \
+	--network user,model=virtio \
 	--initrd-inject preseed.cfg
 
 Note that the `precise-proposed` Ubuntu distribution is used instead
