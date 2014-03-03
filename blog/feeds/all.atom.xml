@@ -1044,7 +1044,7 @@ following unique command (to be customized):&lt;/p&gt;
 --location http://fr.archive.ubuntu.com/ubuntu/dists/precise-proposed/main/installer-i386/ &lt;span class="se"&gt;\&lt;/span&gt;
 --disk vm.qcow2,bus&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
 --graphics vnc,keymap&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;local&lt;/span&gt;,listen&lt;span class="o"&gt;=&lt;/span&gt;0.0.0.0,port&lt;span class="o"&gt;=&lt;/span&gt;5900 &lt;span class="se"&gt;\&lt;/span&gt;
---network user,model&lt;span class="o"&gt;=&lt;/span&gt;virtion &lt;span class="se"&gt;\&lt;/span&gt;
+--network user,model&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
 --initrd-inject preseed.cfg
 &lt;/pre&gt;&lt;/div&gt;
 
