@@ -62,9 +62,34 @@ be said to have failed, but Chef Server APIs will be working anyway.
           root
         root@raspberrypi:~# 
 
+Update of 2014/03/03
+--------------------
+
+Note that I hit the bug [Rabbitmq does not appear to get configured
+when installing chef-server via deb packages][6]. I got errors when
+launching commands `knife client create` or `knife client reregister`,
+with following message in `rabbitmq` log:
+
+    ::::text
+    =ERROR REPORT==== 4-Jun-2012::14:56:01 ===
+    exception on TCP connection <0.583.0> from 127.0.0.1:34143
+    {channel0_error,starting,
+        {amqp_error,access_refused,
+            "AMQPLAIN login refused: user 'chef' - invalid credentials",
+            'connection.start_ok'}}
+
+
+Fix consists in executing the following commands:
+
+    ::::bash
+    $ sudo rabbitmqctl add_vhost /chef
+    $ sudo rabbitmqctl add_user chef PASSWORD_PER_CONFIGURATION
+    $ sudo rabbitmqctl set_permissions -p /chef chef ".*" ".*" ".*"
+
 
 [1]: http://www.getchef.com/chef/install/#tab2
 [2]: http://www.cschramm.net/howtos/installing-chef-server-debian/
 [3]: https://github.com/opscode/chef
 [4]: http://www.raspberrypi.org/
 [5]: http://www.raspbian.org/
+[6]: https://tickets.opscode.com/browse/CHEF-3170
