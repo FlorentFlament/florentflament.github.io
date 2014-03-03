@@ -63,7 +63,26 @@ root@raspberrypi:~#
 
 
 &lt;/li&gt;
-&lt;/ul&gt;</summary><category term="Chef"></category><category term="Raspberry Pi"></category><category term="Raspbian"></category></entry><entry><title>Data management</title><link href="http://www.florentflament.com/blog/data-management.html" rel="alternate"></link><updated>2014-02-27T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-02-27:data-management.html</id><summary type="html">&lt;p&gt;When using several computers (or devices) from different locations,
+&lt;/ul&gt;
+&lt;h2&gt;Update of 2014/03/03&lt;/h2&gt;
+&lt;p&gt;Note that I hit the bug &lt;a href="https://tickets.opscode.com/browse/CHEF-3170"&gt;Rabbitmq does not appear to get configured
+when installing chef-server via deb packages&lt;/a&gt;. I got errors when
+launching commands &lt;code&gt;knife client create&lt;/code&gt; or &lt;code&gt;knife client reregister&lt;/code&gt;,
+with following message in &lt;code&gt;rabbitmq&lt;/code&gt; log:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;=ERROR REPORT==== 4-Jun-2012::14:56:01 ===
+exception on TCP connection &amp;lt;0.583.0&amp;gt; from 127.0.0.1:34143
+{channel0_error,starting,
+    {amqp_error,access_refused,
+        &amp;quot;AMQPLAIN login refused: user &amp;#39;chef&amp;#39; - invalid credentials&amp;quot;,
+        &amp;#39;connection.start_ok&amp;#39;}}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Fix consists in executing the following commands:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo rabbitmqctl add_vhost /chef
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo rabbitmqctl add_user chef PASSWORD_PER_CONFIGURATION
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo rabbitmqctl set_permissions -p /chef chef &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Chef"></category><category term="Raspberry Pi"></category><category term="Raspbian"></category></entry><entry><title>Data management</title><link href="http://www.florentflament.com/blog/data-management.html" rel="alternate"></link><updated>2014-02-27T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-02-27:data-management.html</id><summary type="html">&lt;p&gt;When using several computers (or devices) from different locations,
 the question of data management arises. Basically, I wish being able
 to access my data from any computer; I wish my data to be protected,
 accordingly to its privacy and I wish my data to be backed up

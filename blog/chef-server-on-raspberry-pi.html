@@ -183,6 +183,25 @@ root@raspberrypi:~#
 
 </li>
 </ul>
+<h2>Update of 2014/03/03</h2>
+<p>Note that I hit the bug <a href="https://tickets.opscode.com/browse/CHEF-3170">Rabbitmq does not appear to get configured
+when installing chef-server via deb packages</a>. I got errors when
+launching commands <code>knife client create</code> or <code>knife client reregister</code>,
+with following message in <code>rabbitmq</code> log:</p>
+<div class="highlight"><pre>=ERROR REPORT==== 4-Jun-2012::14:56:01 ===
+exception on TCP connection &lt;0.583.0&gt; from 127.0.0.1:34143
+{channel0_error,starting,
+    {amqp_error,access_refused,
+        &quot;AMQPLAIN login refused: user &#39;chef&#39; - invalid credentials&quot;,
+        &#39;connection.start_ok&#39;}}
+</pre></div>
+
+
+<p>Fix consists in executing the following commands:</p>
+<div class="highlight"><pre><span class="nv">$ </span>sudo rabbitmqctl add_vhost /chef
+<span class="nv">$ </span>sudo rabbitmqctl add_user chef PASSWORD_PER_CONFIGURATION
+<span class="nv">$ </span>sudo rabbitmqctl set_permissions -p /chef chef <span class="s2">&quot;.*&quot;</span> <span class="s2">&quot;.*&quot;</span> <span class="s2">&quot;.*&quot;</span>
+</pre></div>
                 </div><!-- /.entry-content -->
                 <div class="comments">
                 <h2>Comments !</h2>
@@ -224,28 +243,8 @@ root@raspberrypi:~#
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
 <li class="tag-4">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
+    <a href="./tag/raspberry-pi.html">
+        <i class="icon-tag icon-large"></i>Raspberry Pi
     </a>
 </li>
 <li class="tag-2">
@@ -254,38 +253,18 @@ root@raspberrypi:~#
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/raspbian.html">
-        <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/raspberry-pi.html">
-        <i class="icon-tag icon-large"></i>Raspberry Pi
-    </a>
-</li>
-<li class="tag-4">
     <a href="./tag/policies.html">
         <i class="icon-tag icon-large"></i>Policies
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
+    <a href="./tag/data-management.html">
+        <i class="icon-tag icon-large"></i>Data management
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
+    <a href="./tag/linux.html">
+        <i class="icon-tag icon-large"></i>Linux
     </a>
 </li>
 <li class="tag-2">
@@ -294,8 +273,33 @@ root@raspberrypi:~#
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
+    <a href="./tag/znc.html">
+        <i class="icon-tag icon-large"></i>ZNC
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/raspbian.html">
+        <i class="icon-tag icon-large"></i>Raspbian
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/kvm.html">
+        <i class="icon-tag icon-large"></i>KVM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ceph.html">
+        <i class="icon-tag icon-large"></i>Ceph
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/bug.html">
+        <i class="icon-tag icon-large"></i>bug
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ubuntu.html">
+        <i class="icon-tag icon-large"></i>Ubuntu
     </a>
 </li>
 <li class="tag-4">
@@ -304,13 +308,28 @@ root@raspberrypi:~#
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/irc.html">
-        <i class="icon-tag icon-large"></i>IRC
+    <a href="./tag/apple.html">
+        <i class="icon-tag icon-large"></i>Apple
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
+    <a href="./tag/docker.html">
+        <i class="icon-tag icon-large"></i>Docker
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/chef.html">
+        <i class="icon-tag icon-large"></i>Chef
+    </a>
+</li>
+<li class="tag-1">
+    <a href="./tag/openstack.html">
+        <i class="icon-tag icon-large"></i>OpenStack
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/irc.html">
+        <i class="icon-tag icon-large"></i>IRC
     </a>
 </li>
 
