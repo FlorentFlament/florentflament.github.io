@@ -1,5 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/all.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-03-03T00:00:00+01:00</updated><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><updated>2014-03-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-03-03:chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/all.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-03-30T19:15:00+02:00</updated><entry><title>Windows Images for OpenStack</title><link href="http://www.florentflament.com/blog/windows-images-for-openstack.html" rel="alternate"></link><updated>2014-03-30T19:15:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-03-30:windows-images-for-openstack.html</id><summary type="html">&lt;p&gt;This note summarizes articles from other places about Microsoft
+Windows images for OpenStack creation, along with some first hand
+experience. The whole process of creating Windows 2008 and Windows
+2012 images fully usable on OpenStack instances is described there.&lt;/p&gt;
+&lt;h1&gt;Prerequisite&lt;/h1&gt;
+&lt;p&gt;To achieve the creation of a qcow2 Windows image for OpenStack, we
+need the following ISO images:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;An ISO image of the installation DVD for all OSes that we wish to
+  use in OpenStack. These ISOs can usually be downloaded from a
+  company's account on Microsoft website, once the appropriate
+  contract has been signed. For testing purpose, &lt;a href="http://technet.microsoft.com/en-us/evalcenter/hh670538.aspx"&gt;Windows Server 2012
+  Evaluation ISO&lt;/a&gt; can be downloaded on Microsoft website.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The latest &lt;a href="http://www.linux-kvm.org/page/WindowsGuestDrivers/Download_Drivers"&gt;VirtIO drivers for Windows&lt;/a&gt;. These are optimized
+  drivers to run Windows OSes with KVM virtualized hard disk
+  controller and network devices.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Base image creation&lt;/h1&gt;
+&lt;p&gt;The first step to build a Microsoft Windows image is to install the OS
+in a VM as we would have done on a bare metal computer. &lt;a href="http://blog.gridcentric.com/bid/297627/Creating-a-Windows-Image-on-OpenStack"&gt;Gridcentric's
+article about Windows image creation&lt;/a&gt; describes this procedure in
+details.&lt;/p&gt;
+&lt;p&gt;The steps to follow are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Create an empty qcow2 image (this will be the disk on which we'll
+  install our OS). I typically use a 9 GB image for Windows 2008, and
+  a 17 GB for Windows 2012 (although I think it should work with a 11
+  or 12 GB image). Example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;qemu-img create -f qcow2 Windows-Server-2008-R2.qcow2 9G
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Next step is to launch Windows' installation in a (KVM) virtual
+  machine. The following command is an example for that:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;kvm &lt;span class="se"&gt;\&lt;/span&gt;
+    -m 2048 &lt;span class="se"&gt;\&lt;/span&gt;
+    -cdrom &amp;lt;WINDOWS_INSTALLER_ISO&amp;gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Windows-Server-2008-R2.qcow2,if&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
+    -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;VIRTIO_DRIVERS_ISO&amp;gt;,index&lt;span class="o"&gt;=&lt;/span&gt;3,media&lt;span class="o"&gt;=&lt;/span&gt;cdrom &lt;span class="se"&gt;\&lt;/span&gt;
+    -net nic,model&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
+    -net user &lt;span class="se"&gt;\&lt;/span&gt;
+    -nographic &lt;span class="se"&gt;\&lt;/span&gt;
+    -vnc :9 &lt;span class="se"&gt;\&lt;/span&gt;
+    -k fr &lt;span class="se"&gt;\&lt;/span&gt;
+    -usbdevice tablet
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The following step consists in connecting to the display of the VM
+  launched previously through VNC, in order to manually pursue the
+  installation. This can be done with the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;xvncviewer &amp;lt;IP_OF_HYPERVISOR&amp;gt;:9
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;During the installation, Windows will ask for the Hard Disk
+  controller driver. We have to select the VirtIO driver, which is
+  located on the VirtIO CDROM (WIN7 directory for Windows 2008,
+  and WIN8 directory for Windows 2012).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Once the basic Windows installation is done, we have to set the
+  appropriate Network device driver in the Windows Devices
+  Manager. The Network device VirtIO driver is available in the same
+  directory than the Hard Disk controller driver specified in the
+  previous step.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Since VMs will be managed by RDP, we have to activate the
+  service. This is done by navigating through the following menu:
+  Computer (right-lick) -&amp;gt; Properties -&amp;gt; remote tab, and selecting the
+  following option: allow connections from computers running any
+  version of Remote Desktop.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;An additional step consisting in opening the appropriate Firewall
+  ports is required on Windows 2012: Network (right-click) -&amp;gt;
+  Properties -&amp;gt; Windows Firewall -&amp;gt; Advanced Settings -&amp;gt; Inbound
+  rules. Then enable: Remote Desktop - Shadow, Remote Desktop - User
+  Mode TCP, Remote Desktop - User Mode UDP.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Customizing image for OpenStack&lt;/h1&gt;
+&lt;p&gt;The previous steps allowed us to have Windows fully installed in a KVM
+virtual machine. The last steps consist in installing &lt;a href="http://www.cloudbase.it/cloud-init-for-windows-instances/"&gt;Cloud-Init for
+Windows&lt;/a&gt;, a Windows implementation of the Linux based
+&lt;a href="http://cloudinit.readthedocs.org/en/latest/"&gt;Cloud-Init&lt;/a&gt; mechanism. This set of scripts transforms a legacy OS
+image into a ready for OpenStack image. At instantiation of a VM,
+Cloud-Init fetches from a meta-data server, data such as ssh public
+key and hostname that allows the instance to become unique. Cloud-Init
+base is Open source, and Cloudbase provides an &lt;a href="https://www.cloudbase.it/downloads/CloudbaseInitSetup_Beta.msi"&gt;installer&lt;/a&gt; on its
+blog. We'll install Cloud-Init by injecting the installer that we just
+downloaded. To to that, we have to follow these steps:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Shutdown Windows&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Mount the qcow2 image on the hypervisor filesystem, then copy the
+  installer on Windows' administrator desktop, with something like:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo qemu-nbd -c /dev/nbd2 Windows-Server-2008-R2.qcow2
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo mount /dev/nbd2p2 mnt/
+&lt;span class="nv"&gt;$ &lt;/span&gt;cp &amp;lt;INSTALLER&amp;gt; &amp;lt;ADMINISTRATOR_DESKTOP_ON_WINDOWS&amp;gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo umount mnt/
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo qemu-nbd -d /dev/nbd2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Restart Windows in KVM with the same command that we used to install
+  Windows in the first place:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;kvm &lt;span class="se"&gt;\&lt;/span&gt;
+    -m 2048 &lt;span class="se"&gt;\&lt;/span&gt;
+    -cdrom &amp;lt;WINDOWS_INSTALLER_ISO&amp;gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Windows-Server-2008-R2.qcow2,if&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
+    -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;VIRTIO_DRIVERS_ISO&amp;gt;,index&lt;span class="o"&gt;=&lt;/span&gt;3,media&lt;span class="o"&gt;=&lt;/span&gt;cdrom &lt;span class="se"&gt;\&lt;/span&gt;
+    -net nic,model&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
+    -net user &lt;span class="se"&gt;\&lt;/span&gt;
+    -nographic &lt;span class="se"&gt;\&lt;/span&gt;
+    -vnc :9 &lt;span class="se"&gt;\&lt;/span&gt;
+    -k fr &lt;span class="se"&gt;\&lt;/span&gt;
+    -usbdevice tablet
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Then connect again with xvncviewer:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;xvncviewer &amp;lt;IP_OF_HYPERVISOR&amp;gt;:9
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;This time, we have to launch the CloudbaseInitSetup_Beta.msi
+  installer, and follow the instructions as described on &lt;a href="http://www.cloudbase.it/cloud-init-for-windows-instances/"&gt;Cloudbase
+  blog&lt;/a&gt;. At the end of the installation, we have to check the "run
+  sysprep" option, but not the "shutdown" one. Sysprep is the tool
+  provided by Microsoft to make a VM unique (generates a unique OS ID
+  to be used for some Microsoft services), once it's instantiated.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Once the installation is done, we can clean any temporary files
+  created, then shutdown the system. The image is ready to be uploaded
+  in OpenStack Glance:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;glance add &lt;span class="nv"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;OPENSTACK_IMAGE_NAME&amp;gt; &lt;span class="nv"&gt;is_public&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="nv"&gt;container_format&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;bare &lt;span class="nv"&gt;disk_format&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;qcow2 &amp;lt; &amp;lt;IMAGE_FILENAME&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Connecting to a Windows VM&lt;/h1&gt;
+&lt;p&gt;The usual mechanism used in OpenStack to connect to VMs (running
+Linux) is ssh. A public key specified by the user launching the VM is
+set in the default user's &lt;code&gt;authorized_keys&lt;/code&gt; file. This allows the user
+to connect to the VM by using the corresponding private key.&lt;/p&gt;
+&lt;p&gt;However, it is not currently possible to connect to a Windows VM with
+ssh (there is some &lt;a href="http://www.cloudbase.it/windows-without-passwords-in-openstack/"&gt;work done in this direction&lt;/a&gt; that I've not
+tested yet). Cloud-Init base creates an &lt;code&gt;Admin&lt;/code&gt; user, with either:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;a password specified by the user on the command line. Note that the
+  password must respect Windows password strength constraints (upper
+  and lower case characters, as well as numbers). If not it will be
+  silently ignored. For instance:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;nova boot --key-name &amp;lt;KEYPAIR_NAME&amp;gt; --image &amp;lt;IMAGE_ID&amp;gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    --flavor &amp;lt;FLAVOR_ID&amp;gt; --nic net-id&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;NET_ID&amp;gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    --meta &lt;span class="nv"&gt;admin_pass&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;ADMIN_PASSWORD&amp;gt; &amp;lt;VM_NAME&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;a password automatically generated during VM instantiation, and
+  encrypted with the ssh public key provided when launching the
+  VM. Such password can be retrieved and decrypted with the
+  corresponding private ssh key, by using the following command (note
+  that the private key is used locally):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;nova get-password &amp;lt;VM_NAME_OR_ID&amp;gt; &amp;lt;SSH_PRIVATE_KEY&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Note that to connect to a Windows VM from Linux, prefer using
+&lt;code&gt;xfreerdp&lt;/code&gt; instead of &lt;code&gt;rdesktop&lt;/code&gt;. The pointer is bogus when connecting
+to a windows 2012 VM using &lt;code&gt;rdesktop&lt;/code&gt;.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Microsft"></category><category term="Windows"></category></entry><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><updated>2014-03-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-03-03:chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
 a Debian based Linux Operating System called &lt;a href="http://www.raspbian.org/"&gt;Raspbian&lt;/a&gt;. Such
 device would be very convenient to manage one's personal
 infrastructure, composed of some physical and / or virtual machines,
