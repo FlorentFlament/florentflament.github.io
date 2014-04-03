@@ -21,6 +21,7 @@ TRANSLATION_FEED_ATOM = None
 LINKS =  (
     ("Adam Young's Web Log", "http://adam.younglogic.com/"),
     ("Chmouel's Blog", "http://blog.chmouel.com/"),
+    ("Cloudwatt's Tech Blog", "http://dev.cloudwatt.com/en/blog/"),
     ("Jamie Lennox's Blog", "http://www.jamielennox.net/"),
     ("Loïc Dachary's Blog", "http://dachary.org/"),
 )
