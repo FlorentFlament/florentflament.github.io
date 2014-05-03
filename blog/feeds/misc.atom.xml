@@ -1,5 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-03-03T00:00:00+01:00</updated><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><updated>2014-03-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-03-03:chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-05-03T23:34:00+02:00</updated><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><updated>2014-05-03T23:34:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-05-03:securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
+the main threats (if possible by using only open source software). For
+instance, losing data because of a hardware failure is just something
+that shouldn't happen anymore, thanks to all the technology available
+today. One could argue that cloud storage services may be the
+solution, which may be true to deal with hardware failure; but there
+are other threats to be taken into account that are worsen by the use
+of the such services (I'm thinking about piracy).&lt;/p&gt;
+&lt;p&gt;So what's the need in term of data safety, security and availability?
+Well here's how I would summarize my ideal target. I basically wish to
+protect my data against most threats, while still being able to access
+it according to my usage. I've been thinking about the following
+threats:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Hardware failure (Hard disk failure)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Piracy (Pirate breaking into ones computer / online account)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Human mistakes (mistakenly deleting important data)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Theft (Losing data stored on the stolen hardware, thieves abusing
+  of sensitive data).&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Data Safety and Security&lt;/h1&gt;
+&lt;p&gt;Basically, data protection may be split into two categories:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Data Safety, consisting in measures against hardware failures and
+  human mistakes (also natural disasters if we really want to ensure a
+  first grade safety level);&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Data Security, consisting in protecting data against theft and
+  piracy.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Data Safety&lt;/h2&gt;
+&lt;p&gt;In order to avoid losing data because of hardware failure data should
+be duplicated. So that if a hard disk fails, the data still remains on
+the second disk. Some technologies like RAID (Hardware or Software),
+provide such service by performing real time data duplication on
+several disks.&lt;/p&gt;
+&lt;p&gt;To deal with natural disasters, like fires or floods, we may duplicate
+our data at distant locations. This is becoming easier with new
+technologies like &lt;a href="http://ceph.com/"&gt;Ceph&lt;/a&gt; or &lt;a href="http://www.openstack.org/software/openstack-storage/"&gt;OpenStack Swift&lt;/a&gt;, that allow real
+time duplication of data on distant storage nodes.&lt;/p&gt;
+&lt;p&gt;Another category of threat (maybe the most frequent) is human
+mistake. One can easily delete an important file by mistake. The good
+old solution to deal with such issues is doing regular backups. While
+this is a very good idea, depending on the frequency of the backups,
+we may accidentally loose some recent data that didn't have the time
+to be saved. There are other means to ensure data can be recovered
+even after being deleted, such as versioning by using tools like
+&lt;a href="http://git-scm.com/"&gt;git&lt;/a&gt;, or &lt;a href="http://owncloud.org/"&gt;ownCloud&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Data Security&lt;/h2&gt;
+&lt;p&gt;Piracy is a quite broad topic. However, by following a few simple
+rules, we may avoid most of piracy threats:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Don't store online data that we don't need to have online. Online
+  data have much more chances of being stolen than offline data (or
+  data available in a private network); If pirates cannot access the
+  data through the network, it is much more complicated to gain access
+  to it. This is the main reason why I believe that cloud storage may
+  not be the best solution for everything. If by chance a pirate
+  guesses one's cloud storage account password, he can then access
+  freely any data that has been stored there.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Strongly encrypt private data that may be accessed by pirates or
+  thieves. Basically any data may potentially be accessed by pirates or
+  thieves, but as written previously, online data is much more
+  vulnerable, and should therefore be encrypted in priority.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Theft can happen:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;To deal with the issue of loosing its data because of its laptop
+  being stolen, we may use some solutions that were discussed
+  previously to ensure data safety. Good old backups are still a
+  working solution; real time duplication at different locations is
+  another one.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;To deal with private data exploit (meaning malicious usage of
+  private data by thieves), encryption is a good option. By ensuring
+  that the thieves cannot decrypt the data, we protect us against such
+  scenario.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Cost of Protection&lt;/h2&gt;
+&lt;p&gt;All these measures for ensuring a proper data protection do have a
+cost. To duplicate our data, we need twice as much hard disks than if
+we don't. To encrypt our data and decrypt it on the fly to read it
+consumes more CPU than processing plain files. Although storage costs
+as well as computing costs have collapsed these last years, we may be
+smart by &lt;a href="http://www.florentflament.com/blog/data-management.html"&gt;categorizing our data&lt;/a&gt; (e.g: public versus private data,
+text documents versus binary files, small versus large files, ...) and
+apply different safety and security measures accordingly.&lt;/p&gt;
+&lt;h1&gt;Layered architecture&lt;/h1&gt;
+&lt;p&gt;Now we need to find out an overall solution that will meet our
+requirements. There is not a single tool I can think of that provides
+all of the features mentioned in this article. To build our overall
+solutions, we'll need to have several tools work together. The
+approach I thought about is to split our need into features provided
+by different layers:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;A versioning layer (git, owncloud, ...) that keeps track of the
+  history of our data and allows recovering data that has been
+  accidentally deleted or altered.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;An exposition layer, which is more a functional layer that a
+  security one, that make data available according to our
+  requirements.  For instance, it makes sense to have emails available
+  from the internet through IMAPs, while other data may only be
+  available through ssh from a host on the private network.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;An encryption layer to deal with private data abuse by
+  thieves. Technologies like dm-crypt, LUKS and Truecrypt seem to be
+  good candidates.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A (possibly redundant) storage backend: object storage, block
+  storage or file system (ceph, RAID, ...). First thoughts lead me to
+  think about using Ceph as a backend storage. However, it happens
+  that Ceph monitor's play a crucial role and may become a SPOF
+  (single point of failure) if not redundant. Also they must be an odd
+  number, which means at least 3 nodes are required. A simpler RAID
+  approach with regular backups seems to be a good compromise for
+  small infrastructures.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;And regular backups. This is cheap, easy to implement, and deals
+  with most of our issues. However, the efficiency of backups directly
+  depends on their frequency, since work done between successive
+  backups will be lost in case of hardware failure, human mistake or
+  theft.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Example table&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;+------------------+-------------+--------+-------------+-------------+------------------+&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;             &lt;span class="o"&gt;|&lt;/span&gt;        &lt;span class="o"&gt;|&lt;/span&gt;             &lt;span class="o"&gt;|&lt;/span&gt;             &lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Files&lt;/span&gt;            &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;code&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Emails&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Binary&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Binary&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;      &lt;span class="n"&gt;Threat&lt;/span&gt;      &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;             &lt;span class="o"&gt;|&lt;/span&gt;        &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;important&lt;/span&gt;   &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;throwable&lt;/span&gt;   &lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;+------------------+-------------+--------+-------------+-------------+------------------+&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;             &lt;span class="o"&gt;|&lt;/span&gt;                                    &lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Version&lt;/span&gt; &lt;span class="n"&gt;layer&lt;/span&gt;    &lt;span class="o"&gt;|&lt;/span&gt;     &lt;span class="n"&gt;git&lt;/span&gt;     &lt;span class="o"&gt;|&lt;/span&gt;                 &lt;span class="n"&gt;None&lt;/span&gt;               &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Human&lt;/span&gt;            &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;             &lt;span class="o"&gt;|&lt;/span&gt;                                    &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;error&lt;/span&gt; &lt;span class="o"&gt;++&lt;/span&gt;         &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;+------------------+-------------+--------+---------------------------+------------------+&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;             &lt;span class="o"&gt;|&lt;/span&gt;        &lt;span class="o"&gt;|&lt;/span&gt;                           &lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Exposition&lt;/span&gt; &lt;span class="n"&gt;layer&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;     &lt;span class="n"&gt;ssh&lt;/span&gt;     &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;IMAPs&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt;            &lt;span class="n"&gt;NFS&lt;/span&gt;            &lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;             &lt;span class="o"&gt;|&lt;/span&gt;        &lt;span class="o"&gt;|&lt;/span&gt;                           &lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;+------------------+-------------------&lt;/span&gt; &lt;span class="n"&gt;Block&lt;/span&gt; &lt;span class="n"&gt;devices&lt;/span&gt; &lt;span class="o"&gt;----------------+------------------+&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;                      &lt;span class="o"&gt;|&lt;/span&gt;                           &lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Encryption&lt;/span&gt; &lt;span class="n"&gt;layer&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;         &lt;span class="n"&gt;LUKS&lt;/span&gt;         &lt;span class="o"&gt;|&lt;/span&gt;           &lt;span class="n"&gt;None&lt;/span&gt;            &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Theft&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;abuse&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;    &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;                      &lt;span class="o"&gt;|&lt;/span&gt;                           &lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;+------------------+-------------------&lt;/span&gt; &lt;span class="n"&gt;Block&lt;/span&gt; &lt;span class="n"&gt;devices&lt;/span&gt; &lt;span class="o"&gt;----------------+------------------+&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;                                                  &lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Redundancy&lt;/span&gt;       &lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="n"&gt;Disks&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;RAID&lt;/span&gt;                    &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Hardware&lt;/span&gt;         &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;                                                  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;failure&lt;/span&gt; &lt;span class="o"&gt;++&lt;/span&gt;       &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;+------------------+------------------------------------+-------------+------------------+&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;                                    &lt;span class="o"&gt;|&lt;/span&gt;             &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Human&lt;/span&gt; &lt;span class="n"&gt;error&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;    &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Backup&lt;/span&gt;           &lt;span class="o"&gt;|&lt;/span&gt;         &lt;span class="n"&gt;Regular&lt;/span&gt; &lt;span class="n"&gt;snapshots&lt;/span&gt;          &lt;span class="o"&gt;|&lt;/span&gt;    &lt;span class="n"&gt;None&lt;/span&gt;     &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Theft&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;loss&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;   &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;                                    &lt;span class="o"&gt;|&lt;/span&gt;             &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Piracy&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;         &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;                  &lt;span class="o"&gt;|&lt;/span&gt;                                    &lt;span class="o"&gt;|&lt;/span&gt;             &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;Hardware&lt;/span&gt; &lt;span class="n"&gt;failure&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;+------------------+------------------------------------+-------------+------------------+&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Data Safety"></category><category term="Data Security"></category></entry><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><updated>2014-03-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-03-03:chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
 a Debian based Linux Operating System called &lt;a href="http://www.raspbian.org/"&gt;Raspbian&lt;/a&gt;. Such
 device would be very convenient to manage one's personal
 infrastructure, composed of some physical and / or virtual machines,
@@ -39,9 +214,7 @@ NOOBS menu, install Raspbian (Using NOOBS v1.2.1).&lt;/p&gt;
 &lt;p&gt;Note: Some services won't start, like jetty. &lt;code&gt;chef-server&lt;/code&gt; will also
 be said to have failed, but Chef Server APIs will be working anyway.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;Testing:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;root@raspberrypi:~# knife configure -i
+&lt;li&gt;Testing:&lt;div class="highlight"&gt;&lt;pre&gt;root@raspberrypi:~# knife configure -i
 WARNING: No knife configuration file found
 Where should I put the config file? [/root/.chef/knife.rb] 
 Please enter the chef server URL: [http://raspberrypi:4000] http://CHEF_SERVER_IP:4000

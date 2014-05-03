@@ -2,13 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Florent Flament's Tech Blog - bug</title>
+    <title>Florent Flament's Tech Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
 
     <!-- Le styles -->
-    <link rel="stylesheet" href="../theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="./theme/css/bootstrap.min.css" type="text/css" />
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -30,10 +30,10 @@
         font-size: 6pt;
      }
     </style>
-    <link href="../theme/css/bootstrap-responsive.min.css" rel="stylesheet">
-        <link href="../theme/css/font-awesome.css" rel="stylesheet">
+    <link href="./theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="./theme/css/font-awesome.css" rel="stylesheet">
 
-    <link href="../theme/css/pygments.css" rel="stylesheet">
+    <link href="./theme/css/pygments.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -41,12 +41,12 @@
     <![endif]-->
 
     <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="../theme/images/favicon.ico">
-    <link rel="apple-touch-icon" href="../theme/images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="../theme/images/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="../theme/images/apple-touch-icon-114x114.png">
+    <link rel="shortcut icon" href="./theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="./theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./theme/images/apple-touch-icon-114x114.png">
 
-    <link href="../" type="application/atom+xml" rel="alternate" title="Florent Flament's Tech Blog ATOM Feed" />
+    <link href="./" type="application/atom+xml" rel="alternate" title="Florent Flament's Tech Blog ATOM Feed" />
 
   </head>
 
@@ -60,23 +60,23 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="../index.html">Florent Flament's Tech Blog </a>
+          <a class="brand" href="./index.html">Florent Flament's Tech Blog </a>
           <div class="nav-collapse">
             <ul class="nav">
                           <li class="divider-vertical"></li>
                   <li >
-                    <a href="../category/misc.html">
+                    <a href="./category/misc.html">
 						<i class="icon-folder-open icon-large"></i>misc
 					</a>
                   </li>
                   <li >
-                    <a href="../category/openstack.html">
+                    <a href="./category/openstack.html">
 						<i class="icon-folder-open icon-large"></i>OpenStack
 					</a>
                   </li>
 
                           <ul class="nav pull-right">
-                                <li><a href="../archives.html"><i class="icon-th-list"></i>Archives</a></li>
+                                <li><a href="./archives.html"><i class="icon-th-list"></i>Archives</a></li>
                           </ul>
 
             </ul>
@@ -90,32 +90,43 @@
       <div class="row">
         <div class="span9" id="content">
         <div class="article">
-                <h1><a href="../openstack-volume-in-use-although-vm-doesnt-exist.html">Openstack volume in-use although VM doesn't exist</a></h1>
+                <h1><a href="./macmini21-linux-dual-boot.html">Macmini2,1 Linux dual boot</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2014-01-04T00:00:00">
-        <i class="icon-calendar"></i>Sat 04 January 2014
+<abbr class="published" title="2013-11-03T00:00:00">
+        <i class="icon-calendar"></i>Sun 03 November 2013
 </abbr>
 <span class="label">By</span>
-<a href="../author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
+<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
 <span class="label">Category</span>
-<a href="../category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
+<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
 
 
 <span class="label">Tags</span>
-	<a href="../tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
-	<a href="../tag/cinder.html"><i class="icon-tag"></i>Cinder</a>
-	<a href="../tag/bug.html"><i class="icon-tag"></i>bug</a>
+	<a href="./tag/apple.html"><i class="icon-tag"></i>Apple</a>
+	<a href="./tag/linux.html"><i class="icon-tag"></i>Linux</a>
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>A user at <a href="http://www.cloudwatt.com">Cloudwatt</a> had an issue about Cinder volumes with
-status <code>in-use</code>, attached to VMs that didn't exist anymore. I could
-find similar bugs referenced in launchpad <a href="https://bugs.launchpad.net/cinder/+bug/1201418">here</a> and <a href="https://bugs.launchpad.net/nova/+bug/1096197">there</a>,
-both with status <code>invalid</code>... But I didn't succeed in reproducing the
-bug (using both the Horizon dashboard ...</p>
-                        <a class="btn primary xsmall" href="../openstack-volume-in-use-although-vm-doesnt-exist.html">more ...</a>
+                <div class="summary"><p>While online resources provide documentation about <a href="https://wiki.debian.org/MacMiniIntel">how to install
+Linux on a Mac Mini</a>, this guide focuses on the Apple Macmini2,1
+and its peculiarities. Please refer to <a href="http://en.wikipedia.org/wiki/Macmini#Specifications">these tables</a> to properly
+identify your hardware.</p>
+<h2>About Macmini2,1</h2>
+<p>Apple provides <a href="http://support.apple.com/kb/HT1237">firmware updates</a> for most of its hardware. Most
+Mac Minis ...</p>
+                        <a class="btn primary xsmall" href="./macmini21-linux-dual-boot.html">more ...</a>
                 </div>
         </div>
         <hr />
+
+        <div class="pagination">
+        <ul>
+                        <li class="prev"><a href="./index2.html">&larr; Previous</a></li>
+                        <li class=""><a href="./index.html">1</a></li>
+                        <li class=""><a href="./index2.html">2</a></li>
+                        <li class="active"><a href="./index3.html">3</a></li>
+                        <li class="next disabled"><a href="#">&rarr; Next</a></li>
+        </ul>
+        </div>
 
         </div><!--/span-->
 
@@ -130,124 +141,124 @@ bug (using both the Horizon dashboard ...</p>
 
 <li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
 <li>
-<a href="../category/misc.html">
+<a href="./category/misc.html">
     <i class="icon-folder-open icon-large"></i>misc
 </a>
 </li>
 <li>
-<a href="../category/openstack.html">
+<a href="./category/openstack.html">
     <i class="icon-folder-open icon-large"></i>OpenStack
 </a>
 </li>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
 <li class="tag-4">
-    <a href="../tag/microsft.html">
+    <a href="./tag/microsft.html">
         <i class="icon-tag icon-large"></i>Microsft
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/kvm.html">
+    <a href="./tag/kvm.html">
         <i class="icon-tag icon-large"></i>KVM
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/apple.html">
+    <a href="./tag/apple.html">
         <i class="icon-tag icon-large"></i>Apple
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/data-security.html">
+    <a href="./tag/data-security.html">
         <i class="icon-tag icon-large"></i>Data Security
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/ceph.html">
+    <a href="./tag/ceph.html">
         <i class="icon-tag icon-large"></i>Ceph
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/windows.html">
+    <a href="./tag/windows.html">
         <i class="icon-tag icon-large"></i>Windows
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/raspberry-pi.html">
+    <a href="./tag/raspberry-pi.html">
         <i class="icon-tag icon-large"></i>Raspberry Pi
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/data-safety.html">
+    <a href="./tag/data-safety.html">
         <i class="icon-tag icon-large"></i>Data Safety
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/raspbian.html">
+    <a href="./tag/raspbian.html">
         <i class="icon-tag icon-large"></i>Raspbian
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/libvirt.html">
+    <a href="./tag/libvirt.html">
         <i class="icon-tag icon-large"></i>libvirt
     </a>
 </li>
 <li class="tag-1">
-    <a href="../tag/openstack.html">
+    <a href="./tag/openstack.html">
         <i class="icon-tag icon-large"></i>OpenStack
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/ubuntu.html">
+    <a href="./tag/ubuntu.html">
         <i class="icon-tag icon-large"></i>Ubuntu
     </a>
 </li>
 <li class="tag-2">
-    <a href="../tag/cinder.html">
+    <a href="./tag/cinder.html">
         <i class="icon-tag icon-large"></i>Cinder
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/chef.html">
+    <a href="./tag/chef.html">
         <i class="icon-tag icon-large"></i>Chef
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/irc.html">
+    <a href="./tag/irc.html">
         <i class="icon-tag icon-large"></i>IRC
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/data-management.html">
+    <a href="./tag/data-management.html">
         <i class="icon-tag icon-large"></i>Data management
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/policies.html">
+    <a href="./tag/policies.html">
         <i class="icon-tag icon-large"></i>Policies
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/bug.html">
+    <a href="./tag/bug.html">
         <i class="icon-tag icon-large"></i>bug
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/linux.html">
+    <a href="./tag/linux.html">
         <i class="icon-tag icon-large"></i>Linux
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/docker.html">
+    <a href="./tag/docker.html">
         <i class="icon-tag icon-large"></i>Docker
     </a>
 </li>
 <li class="tag-4">
-    <a href="../tag/znc.html">
+    <a href="./tag/znc.html">
         <i class="icon-tag icon-large"></i>ZNC
     </a>
 </li>
 <li class="tag-2">
-    <a href="../tag/keystone.html">
+    <a href="./tag/keystone.html">
         <i class="icon-tag icon-large"></i>Keystone
     </a>
 </li>
@@ -289,7 +300,7 @@ pageTracker._trackPageview();
 
     <!-- Le javascript -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../theme/js/jquery-1.7.2.min.js"></script>
-    <script src="../theme/js/bootstrap.min.js"></script>
+    <script src="./theme/js/jquery-1.7.2.min.js"></script>
+    <script src="./theme/js/bootstrap.min.js"></script>
   </body>
 </html>
