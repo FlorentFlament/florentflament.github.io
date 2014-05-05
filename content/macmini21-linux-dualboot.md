@@ -18,17 +18,20 @@ is true, Macmini2,1 doesn't need any firmware update to be able to
 boot non MacOS OSes.
 
 Macmini2,1 is powered by an Intel Core 2 Duo, which is a [64-bit
-processor][3]. However, when trying and installing a [Debian
-distribution][4] on the Mac Mini, I couldn't manage to boot the amd64
-ISO while the i386 could be launched without any issue [08/12/2013
-update: I eventually succeeded in installing an ubuntu amd64 image on
-the Macmini2,1 without any issue ...]
+processor][3]. However, when trying to install a 64 bits Linux
+distribution from a CDROM (by pressing the C key during boot sequence,
+right after the startup sound), the installer hangs up on a text
+screen, while seemingly starting to display a grub menu (I experienced
+this with amd64 ISOs of Debian Wheezy, Debian Jessie and Xubuntu
+Precise). With i386 images of these same distributions, the installer
+starts in graphic mode without issue.
 
-One may want to install Boot Camp to enable its computer to boot
-several OSes. Macmini2,1 was shipped with Mac OS X Tiger, which is
-[not supported][5] by official Boot Camp releases. Fortunately, Boot
-Camp is not required to set an OS X / Linux dual boot.
-
+However, I could find a way to install a 64 bits OS on the machine, by
+booting the machine on a [CDROM launching a PXE installation][7] over
+the network. By using this mechanism, I succeeded in installing an
+amd64 Ubuntu Precise Linux distribution. Note that I've been
+unsuccessful in starting the computer from a USB key, or directly over
+PXE.
 
 Setting dual boot
 -----------------
@@ -80,3 +83,4 @@ X and Linux.
 [4]: http://www.debian.org/distrib/netinst
 [5]: https://discussions.apple.com/message/17645953#17645953
 [6]: http://refit.sourceforge.net/
+[7]: http://rom-o-matic.net/gpxe/gpxe-git/gpxe.git/contrib/rom-o-matic/
