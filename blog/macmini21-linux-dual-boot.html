@@ -128,15 +128,19 @@ Macmini2,1 doesn't. The good news is that what is stated on this page
 is true, Macmini2,1 doesn't need any firmware update to be able to
 boot non MacOS OSes.</p>
 <p>Macmini2,1 is powered by an Intel Core 2 Duo, which is a <a href="http://en.wikipedia.org/wiki/Core_2_duo#64-bit_Core_microarchitecture_based">64-bit
-processor</a>. However, when trying and installing a <a href="http://www.debian.org/distrib/netinst">Debian
-distribution</a> on the Mac Mini, I couldn't manage to boot the amd64
-ISO while the i386 could be launched without any issue [08/12/2013
-update: I eventually succeeded in installing an ubuntu amd64 image on
-the Macmini2,1 without any issue ...]</p>
-<p>One may want to install Boot Camp to enable its computer to boot
-several OSes. Macmini2,1 was shipped with Mac OS X Tiger, which is
-<a href="https://discussions.apple.com/message/17645953#17645953">not supported</a> by official Boot Camp releases. Fortunately, Boot
-Camp is not required to set an OS X / Linux dual boot.</p>
+processor</a>. However, when trying to install a 64 bits Linux
+distribution from a CDROM (by pressing the C key during boot sequence,
+right after the startup sound), the installer hangs up on a text
+screen, while seemingly starting to display a grub menu (I experienced
+this with amd64 ISOs of Debian Wheezy, Debian Jessie and Xubuntu
+Precise). With i386 images of these same distributions, the installer
+starts in graphic mode without issue.</p>
+<p>However, I could find a way to install a 64 bits OS on the machine, by
+booting the machine on a <a href="http://rom-o-matic.net/gpxe/gpxe-git/gpxe.git/contrib/rom-o-matic/">CDROM launching a PXE installation</a> over
+the network. By using this mechanism, I succeeded in installing an
+amd64 Ubuntu Precise Linux distribution. Note that I've been
+unsuccessful in starting the computer from a USB key, or directly over
+PXE.</p>
 <h2>Setting dual boot</h2>
 <p>On original Max OS X installations, the whole hard disk is occupied by
 a unique partition. Therefore, we need to free some space for our new
@@ -215,43 +219,23 @@ X and Linux.</p>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
 <li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
+    <a href="./tag/docker.html">
+        <i class="icon-tag icon-large"></i>Docker
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
+    <a href="./tag/bug.html">
+        <i class="icon-tag icon-large"></i>bug
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/keystone.html">
+        <i class="icon-tag icon-large"></i>Keystone
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/raspberry-pi.html">
-        <i class="icon-tag icon-large"></i>Raspberry Pi
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
+    <a href="./tag/libvirt.html">
+        <i class="icon-tag icon-large"></i>libvirt
     </a>
 </li>
 <li class="tag-4">
@@ -260,38 +244,13 @@ X and Linux.</p>
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
     <a href="./tag/chef.html">
         <i class="icon-tag icon-large"></i>Chef
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/irc.html">
-        <i class="icon-tag icon-large"></i>IRC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
+    <a href="./tag/data-safety.html">
+        <i class="icon-tag icon-large"></i>Data Safety
     </a>
 </li>
 <li class="tag-4">
@@ -300,8 +259,28 @@ X and Linux.</p>
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
+    <a href="./tag/znc.html">
+        <i class="icon-tag icon-large"></i>ZNC
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/kvm.html">
+        <i class="icon-tag icon-large"></i>KVM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-security.html">
+        <i class="icon-tag icon-large"></i>Data Security
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/irc.html">
+        <i class="icon-tag icon-large"></i>IRC
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/cinder.html">
+        <i class="icon-tag icon-large"></i>Cinder
     </a>
 </li>
 <li class="tag-4">
@@ -310,18 +289,43 @@ X and Linux.</p>
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
+    <a href="./tag/ceph.html">
+        <i class="icon-tag icon-large"></i>Ceph
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
+    <a href="./tag/apple.html">
+        <i class="icon-tag icon-large"></i>Apple
     </a>
 </li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
+<li class="tag-4">
+    <a href="./tag/ubuntu.html">
+        <i class="icon-tag icon-large"></i>Ubuntu
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-management.html">
+        <i class="icon-tag icon-large"></i>Data management
+    </a>
+</li>
+<li class="tag-1">
+    <a href="./tag/openstack.html">
+        <i class="icon-tag icon-large"></i>OpenStack
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/raspberry-pi.html">
+        <i class="icon-tag icon-large"></i>Raspberry Pi
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/microsft.html">
+        <i class="icon-tag icon-large"></i>Microsft
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/windows.html">
+        <i class="icon-tag icon-large"></i>Windows
     </a>
 </li>
 

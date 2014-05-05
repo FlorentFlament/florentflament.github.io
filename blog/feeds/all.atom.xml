@@ -1608,15 +1608,19 @@ Macmini2,1 doesn't. The good news is that what is stated on this page
 is true, Macmini2,1 doesn't need any firmware update to be able to
 boot non MacOS OSes.&lt;/p&gt;
 &lt;p&gt;Macmini2,1 is powered by an Intel Core 2 Duo, which is a &lt;a href="http://en.wikipedia.org/wiki/Core_2_duo#64-bit_Core_microarchitecture_based"&gt;64-bit
-processor&lt;/a&gt;. However, when trying and installing a &lt;a href="http://www.debian.org/distrib/netinst"&gt;Debian
-distribution&lt;/a&gt; on the Mac Mini, I couldn't manage to boot the amd64
-ISO while the i386 could be launched without any issue [08/12/2013
-update: I eventually succeeded in installing an ubuntu amd64 image on
-the Macmini2,1 without any issue ...]&lt;/p&gt;
-&lt;p&gt;One may want to install Boot Camp to enable its computer to boot
-several OSes. Macmini2,1 was shipped with Mac OS X Tiger, which is
-&lt;a href="https://discussions.apple.com/message/17645953#17645953"&gt;not supported&lt;/a&gt; by official Boot Camp releases. Fortunately, Boot
-Camp is not required to set an OS X / Linux dual boot.&lt;/p&gt;
+processor&lt;/a&gt;. However, when trying to install a 64 bits Linux
+distribution from a CDROM (by pressing the C key during boot sequence,
+right after the startup sound), the installer hangs up on a text
+screen, while seemingly starting to display a grub menu (I experienced
+this with amd64 ISOs of Debian Wheezy, Debian Jessie and Xubuntu
+Precise). With i386 images of these same distributions, the installer
+starts in graphic mode without issue.&lt;/p&gt;
+&lt;p&gt;However, I could find a way to install a 64 bits OS on the machine, by
+booting the machine on a &lt;a href="http://rom-o-matic.net/gpxe/gpxe-git/gpxe.git/contrib/rom-o-matic/"&gt;CDROM launching a PXE installation&lt;/a&gt; over
+the network. By using this mechanism, I succeeded in installing an
+amd64 Ubuntu Precise Linux distribution. Note that I've been
+unsuccessful in starting the computer from a USB key, or directly over
+PXE.&lt;/p&gt;
 &lt;h2&gt;Setting dual boot&lt;/h2&gt;
 &lt;p&gt;On original Max OS X installations, the whole hard disk is occupied by
 a unique partition. Therefore, we need to free some space for our new
