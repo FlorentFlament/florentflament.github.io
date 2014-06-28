@@ -1,5 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-05-03T23:34:00+02:00</updated><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><updated>2014-05-03T23:34:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-05-03:securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-06-28T00:00:00+02:00</updated><entry><title>Git SSH Docker container</title><link href="http://www.florentflament.com/blog/git-ssh-docker-container.html" rel="alternate"></link><updated>2014-06-28T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-06-28:git-ssh-docker-container.html</id><summary type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
+using git with a remote repository. The implementation I have chosen
+for that consists in running an ssh server, with git, in a Docker
+container. This has the following advantages over other solutions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;100% reproducible;&lt;/li&gt;
+&lt;li&gt;Limits access to the container in case the account is compromised;&lt;/li&gt;
+&lt;li&gt;Consumes less resources that running a VM.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Dockerfile&lt;/h2&gt;
+&lt;p&gt;The proposed Git SSH Dockerfile is based on the &lt;a href="https://docs.docker.com/examples/running_ssh_service/"&gt;Dockerizing an SSH
+service&lt;/a&gt; example.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;FROM ubuntu:14.04
+
+RUN apt-get -y update
+RUN apt-get -y install openssh-server
+RUN apt-get -y install git
+
+&lt;span class="c"&gt;# Setting openssh&lt;/span&gt;
+RUN mkdir /var/run/sshd
+RUN sed -i &lt;span class="s2"&gt;&amp;quot;s/#PasswordAuthentication yes/PasswordAuthentication no/&amp;quot;&lt;/span&gt; /etc/ssh/sshd_config
+
+&lt;span class="c"&gt;# Adding git user&lt;/span&gt;
+RUN adduser --system git
+RUN mkdir -p /home/git/.ssh
+
+&lt;span class="c"&gt;# Clearing and setting authorized ssh keys&lt;/span&gt;
+RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; &amp;gt; /home/git/.ssh/authorized_keys
+RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;First SSH public key&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; /home/git/.ssh/authorized_keys
+RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Second SSH public key&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; /home/git/.ssh/authorized_keys
+&lt;span class="c"&gt;# ...&lt;/span&gt;
+
+&lt;span class="c"&gt;# Updating shell to bash&lt;/span&gt;
+RUN sed -i s#/home/git:/bin/false#/home/git:/bin/bash# /etc/passwd
+
+EXPOSE 22
+CMD &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/sbin/sshd&amp;quot;&lt;/span&gt;, &lt;span class="s2"&gt;&amp;quot;-D&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Running the container&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Building the image&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker.io build -t git-ssh_img .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Running the image&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo docker.io run -p 1234:22 -d --name git-ssh git-ssh_img
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The previous command maps the container's host port 1234 on the
+container's SSH port. Of course, this port can be changed to any
+value. One can then ssh to the container with the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ssh -p 1234 git@&amp;lt;container_host&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Git"></category><category term="SSH"></category><category term="Docker"></category></entry><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><updated>2014-05-03T23:34:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-05-03:securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
 the main threats (if possible by using only open source software). For
 instance, losing data because of a hardware failure is just something
 that shouldn't happen anymore, thanks to all the technology available

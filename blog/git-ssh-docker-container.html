@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Customizing OpenStack RBAC policies</title>
+    <title>Git SSH Docker container</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
@@ -64,12 +64,12 @@
           <div class="nav-collapse">
             <ul class="nav">
                           <li class="divider-vertical"></li>
-                  <li >
+                  <li class="active">
                     <a href="./category/misc.html">
 						<i class="icon-folder-open icon-large"></i>misc
 					</a>
                   </li>
-                  <li class="active">
+                  <li >
                     <a href="./category/openstack.html">
 						<i class="icon-folder-open icon-large"></i>OpenStack
 					</a>
@@ -95,8 +95,8 @@
                         <h1>
                                 <a href=""
                                         rel="bookmark"
-                                        title="Permalink to Customizing OpenStack RBAC policies">
-                                        Customizing OpenStack RBAC policies
+                                        title="Permalink to Git SSH Docker container">
+                                        Git SSH Docker container
                                 </a>
                         </h1>
                 </header>
@@ -104,185 +104,88 @@
                 <div class="well">
 <footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2014-02-09T00:00:00">
-        <i class="icon-calendar"></i>Sun 09 February 2014
+<abbr class="published" title="2014-06-28T00:00:00">
+        <i class="icon-calendar"></i>Sat 28 June 2014
 </abbr>
 <span class="label">By</span>
 <a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
 <span class="label">Category</span>
-<a href="./category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
+<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
 
 
 <span class="label">Tags</span>
-	<a href="./tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
-	<a href="./tag/keystone.html"><i class="icon-tag"></i>Keystone</a>
-	<a href="./tag/policies.html"><i class="icon-tag"></i>Policies</a>
+	<a href="./tag/git.html"><i class="icon-tag"></i>Git</a>
+	<a href="./tag/ssh.html"><i class="icon-tag"></i>SSH</a>
+	<a href="./tag/docker.html"><i class="icon-tag"></i>Docker</a>
 </footer><!-- /.post-info -->                </div>
-                <p>OpenStack uses a <a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac">role based access control</a> (RBAC) mechanism to
-manage accesses to its resources. With the current architecture,
-users' roles granted on each project and domain are stored into
-Keystone, and can be updated through <a href="http://api.openstack.org/api-ref-identity.html#identity-v3">Keystone's API</a>. However,
-policy enforcement (actually allowing or not the access to resources
-according to a user's roles) is performed independently in each
-service, based on the rules defined in each <code>policy.json</code> file.</p>
-<p>In a default OpenStack setup (like Devstack), two roles are created:</p>
+                <p>My favorite option to backup and version my code and text files is
+using git with a remote repository. The implementation I have chosen
+for that consists in running an ssh server, with git, in a Docker
+container. This has the following advantages over other solutions:</p>
 <ul>
-<li>
-<p>The <code>Member</code> role, which when granted to a user on a project, allows
-  him to manage resources (instances, volumes, ...) in this project.</p>
-</li>
-<li>
-<p>The <code>admin</code> role, which when granted to a user on any project,
-  offers to this user a total control over the whole OpenStack
-  platform. Although this is the current behavior, it has been <a href="https://bugs.launchpad.net/keystone/+bug/968696">marked
-  as a bug</a>.</p>
-</li>
+<li>100% reproducible;</li>
+<li>Limits access to the container in case the account is compromised;</li>
+<li>Consumes less resources that running a VM.</li>
 </ul>
-<p>However, the OpenStack policy engine allows operators to specify fine
-grained set of rules to control access to resources of each OpenStack
-service (Keystone, Nova, Cinder, ...).</p>
-<h2>Attributes available to build custom policies</h2>
-<p>Four types of attributes can be used to set policy rules:</p>
+<h2>Dockerfile</h2>
+<p>The proposed Git SSH Dockerfile is based on the <a href="https://docs.docker.com/examples/running_ssh_service/">Dockerizing an SSH
+service</a> example.</p>
+<div class="highlight"><pre>FROM ubuntu:14.04
+
+RUN apt-get -y update
+RUN apt-get -y install openssh-server
+RUN apt-get -y install git
+
+<span class="c"># Setting openssh</span>
+RUN mkdir /var/run/sshd
+RUN sed -i <span class="s2">&quot;s/#PasswordAuthentication yes/PasswordAuthentication no/&quot;</span> /etc/ssh/sshd_config
+
+<span class="c"># Adding git user</span>
+RUN adduser --system git
+RUN mkdir -p /home/git/.ssh
+
+<span class="c"># Clearing and setting authorized ssh keys</span>
+RUN <span class="nb">echo</span> <span class="s1">&#39;&#39;</span> &gt; /home/git/.ssh/authorized_keys
+RUN <span class="nb">echo</span> <span class="s1">&#39;First SSH public key&#39;</span> &gt;&gt; /home/git/.ssh/authorized_keys
+RUN <span class="nb">echo</span> <span class="s1">&#39;Second SSH public key&#39;</span> &gt;&gt; /home/git/.ssh/authorized_keys
+<span class="c"># ...</span>
+
+<span class="c"># Updating shell to bash</span>
+RUN sed -i s#/home/git:/bin/false#/home/git:/bin/bash# /etc/passwd
+
+EXPOSE 22
+CMD <span class="o">[</span><span class="s2">&quot;/usr/sbin/sshd&quot;</span>, <span class="s2">&quot;-D&quot;</span><span class="o">]</span>
+</pre></div>
+
+
+<h2>Running the container</h2>
 <ul>
 <li>
-<p>User roles, which can be checked by using the following syntax:</p>
-<div class="highlight"><pre>role:&lt;requires_role&gt;
+<p>Building the image</p>
+<div class="highlight"><pre><span class="nv">$ </span>docker.io build -t git-ssh_img .
 </pre></div>
 
 
 </li>
 <li>
-<p>Other user related attributes (stored into or obtained through the
-  token). The following attributes are available: user_id, domain_id
-  or project_id (depending on the scope), and can be checked against
-  constants or other attributes:</p>
-<div class="highlight"><pre>project_id:&lt;some_attribute&gt;
-</pre></div>
-
-
-</li>
-<li>
-<p>API call attributes are any data sent along with the API call. They
-  can be checked against constants or user attributes. For instance,
-  the following statement checks that a user being created is in the
-  same domain as his creator (note that API call attributes have to be
-  on the right side of the expression, while user attributes are on
-  the left side):</p>
-<div class="highlight"><pre>domain_id:user.domain_id
-</pre></div>
-
-
-</li>
-<li>
-<p>The fourth category of attributes are what I'd call contextual
-  attributes. These are the attributes of objects referenced (or
-  targeted) by an API call; i.e. any object whose id appear somewhere
-  in the API call. For instance, when granting a new role on a project
-  to a user, all attributes related to the role, the project and the
-  user are available to the policy engine, through the <code>target</code>
-  keyword. The following syntax checks that the role of the context is
-  the <code>Member</code> role:</p>
-<div class="highlight"><pre>&#39;Member&#39;:target.role.name
+<p>Running the image</p>
+<div class="highlight"><pre><span class="nv">$ </span>sudo docker.io run -p 1234:22 -d --name git-ssh git-ssh_img
 </pre></div>
 
 
 </li>
 </ul>
-<p>Depending on the type of API calls, some of the following attributes
-will be available, according to the objects impacted by the action:</p>
-<ul>
-<li>
-<p>domain:</p>
-<ul>
-<li>target.domain.enabled</li>
-<li>target.domain.id</li>
-<li>target.domain.name</li>
-</ul>
-</li>
-<li>
-<p>group:</p>
-<ul>
-<li>target.group.description</li>
-<li>target.group.domain_id</li>
-<li>target.group.id</li>
-<li>target.group.name</li>
-</ul>
-</li>
-<li>
-<p>project:</p>
-<ul>
-<li>target.project.description</li>
-<li>target.project.domain_id</li>
-<li>target.project.enabled</li>
-<li>target.project.id</li>
-<li>target.project.name</li>
-</ul>
-</li>
-<li>
-<p>role:</p>
-<ul>
-<li>target.role.id</li>
-<li>target.role.name</li>
-</ul>
-</li>
-<li>
-<p>user:</p>
-<ul>
-<li>target.user.default_project_id</li>
-<li>target.user.description</li>
-<li>target.user.domain_id</li>
-<li>target.user.enabled</li>
-<li>target.user.id</li>
-<li>target.user.name</li>
-</ul>
-</li>
-</ul>
-<h2>Example: admin and super_admin</h2>
-<p>The following example is taken from a User Story that we were
-considering at <a href="http://www.cloudwatt.com">CloudWatt</a>. As a cloud service provider, we wanted
-to be able to have 2 different levels of administrator roles:</p>
-<ul>
-<li>An <code>admin</code> role, which allows its users to grant the <code>Member</code> role
-  to any other user.</li>
-<li>While the <code>super_admin</code> role allows granting any role.</li>
-</ul>
-<p>When added to Keystone's ̀<code>policy.json</code> file, the following rules
-implements the two roles described previously:</p>
-<div class="highlight"><pre>&quot;admin_grant_member&quot;: &quot;role:admin and &#39;Member&#39;:%(target.role.name)s&quot;,
-&quot;identity:create_grant&quot;: &quot;role:super_admin or rule:admin_grant_member&quot;,
+<p>The previous command maps the container's host port 1234 on the
+container's SSH port. Of course, this port can be changed to any
+value. One can then ssh to the container with the following command:</p>
+<div class="highlight"><pre><span class="nv">$ </span>ssh -p 1234 git@&lt;container_host&gt;
 </pre></div>
-
-
-<p>The first rule describes a new rule called <code>admin_grant_member</code>, which
-checks that the user authenticated by the token has the <code>admin</code> role
-(on its scope), and that the role in the context (the role the admin
-is trying to grant) is the <code>Member</code> role (we used the <code>name</code>
-attribute, but could use the role's id instead).</p>
-<p>The second rule is checked whenever an API call is made to grant a
-role to a user (action <code>identity:create_grant</code>). This rule tells the
-policy engine that in order for a user to be allowed to grant a role
-to another user, the user authenticated by the token must either have
-the <code>super_admin</code> role, or satisfy the <code>admin_grant_member</code> rule.</p>
-<p>Put together these two rules actually meet the use case. Any user with
-the <code>admin</code> role will only be able to grant the <code>Member</code> role to other
-users, while users with the <code>super_admin</code> role will be able to grant
-any role.</p>
-<h2>Notes</h2>
-<p>One of the most powerful rules that the OpenStack policy engine
-allows, are those limiting a user's actions to his own domain or
-project. These kind of rules are widely used in <a href="https://github.com/openstack/keystone/blob/master/etc/policy.v3cloudsample.json">Keystone's
-policy.v3cloudsample.json</a>.</p>
-<p>Also note, that a recent patch merged into oslo-incubator implements
-the blueprint allowing the policy engine to <a href="https://blueprints.launchpad.net/oslo/+spec/policy-constant-check">check contextual
-attributes against constant values</a>. This patch will have to be
-synchronized into the OpenStack projects for them to benefit from this
-feature.</p>
                 </div><!-- /.entry-content -->
                 <div class="comments">
                 <h2>Comments !</h2>
                         <div id="disqus_thread"></div>
                         <script type="text/javascript">
-                           var disqus_identifier = "customizing-openstack-rbac-policies.html";
+                           var disqus_identifier = "git-ssh-docker-container.html";
                            (function() {
                                 var dsq = document.createElement('script');
                                 dsq.type = 'text/javascript'; dsq.async = true;

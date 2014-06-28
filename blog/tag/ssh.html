@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Florent Flament's Tech Blog - Policies</title>
+    <title>Florent Flament's Tech Blog - SSH</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
@@ -90,29 +90,31 @@
       <div class="row">
         <div class="span9" id="content">
         <div class="article">
-                <h1><a href="../customizing-openstack-rbac-policies.html">Customizing OpenStack RBAC policies</a></h1>
+                <h1><a href="../git-ssh-docker-container.html">Git SSH Docker container</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2014-02-09T00:00:00">
-        <i class="icon-calendar"></i>Sun 09 February 2014
+<abbr class="published" title="2014-06-28T00:00:00">
+        <i class="icon-calendar"></i>Sat 28 June 2014
 </abbr>
 <span class="label">By</span>
 <a href="../author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
 <span class="label">Category</span>
-<a href="../category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
+<a href="../category/misc.html"><i class="icon-folder-open"></i>misc</a>.
 
 
 <span class="label">Tags</span>
-	<a href="../tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
-	<a href="../tag/keystone.html"><i class="icon-tag"></i>Keystone</a>
-	<a href="../tag/policies.html"><i class="icon-tag"></i>Policies</a>
+	<a href="../tag/git.html"><i class="icon-tag"></i>Git</a>
+	<a href="../tag/ssh.html"><i class="icon-tag"></i>SSH</a>
+	<a href="../tag/docker.html"><i class="icon-tag"></i>Docker</a>
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>OpenStack uses a <a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac">role based access control</a> (RBAC) mechanism to
-manage accesses to its resources. With the current architecture,
-users' roles granted on each project and domain are stored into
-Keystone, and can be updated through <a href="http://api.openstack.org/api-ref-identity.html#identity-v3">Keystone's API</a>. However,
-policy enforcement (actually allowing or not the access to resources ...</p>
-                        <a class="btn primary xsmall" href="../customizing-openstack-rbac-policies.html">more ...</a>
+                <div class="summary"><p>My favorite option to backup and version my code and text files is
+using git with a remote repository. The implementation I have chosen
+for that consists in running an ssh server, with git, in a Docker
+container. This has the following advantages over other solutions:</p>
+<ul>
+<li>100% reproducible;</li>
+<li>Limits access ...</li></ul>
+                        <a class="btn primary xsmall" href="../git-ssh-docker-container.html">more ...</a>
                 </div>
         </div>
         <hr />
