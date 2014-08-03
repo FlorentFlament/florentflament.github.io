@@ -1,5 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/all.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-06-28T00:00:00+02:00</updated><entry><title>Git SSH Docker container</title><link href="http://www.florentflament.com/blog/git-ssh-docker-container.html" rel="alternate"></link><updated>2014-06-28T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-06-28:git-ssh-docker-container.html</id><summary type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/all.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-08-03T00:00:00+02:00</updated><entry><title>Right VM cost</title><link href="http://www.florentflament.com/blog/right-vm-cost.html" rel="alternate"></link><updated>2014-08-03T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-08-03:right-vm-cost.html</id><summary type="html">&lt;p&gt;With cloud Virtual Machines prices dropping month after month, we may
+be asking if the margins previously done by cloud operators were not
+outrageously high. I actually find surprising that current VM price is
+on average higher than equivalent dedicated server even though
+virtualization allows sharing more hardware.&lt;/p&gt;
+&lt;h2&gt;Comparing dedicated server versus VM costs&lt;/h2&gt;
+&lt;p&gt;Low cost dedicated servers:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CPU 1 Core / 2 threads - RAM 2 GB - HDD 500 GB - costs €5 / month at &lt;a href="http://www.kimsufi.com/en/"&gt;Kimsufi&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;CPU 1 Core - RAM 2 GB - SHDD 500 GB - costs €9.99 / month at &lt;a href="http://www.online.net/en/dedicated-server"&gt;online&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Low cost VMs:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CPU 2 Cores - RAM 2 GB - SSD 40 GB - costs $20 / month at &lt;a href="https://www.digitalocean.com/pricing/"&gt;DigitalOcean&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;vCPUs 2 - RAM 2 GB - SSD 60 GB - $54 / month at &lt;a href="http://www.rackspace.com/cloud/public-pricing/"&gt;rackspace&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;vCPUs 1 (fractional) - RAM 2 GB - 0 (additional storage cost) - $19 / month at &lt;a href="http://aws.amazon.com/ec2/pricing/"&gt;Amazon&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Virtual machines CPUs don't have much meaning, since depending on the
+underlying hardware a virtual machine CPU may correspond to a physical
+CPU core, thread or a fraction of CPU if the hypervisor is sharing
+CPUs among VMs. Amazon introduces an EC2 Compute Unit (ECU), that
+would allow objectively &lt;a href="http://aws.amazon.com/ec2/faqs/"&gt;comparing CPU performance between VMs&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;At first glance we can see that for low end configurations the
+price/performance ratio of Virtual Machines looks much higher than
+ratio of dedicated servers.&lt;/p&gt;
+&lt;h2&gt;Estimating cost of hardware&lt;/h2&gt;
+&lt;p&gt;We can make an estimate of the cost of hardware by performing a
+&lt;a href="http://en.wikipedia.org/wiki/Regression_analysis"&gt;multiple regression analysis&lt;/a&gt; on dedicated server prices.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.ovh.com/fr/serveurs_dedies/enterprise/"&gt;OVH prices&lt;/a&gt; (only considering Intel Xeon CPUs):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;|-------------------------------------------------------------------------------------------|
+|         CPU type        | # threads | RAM (GB) | HDD (TB) | SSD (GB) | Price (€/month HT) |
+|-------------------------------------------------------------------------------------------|
+|                                 OVH Enterprise                                            |
+|-------------------------------------------------------------------------------------------|
+| Intel Xeon E5-1620v2    |     8     |    64    |     4    |     0    |       €81.99       |
+| Intel Xeon E5-1650v2    |    12     |   128    |     4    |     0    |      €131.99       |
+| Intel Xeon 2x E5-2650v2 |    32     |   128    |     4    |     0    |      €202.99       |
+| Intel Xeon 2x E5-2670v2 |    40     |   256    |     4    |     0    |      €302.99       |
+|-------------------------------------------------------------------------------------------|
+|                                   OVH Infra                                               |
+|-------------------------------------------------------------------------------------------|
+| Intel Xeon E5-1620v2    |     8     |    32    |     6    |     0    |       €81.99       |
+| Intel Xeon E5-1650v2    |    12     |    64    |     6    |     0    |      €141.99       |
+| Intel Xeon 1x E5-2650v2 |    16     |   128    |     6    |     0    |      €191.99       |
+| Intel Xeon 2x E5-2650v2 |    32     |   128    |     6    |     0    |      €302.99       |
+| Intel Xeon 2x E5-2670v2 |    40     |   256    |     6    |     0    |      €402.99       |
+|-------------------------------------------------------------------------------------------|
+|                                   OVH Storage                                             |
+|-------------------------------------------------------------------------------------------|
+| Intel Xeon 1x E5 2620v2 |    12     |    48    |    48    |     0    |      €372.99       |
+| Intel Xeon 1x E5 2620v2 |    12     |    48    |    72    |     0    |      €522.00       |
+| Intel Xeon 2x E5 2620v2 |    24     |    64    |   144    |     0    |      €822.00       |
+| Intel Xeon 2x E5 2620v2 |    24     |    64    |   216    |     0    |     €1272.00       |
+| Intel Xeon 1x E5 2620v2 |    12     |    48    |    36    |   360    |      €372.99       |
+| Intel Xeon 1x E5 2620v2 |    12     |    48    |    54    |   360    |      €522.00       |
+| Intel Xeon 2x E5 2620v2 |    24     |    64    |   108    |  1080    |      €822.00       |
+| Intel Xeon 2x E5 2620v2 |    24     |    64    |   162    |  1080    |     €1272.00       |
+|-------------------------------------------------------------------------------------------|
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In our case, for each server setting we have:
+Yi = ß1 + ß2&lt;em&gt;Xi2 + ß3&lt;/em&gt;Xi3 + ß4&lt;em&gt;Xi4 + ß5&lt;/em&gt;Xi5 + Ei
+where:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Yi is the price for setting i&lt;/li&gt;
+&lt;li&gt;ß1 is a constant per server&lt;/li&gt;
+&lt;li&gt;ß2 is the estimate of € / thread&lt;/li&gt;
+&lt;li&gt;ß3 is the estimate of € / GB of RAM&lt;/li&gt;
+&lt;li&gt;ß4 is the estimate of € / TB of HDD&lt;/li&gt;
+&lt;li&gt;ß5 is the estimate of € / GB of SSD&lt;/li&gt;
+&lt;li&gt;Xi2 is the number of CPU threads for setting i&lt;/li&gt;
+&lt;li&gt;Xi3 is the amount of RAM in GB for setting i&lt;/li&gt;
+&lt;li&gt;Xi4 is the amount of HDD space in TB for setting i&lt;/li&gt;
+&lt;li&gt;Xi5 is the amount of SSD space in GB for setting i&lt;/li&gt;
+&lt;li&gt;Ri is the residual error for setting i&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We can estimate ßj coefficients with the following formula:
+ß = (Xt&lt;em&gt;X)-¹&lt;/em&gt;Xt*Y&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python pricing_vm_simple.py
+Constant: 31.3530724158
+Eur / CPU thread: 3.12689639938
+Eur / GB of RAM: 0.639580183605
+Eur / TB of HDD: 5.18992626031
+Eur / GB of SSD: 0.197627042107
+R^2: 0.982339781679
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Assuming that we rent some of the afore mentioned dedicated servers,
+what comes out from these results is that the most expensive resource
+is the Intel Xeon CPU thread, which costs more than €3/month. Hence
+the monthly cost of the following configurations (including €1 share
+of server fixed cost):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;2 Full Xeon Threads - 2 GB RAM - 40 GB SSD : €16.50&lt;/li&gt;
+&lt;li&gt;1 Full Xeon Thread - 1 GB RAM - 10 GB SSD : €6.75&lt;/li&gt;
+&lt;li&gt;1/4th Xeon Thread - 1 GB RAM - 5 GB SSD : €3.40&lt;/li&gt;
+&lt;li&gt;1/8th Xeon Thread - 512 MB RAM - 1 GB SSD : €1.90&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Interpretation&lt;/h2&gt;
+&lt;p&gt;These hardware costs look rather aligned with cheapest (Digital Ocean)
+VMs prices. On the other hand, public cloud leaders (Rackspace and
+Amazon) are much more expensive.&lt;/p&gt;
+&lt;p&gt;So should Virtual Machines be cheaper than equivalent dedicated
+servers ? Well, this is possible when virtualization allows sharing a
+certain amount of fixed costs among users of the same hardware.
+According to the previous regression analysis (and hardware
+considered), these fixed costs account for roughly €30 / month per
+server. Therefore, for low end VMs from some Euros to tens of Euros,
+fixed costs sharing looks meaningful. On the other hand, high end VMs
+are costly and don't allow many users to share the same server. In
+that case, there is no real cost advantage in choosing a VM instead of
+a dedicated server in a 24H / 24 7D / 7 usage scenario. However, for
+ephemeral usage, high end virtual machines may make sense. Besides,
+SSD storage (which is recommended when sharing a disk with many users)
+is costly. Therefore, in the case of huge storage space requirements,
+dedicated servers with big HDDs may be more appropriate.&lt;/p&gt;
+&lt;h2&gt;Annex - Regression Analysis code&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt;
+
+&lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;matrix&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1,  8,  64,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 12, 128,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 32, 128,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 40, 256,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1,  8,  32,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 12,  64,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 16, 128,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 32, 128,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 40, 256,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 12,  48,  48,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 12,  48,  72,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 24,  64, 144,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 24,  64, 216,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 12,  48,  36,  360;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 12,  48,  54,  360;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 24,  64, 108, 1080;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1, 24,  64, 162, 1080&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;Y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;matrix&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;  81.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 131.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 202.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 302.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;  81.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 141.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 191.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 302.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 402.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 372.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 522.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 822.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1272.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 372.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 522.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39; 822.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s"&gt;&amp;#39;1272.00&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# Computing model parameters&lt;/span&gt;
+&lt;span class="n"&gt;B&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;
+
+&lt;span class="c"&gt;# Computing predictions based on models&lt;/span&gt;
+&lt;span class="n"&gt;F&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;
+
+&lt;span class="c"&gt;# Computing R^2&lt;/span&gt;
+&lt;span class="n"&gt;M&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;SStot&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;multiply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;SSres&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;multiply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;Rsq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;SSres&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;SStot&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Constant:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / CPU thread:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / GB of RAM:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / TB of HDD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / GB of SSD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;R^2:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Rsq&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Virtualization"></category><category term="VM"></category><category term="Hardware"></category><category term="Costs"></category></entry><entry><title>Git SSH Docker container</title><link href="http://www.florentflament.com/blog/git-ssh-docker-container.html" rel="alternate"></link><updated>2014-06-28T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-06-28:git-ssh-docker-container.html</id><summary type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
 using git with a remote repository. The implementation I have chosen
 for that consists in running an ssh server, with git, in a Docker
 container. This has the following advantages over other solutions:&lt;/p&gt;
