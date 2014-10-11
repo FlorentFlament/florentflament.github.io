@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Git SSH Docker container</title>
+    <title>OpenStack Swift Ring made understandable</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
@@ -64,12 +64,12 @@
           <div class="nav-collapse">
             <ul class="nav">
                           <li class="divider-vertical"></li>
-                  <li class="active">
+                  <li >
                     <a href="./category/misc.html">
 						<i class="icon-folder-open icon-large"></i>misc
 					</a>
                   </li>
-                  <li >
+                  <li class="active">
                     <a href="./category/openstack.html">
 						<i class="icon-folder-open icon-large"></i>OpenStack
 					</a>
@@ -95,8 +95,8 @@
                         <h1>
                                 <a href=""
                                         rel="bookmark"
-                                        title="Permalink to Git SSH Docker container">
-                                        Git SSH Docker container
+                                        title="Permalink to OpenStack Swift Ring made understandable">
+                                        OpenStack Swift Ring made understandable
                                 </a>
                         </h1>
                 </header>
@@ -104,88 +104,140 @@
                 <div class="well">
 <footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2014-06-28T00:00:00">
-        <i class="icon-calendar"></i>Sat 28 June 2014
+<abbr class="published" title="2014-10-11T22:00:00">
+        <i class="icon-calendar"></i>Sat 11 October 2014
 </abbr>
 <span class="label">By</span>
 <a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
 <span class="label">Category</span>
-<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
+<a href="./category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
 
 
 <span class="label">Tags</span>
-	<a href="./tag/git.html"><i class="icon-tag"></i>Git</a>
-	<a href="./tag/ssh.html"><i class="icon-tag"></i>SSH</a>
-	<a href="./tag/docker.html"><i class="icon-tag"></i>Docker</a>
+	<a href="./tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
+	<a href="./tag/swift.html"><i class="icon-tag"></i>Swift</a>
+	<a href="./tag/ring.html"><i class="icon-tag"></i>Ring</a>
 </footer><!-- /.post-info -->                </div>
-                <p>My favorite option to backup and version my code and text files is
-using git with a remote repository. The implementation I have chosen
-for that consists in running an ssh server, with git, in a Docker
-container. This has the following advantages over other solutions:</p>
+                <p>When people talk about OpenStack Swift, we often hear the word
+Ring. This is because the Ring is a central piece in how Swift is
+working. But what <em>is</em> this thing everyone's talking about ?</p>
+<p>The Ring refers to 3 files that are shared among every Swift nodes
+(storage and proxy nodes):</p>
 <ul>
-<li>100% reproducible;</li>
-<li>Limits access to the container in case the account is compromised;</li>
-<li>Consumes less resources that running a VM.</li>
+<li>object.ring.gz</li>
+<li>container.ring.gz</li>
+<li>account.ring.gz</li>
 </ul>
-<h2>Dockerfile</h2>
-<p>The proposed Git SSH Dockerfile is based on the <a href="https://docs.docker.com/examples/running_ssh_service/">Dockerizing an SSH
-service</a> example.</p>
-<div class="highlight"><pre>FROM ubuntu:14.04
-
-RUN apt-get -y update
-RUN apt-get -y install openssh-server
-RUN apt-get -y install git
-
-<span class="c"># Setting openssh</span>
-RUN mkdir /var/run/sshd
-RUN sed -i <span class="s2">&quot;s/#PasswordAuthentication yes/PasswordAuthentication no/&quot;</span> /etc/ssh/sshd_config
-
-<span class="c"># Adding git user</span>
-RUN adduser --system git
-RUN mkdir -p /home/git/.ssh
-
-<span class="c"># Clearing and setting authorized ssh keys</span>
-RUN <span class="nb">echo</span> <span class="s1">&#39;&#39;</span> &gt; /home/git/.ssh/authorized_keys
-RUN <span class="nb">echo</span> <span class="s1">&#39;First SSH public key&#39;</span> &gt;&gt; /home/git/.ssh/authorized_keys
-RUN <span class="nb">echo</span> <span class="s1">&#39;Second SSH public key&#39;</span> &gt;&gt; /home/git/.ssh/authorized_keys
-<span class="c"># ...</span>
-
-<span class="c"># Updating shell to bash</span>
-RUN sed -i s#/home/git:/bin/false#/home/git:/bin/bash# /etc/passwd
-
-EXPOSE 22
-CMD <span class="o">[</span><span class="s2">&quot;/usr/sbin/sshd&quot;</span>, <span class="s2">&quot;-D&quot;</span><span class="o">]</span>
+<p>There is actually one ring per type of data manipulated by Swift:
+Objects, Containers and Accounts. These files determine on which
+physical devices (hard disks) will be stored each object (and also
+each container and account). The number of devices on which an object
+is stored depends on the number of replicas (copies) specified for the
+Swift cluster.</p>
+<h2>How does it concretely work</h2>
+<p>When receiving an object to store, Swift computes a (MD5) hash of the
+object's full name (including its account's and container's name). A
+part of this hash is kept and interpreted by Swift as the partition
+number. The length of the hash segment kept depends on the number of
+partitions that has been set in the Swift cluster; This number is
+necessarily a power of 2. So that if we keep n bits of the hash, we
+have 2^n partitions.</p>
+<p>The object ring is a map that associates each partition to a specific
+physical device. This mechanism is then repeated for every object's
+replicas, and also for containers and accounts.</p>
+<p>To be more specific, the object's ring has 3 components:</p>
+<ul>
+<li>What is referred in the code as the <code>_replica2part2dev</code> table (which
+  name is relatively explicit as we'll see later on)</li>
+<li>The table of devices describing each device</li>
+<li>The length of an object's hash to consider as the partition number</li>
+</ul>
+<p>The <code>_replica2part2dev</code> structure is a 2-dimensional table, so that
+for any (replica number, partition number) couple, the table indicates
+the physical device, where the object should be stored.</p>
+<p>The devices table contains every information that a Swift node needs
+in order to reach a given device; It consists mostly in the device's
+storage node's IP address, the TCP port to use, and the physical
+device name on the storage node.</p>
+<p>In the end, the Ring is composed of 2 tables and one integer. If I
+were to choose a name for such structure, I would call it the Table. I
+couldn't find any explanation of why the name Ring was adopted, but my
+guess is that some previous algorithm may have used some modular
+computation, which people tend to represent using rings..</p>
+<h2>Example</h2>
+<p>Here is a simple example to make everything clear. Let's consider a
+Swift cluster with 2 storage nodes, with the following IPs addresses:
+<code>192.168.0.10</code> and <code>192.168.0.11</code>. Each storage node has two devices:
+<code>sdb1</code> and <code>sdc1</code>.</p>
+<p>An example of <code>_replica2part2dev</code> table with 3 replicas, 8 partitions
+and 4 devices would be:</p>
+<div class="highlight"><pre>r
+e  |   +-----------------+
+p  | 0 | 0 1 2 3 0 1 2 3 |
+l  | 1 | 1 2 3 0 1 2 3 0 |
+i  | 2 | 2 3 0 1 2 3 0 1 |
+c  v   +-----------------+
+a        0 1 2 3 4 5 6 7
+       ------------------&gt;
+           partition
 </pre></div>
 
 
-<h2>Running the container</h2>
+<p>The table has 3 lines, one for each replica, and 8 columns, one for
+each partition. To find the device storing the replica number 1 of
+partition number 2, we select the line of index 1 and column of index
+2. This lead us to the device ID 3.</p>
+<p>The devices table is very similar to what we can obtain by using the
+<code>swift-ring-builder</code> with only the builder file as argument:</p>
+<div class="highlight"><pre><span class="nv">$ </span>swift-ring-builder mybuilder 
+mybuilder, build version 4
+8 partitions, 3.000000 replicas, 1 regions, 1 zones, 4 devices, 0.00 balance
+The minimum number of hours before a partition can be reassigned is 0
+Devices:    id  region  zone      ip address  port  replication ip  replication port      name weight partitions balance meta
+             0       1     1    192.168.0.10  6000    192.168.0.10              6000      sdb1 100.00          6    0.00 
+             1       1     1    192.168.0.10  6000    192.168.0.10              6000      sdc1 100.00          6    0.00 
+             2       1     1    192.168.0.11  6000    192.168.0.11              6000      sdb1 100.00          6    0.00 
+             3       1     1    192.168.0.11  6000    192.168.0.11              6000      sdc1 100.00          6    0.00
+</pre></div>
+
+
+<p>The device of ID 3 can be found on server 192.168.0.11, port 6000,
+device name sdc1.</p>
+<h2>Simple is good</h2>
+<p>What I like with such mechanism is that the smartness of the data
+placement is performed by the <code>swift-ring-builder</code>, a standalone tool
+provided with Swift. Once the rings have been built, Swift processes
+running on the Swift nodes have a fully deterministic and easily
+predictable behavior.</p>
+<p>The <code>swift-ring-builder</code> manipulates <code>builders</code> files; these are files
+containing architectural information about the Swift cluster (like
+distribution of devices and nodes among regions and zones). These
+<code>builders</code> are then used to generate the <code>rings</code> files. As with the
+rings, there is one builder per type of data (objects, containers and
+accounts).</p>
+<p>Thanks to this mechanism the complexity of smartly storing objects has
+been well separated between:</p>
 <ul>
 <li>
-<p>Building the image</p>
-<div class="highlight"><pre><span class="nv">$ </span>docker.io build -t git-ssh_img .
-</pre></div>
-
-
+<p>Smartly assigning partitions (and corresponding objects, containers
+  and accounts) to devices, taking into account the cluster's
+  architecture. This is performed by the <code>swift-ring-builder</code></p>
 </li>
 <li>
-<p>Running the image</p>
-<div class="highlight"><pre><span class="nv">$ </span>sudo docker.io run -p 1234:22 -d --name git-ssh git-ssh_img
-</pre></div>
-
-
+<p>Ensuring that files are stored uncorrupted at the appropriate
+  locations; This is performer by the processes running on the Swift
+  nodes.</p>
 </li>
 </ul>
-<p>The previous command maps the container's host port 1234 on the
-container's SSH port. Of course, this port can be changed to any
-value. One can then ssh to the container with the following command:</p>
-<div class="highlight"><pre><span class="nv">$ </span>ssh -p 1234 git@&lt;container_host&gt;
-</pre></div>
+<h2>More</h2>
+<p>For more information about the ring, one can read the <a href="http://docs.openstack.org/developer/swift/overview_ring.html">Swift's
+developer documentation about the Ring</a>.</p>
                 </div><!-- /.entry-content -->
                 <div class="comments">
                 <h2>Comments !</h2>
                         <div id="disqus_thread"></div>
                         <script type="text/javascript">
-                           var disqus_identifier = "git-ssh-docker-container.html";
+                           var disqus_identifier = "openstack-swift-ring-made-understandable.html";
                            (function() {
                                 var dsq = document.createElement('script');
                                 dsq.type = 'text/javascript'; dsq.async = true;

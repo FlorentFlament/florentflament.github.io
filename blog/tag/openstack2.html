@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Florent Flament's Tech Blog - Policies</title>
+    <title>Florent Flament's Tech Blog - OpenStack</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
@@ -90,11 +90,11 @@
       <div class="row">
         <div class="span9" id="content">
         <div class="article">
-                <h1><a href="../customizing-openstack-rbac-policies.html">Customizing OpenStack RBAC policies</a></h1>
+                <h1><a href="../ceph-and-cinder-multi-backend.html">Ceph and Cinder multi-backend</a></h1>
                 <div class="well small"><footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2014-02-09T00:00:00">
-        <i class="icon-calendar"></i>Sun 09 February 2014
+<abbr class="published" title="2013-11-17T00:00:00">
+        <i class="icon-calendar"></i>Sun 17 November 2013
 </abbr>
 <span class="label">By</span>
 <a href="../author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
@@ -103,19 +103,28 @@
 
 
 <span class="label">Tags</span>
+	<a href="../tag/ceph.html"><i class="icon-tag"></i>Ceph</a>
 	<a href="../tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
-	<a href="../tag/keystone.html"><i class="icon-tag"></i>Keystone</a>
-	<a href="../tag/policies.html"><i class="icon-tag"></i>Policies</a>
+	<a href="../tag/cinder.html"><i class="icon-tag"></i>Cinder</a>
 </footer><!-- /.post-info --></div>
-                <div class="summary"><p>OpenStack uses a <a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac">role based access control</a> (RBAC) mechanism to
-manage accesses to its resources. With the current architecture,
-users' roles granted on each project and domain are stored into
-Keystone, and can be updated through <a href="http://api.openstack.org/api-ref-identity.html#identity-v3">Keystone's API</a>. However,
-policy enforcement (actually allowing or not the access to resources ...</p>
-                        <a class="btn primary xsmall" href="../customizing-openstack-rbac-policies.html">more ...</a>
+                <div class="summary"><p><a href="http://ceph.com/docs/master/">Ceph's documentation</a> is quite extensive. However, when trying and
+<a href="http://ceph.com/docs/master/rbd/rbd-openstack/">installing Ceph on a running Openstack platform</a>, I met two main
+issues: How to deal with a multi-backend setup? And how to deal with
+several nova-compute nodes?  This note will focus on the steps that I
+followed in order to ...</p>
+                        <a class="btn primary xsmall" href="../ceph-and-cinder-multi-backend.html">more ...</a>
                 </div>
         </div>
         <hr />
+
+        <div class="pagination">
+        <ul>
+                        <li class="prev"><a href="../tag/openstack.html">&larr; Previous</a></li>
+                        <li class=""><a href="../tag/openstack.html">1</a></li>
+                        <li class="active"><a href="../tag/openstack2.html">2</a></li>
+                        <li class="next disabled"><a href="#">&rarr; Next</a></li>
+        </ul>
+        </div>
 
         </div><!--/span-->
 
