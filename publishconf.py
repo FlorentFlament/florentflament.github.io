@@ -25,3 +25,4 @@ from pelicanconf import *
 
 DISQUS_SITENAME = "florentflament"
 GOOGLE_ANALYTICS = "UA-23791515-4"
+TWITTER_USERNAME = "florentflament_"
