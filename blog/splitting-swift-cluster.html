@@ -106,7 +106,7 @@
                 <div class="well">
 <footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2014-10-20T23:25:00">
+<abbr class="published" title="2014-10-20T23:25:00+02:00">
         <i class="icon-calendar"></i>Mon 20 October 2014
 </abbr>
 <span class="label">By</span>
@@ -244,20 +244,20 @@ auth_key = DEDICATED_ACCOUNT_PASSWORD
 <p>Once properly set, we can initiate dispersion monitoring by populating
 our new account with test data:</p>
 <div class="highlight"><pre>cloud@swproxy:~<span class="nv">$ </span>swift-dispersion-populate
-Created 2621 containers <span class="k">for </span>dispersion reporting, 4m, 0 retries
-Created 2621 objects <span class="k">for </span>dispersion reporting, 2m, 0 retries
+Created <span class="m">2621</span> containers <span class="k">for</span> dispersion reporting, 4m, <span class="m">0</span> retries
+Created <span class="m">2621</span> objects <span class="k">for</span> dispersion reporting, 2m, <span class="m">0</span> retries
 </pre></div>
 
 
 <p>Our objects should have been placed on appropriate devices. We can
 check this:</p>
 <div class="highlight"><pre>cloud@swproxy:~<span class="nv">$ </span>swift-dispersion-report
-Queried 2622 containers <span class="k">for </span>dispersion reporting, 2m, 31 retries
-100.00% of container copies found <span class="o">(</span>7866 of 7866<span class="o">)</span>
+Queried <span class="m">2622</span> containers <span class="k">for</span> dispersion reporting, 2m, <span class="m">31</span> retries
+100.00% of container copies found <span class="o">(</span><span class="m">7866</span> of 7866<span class="o">)</span>
 Sample represents 1.00% of the container partition space
-Queried 2621 objects <span class="k">for </span>dispersion reporting, 45s, 1 retries
-There were 2621 partitions missing 0 copy.
-100.00% of object copies found <span class="o">(</span>7863 of 7863<span class="o">)</span>
+Queried <span class="m">2621</span> objects <span class="k">for</span> dispersion reporting, 45s, <span class="m">1</span> retries
+There were <span class="m">2621</span> partitions missing <span class="m">0</span> copy.
+100.00% of object copies found <span class="o">(</span><span class="m">7863</span> of 7863<span class="o">)</span>
 Sample represents 1.00% of the object partition space
 </pre></div>
 
@@ -269,24 +269,24 @@ can follow the data redistribution with the
 of objects copies reach 100%. Here's an example of results obtained on
 a 6 nodes cluster.</p>
 <div class="highlight"><pre>cloud@swproxy:~<span class="nv">$ </span>swift-dispersion-report
-Queried 2622 containers <span class="k">for </span>dispersion reporting, 3m, 29 retries
-100.00% of container copies found <span class="o">(</span>7866 of 7866<span class="o">)</span>
+Queried <span class="m">2622</span> containers <span class="k">for</span> dispersion reporting, 3m, <span class="m">29</span> retries
+100.00% of container copies found <span class="o">(</span><span class="m">7866</span> of 7866<span class="o">)</span>
 Sample represents 1.00% of the container partition space
-Queried 2621 objects <span class="k">for </span>dispersion reporting, 33s, 0 retries
-There were 23 partitions missing 0 copy.
-There were 2598 partitions missing 1 copy.
-66.96% of object copies found <span class="o">(</span>5265 of 7863<span class="o">)</span>
+Queried <span class="m">2621</span> objects <span class="k">for</span> dispersion reporting, 33s, <span class="m">0</span> retries
+There were <span class="m">23</span> partitions missing <span class="m">0</span> copy.
+There were <span class="m">2598</span> partitions missing <span class="m">1</span> copy.
+66.96% of object copies found <span class="o">(</span><span class="m">5265</span> of 7863<span class="o">)</span>
 Sample represents 1.00% of the object partition space
 
 <span class="c"># Then some minutes later</span>
 cloud@swproxy:~<span class="nv">$ </span>swift-dispersion-report
-Queried 2622 containers <span class="k">for </span>dispersion reporting, 5m, 0 retries
-100.00% of container copies found <span class="o">(</span>7866 of 7866<span class="o">)</span>
+Queried <span class="m">2622</span> containers <span class="k">for</span> dispersion reporting, 5m, <span class="m">0</span> retries
+100.00% of container copies found <span class="o">(</span><span class="m">7866</span> of 7866<span class="o">)</span>
 Sample represents 1.00% of the container partition space
-Queried 2621 objects <span class="k">for </span>dispersion reporting, 26s, 0 retries
-There were 91 partitions missing 0 copy.
-There were 2530 partitions missing 1 copy.
-67.82% of object copies found <span class="o">(</span>5333 of 7863<span class="o">)</span>
+Queried <span class="m">2621</span> objects <span class="k">for</span> dispersion reporting, 26s, <span class="m">0</span> retries
+There were <span class="m">91</span> partitions missing <span class="m">0</span> copy.
+There were <span class="m">2530</span> partitions missing <span class="m">1</span> copy.
+67.82% of object copies found <span class="o">(</span><span class="m">5333</span> of 7863<span class="o">)</span>
 Sample represents 1.00% of the object partition space
 </pre></div>
 
@@ -392,7 +392,7 @@ check that everything (network, hardware, ...) is working as
 expected. We can use the <code>swift-add-nodes.py</code> script to easily add
 nodes to our new region with a minimal weight so that only 1 partition
 will be assigned to each device:</p>
-<div class="highlight"><pre><span class="nv">$ </span>python swift-add-nodes.py object.builder object.builder.s1 2 6000 127.0.0.1 127.0.0.2 127.0.0.3
+<div class="highlight"><pre><span class="nv">$ </span>python swift-add-nodes.py object.builder object.builder.s1 <span class="m">2</span> <span class="m">6000</span> 127.0.0.1 127.0.0.2 127.0.0.3
 Adding device: <span class="o">{</span><span class="s1">&#39;weight&#39;</span>: 5.11, <span class="s1">&#39;zone&#39;</span>: 0, <span class="s1">&#39;ip&#39;</span>: <span class="s1">&#39;127.0.0.1&#39;</span>, <span class="s1">&#39;region&#39;</span>: 2, <span class="s1">&#39;device&#39;</span>: <span class="s1">&#39;sdb1&#39;</span>, <span class="s1">&#39;port&#39;</span>: 6000<span class="o">}</span>
 Adding device: <span class="o">{</span><span class="s1">&#39;weight&#39;</span>: 5.11, <span class="s1">&#39;zone&#39;</span>: 0, <span class="s1">&#39;ip&#39;</span>: <span class="s1">&#39;127.0.0.1&#39;</span>, <span class="s1">&#39;region&#39;</span>: 2, <span class="s1">&#39;device&#39;</span>: <span class="s1">&#39;sdc1&#39;</span>, <span class="s1">&#39;port&#39;</span>: 6000<span class="o">}</span>
 Adding device: <span class="o">{</span><span class="s1">&#39;weight&#39;</span>: 5.11, <span class="s1">&#39;zone&#39;</span>: 0, <span class="s1">&#39;ip&#39;</span>: <span class="s1">&#39;127.0.0.1&#39;</span>, <span class="s1">&#39;region&#39;</span>: 2, <span class="s1">&#39;device&#39;</span>: <span class="s1">&#39;sdd1&#39;</span>, <span class="s1">&#39;port&#39;</span>: 6000<span class="o">}</span>
@@ -407,7 +407,7 @@ Adding device: <span class="o">{</span><span class="s1">&#39;weight&#39;</span>:
 Adding device: <span class="o">{</span><span class="s1">&#39;weight&#39;</span>: 5.11, <span class="s1">&#39;zone&#39;</span>: 0, <span class="s1">&#39;ip&#39;</span>: <span class="s1">&#39;127.0.0.3&#39;</span>, <span class="s1">&#39;region&#39;</span>: 2, <span class="s1">&#39;device&#39;</span>: <span class="s1">&#39;sde1&#39;</span>, <span class="s1">&#39;port&#39;</span>: 6000<span class="o">}</span>
 
 <span class="nv">$ </span>swift-ring-builder object.builder.s1 rebalance
-Reassigned 12 <span class="o">(</span>0.00%<span class="o">)</span> partitions. Balance is now 0.18.
+Reassigned <span class="m">12</span> <span class="o">(</span>0.00%<span class="o">)</span> partitions. Balance is now 0.18.
 </pre></div>
 
 
@@ -416,7 +416,7 @@ steps of some percentage (let's say 3%) until one third of total
 cluster data is stored in the new region. Script
 <code>swift-assign-partitions.py</code> allows assigning a chosen ratio of
 partitions to the new region:</p>
-<div class="highlight"><pre><span class="nv">$ </span>python swift-assign-partitions.py object.builder.s2 object.builder.s3 2 0.03
+<div class="highlight"><pre><span class="nv">$ </span>python swift-assign-partitions.py object.builder.s2 object.builder.s3 <span class="m">2</span> 0.03
 Setting new weight of 10376.28 to device 1342
 Setting new weight of 10376.28 to device 1343
 Setting new weight of 10376.28 to device 1344
@@ -431,7 +431,7 @@ Setting new weight of 10376.28 to device 1352
 Setting new weight of 10376.28 to device 1353
 
 <span class="nv">$ </span>swift-ring-builder object.builder.s3 rebalance
-Reassigned 25119 <span class="o">(</span>9.58%<span class="o">)</span> partitions. Balance is now 0.25.
+Reassigned <span class="m">25119</span> <span class="o">(</span>9.58%<span class="o">)</span> partitions. Balance is now 0.25.
 </pre></div>
 
 
@@ -485,118 +485,8 @@ Summit in Paris !</p>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
 <li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
     <a href="./tag/raspbian.html">
         <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
     </a>
 </li>
 <li class="tag-4">
@@ -605,28 +495,13 @@ Summit in Paris !</p>
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
     <a href="./tag/ring.html">
         <i class="icon-tag icon-large"></i>Ring
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/docker.html">
+        <i class="icon-tag icon-large"></i>Docker
     </a>
 </li>
 <li class="tag-4">
@@ -635,8 +510,138 @@ Summit in Paris !</p>
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/ssh.html">
+        <i class="icon-tag icon-large"></i>SSH
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/keystone.html">
+        <i class="icon-tag icon-large"></i>Keystone
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/microsft.html">
+        <i class="icon-tag icon-large"></i>Microsft
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/apple.html">
+        <i class="icon-tag icon-large"></i>Apple
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-security.html">
+        <i class="icon-tag icon-large"></i>Data Security
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/kvm.html">
+        <i class="icon-tag icon-large"></i>KVM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/znc.html">
+        <i class="icon-tag icon-large"></i>ZNC
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/costs.html">
+        <i class="icon-tag icon-large"></i>Costs
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/windows.html">
+        <i class="icon-tag icon-large"></i>Windows
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/vm.html">
+        <i class="icon-tag icon-large"></i>VM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ceph.html">
+        <i class="icon-tag icon-large"></i>Ceph
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ubuntu.html">
+        <i class="icon-tag icon-large"></i>Ubuntu
+    </a>
+</li>
+<li class="tag-1">
+    <a href="./tag/openstack.html">
+        <i class="icon-tag icon-large"></i>OpenStack
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/bug.html">
+        <i class="icon-tag icon-large"></i>bug
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/virtualization.html">
+        <i class="icon-tag icon-large"></i>Virtualization
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/swift.html">
+        <i class="icon-tag icon-large"></i>Swift
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/operations.html">
         <i class="icon-tag icon-large"></i>operations
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/policies.html">
+        <i class="icon-tag icon-large"></i>Policies
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-safety.html">
+        <i class="icon-tag icon-large"></i>Data Safety
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/linux.html">
+        <i class="icon-tag icon-large"></i>Linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/printers.html">
+        <i class="icon-tag icon-large"></i>Printers
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/libvirt.html">
+        <i class="icon-tag icon-large"></i>libvirt
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/cinder.html">
+        <i class="icon-tag icon-large"></i>Cinder
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-management.html">
+        <i class="icon-tag icon-large"></i>Data management
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/chef.html">
+        <i class="icon-tag icon-large"></i>Chef
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/git.html">
+        <i class="icon-tag icon-large"></i>Git
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/hardware.html">
+        <i class="icon-tag icon-large"></i>Hardware
     </a>
 </li>
 

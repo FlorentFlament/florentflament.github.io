@@ -106,7 +106,7 @@
                 <div class="well">
 <footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2013-12-15T00:00:00">
+<abbr class="published" title="2013-12-15T00:00:00+01:00">
         <i class="icon-calendar"></i>Sun 15 December 2013
 </abbr>
 <span class="label">By</span>
@@ -167,7 +167,7 @@ generated image:</p>
 <p>After having answered to all the questions, ZNC will generate its
 configuration files. It will then be ready to run in daemon mode. Now
 we can save a Docker image including ZNC's configuration files.</p>
-<div class="highlight"><pre><span class="nv">$ CONT</span><span class="o">=</span><span class="k">$(</span>docker ps -a | grep <span class="s2">&quot;minutes ago&quot;</span> | head -1 | awk <span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight"><pre><span class="nv">$ CONT</span><span class="o">=</span><span class="k">$(</span>docker ps -a <span class="p">|</span> grep <span class="s2">&quot;minutes ago&quot;</span> <span class="p">|</span> head -1 <span class="p">|</span> awk <span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 <span class="nv">$ </span>docker commit <span class="se">\</span>
 &gt; -run<span class="o">=</span><span class="s1">&#39;{&quot;Cmd&quot;: [&quot;/usr/bin/znc&quot;, &quot;-f&quot;, &quot;-d&quot;, &quot;/var/znc/&quot;], &quot;User&quot;: &quot;daemon&quot;}&#39;</span> <span class="se">\</span>
 &gt; <span class="nv">$CONT</span> znc:ready
@@ -223,37 +223,37 @@ CMD [&quot;/usr/bin/znc&quot;, &quot;-f&quot;, &quot;-d&quot;, &quot;/var/znc/&q
 <h2>Update 2014/02/25</h2>
 <p>Here's an example of ZNC configuration file listening for SSL incoming
 connexions:</p>
-<div class="highlight"><pre><span class="n">Listener4</span>  <span class="o">=</span> <span class="o">+</span><span class="mi">6697</span>
+<div class="highlight"><pre>Listener4  = +6697
 
-<span class="o">&lt;</span><span class="nb">User</span> <span class="nx">USER1</span><span class="o">&gt;</span>
-        <span class="n">Pass</span>       <span class="o">=</span> <span class="nx">PASSWORDHASHHERE</span>
-        <span class="n">Admin</span>      <span class="o">=</span> <span class="kc">true</span>
-        <span class="n">Nick</span>       <span class="o">=</span> <span class="nx">NICK1</span>
-        <span class="n">AltNick</span>    <span class="o">=</span> <span class="nx">NICK2</span>
-        <span class="n">Ident</span>      <span class="o">=</span> <span class="nx">NICK1</span>
-        <span class="n">RealName</span>   <span class="o">=</span> <span class="nx">REALNAME</span>
-        <span class="n">Buffer</span>     <span class="o">=</span> <span class="mi">500</span>
-        <span class="n">KeepBuffer</span> <span class="o">=</span> <span class="kc">true</span>
-        <span class="n">ChanModes</span>  <span class="o">=</span> <span class="o">+</span><span class="nx">stn</span>
-        <span class="n">LoadModule</span> <span class="o">=</span> <span class="nx">admin</span>
-        <span class="n">Server</span>     <span class="o">=</span> <span class="nx">irc.freenode.net</span> <span class="mi">6667</span> 
-        <span class="n">BindHost</span>   <span class="o">=</span> <span class="mf">0.0.0.0</span>
-<span class="o">&lt;/</span><span class="nb">User</span><span class="o">&gt;</span>
+<span class="nt">&lt;User</span> <span class="err">USER1</span><span class="nt">&gt;</span>
+        Pass       = PASSWORDHASHHERE
+        Admin      = true
+        Nick       = NICK1
+        AltNick    = NICK2
+        Ident      = NICK1
+        RealName   = REALNAME
+        Buffer     = 500
+        KeepBuffer = true
+        ChanModes  = +stn
+        LoadModule = admin
+        Server     = irc.freenode.net 6667 
+        BindHost   = 0.0.0.0
+<span class="nt">&lt;/User&gt;</span>
 
-<span class="o">&lt;</span><span class="nb">User</span> <span class="nx">USER2</span><span class="o">&gt;</span>
-        <span class="n">Pass</span>       <span class="o">=</span> <span class="nx">PASSWORDHASHHERE</span>
-        <span class="n">Admin</span>      <span class="o">=</span> <span class="kc">true</span>
-        <span class="n">Nick</span>       <span class="o">=</span> <span class="nx">NICK1</span>
-        <span class="n">AltNick</span>    <span class="o">=</span> <span class="nx">NICK2</span>
-        <span class="n">Ident</span>      <span class="o">=</span> <span class="nx">NICK1</span>
-        <span class="n">RealName</span>   <span class="o">=</span> <span class="nx">REALNAME</span>
-        <span class="n">Buffer</span>     <span class="o">=</span> <span class="mi">500</span>
-        <span class="n">KeepBuffer</span> <span class="o">=</span> <span class="kc">true</span>
-        <span class="n">ChanModes</span>  <span class="o">=</span> <span class="o">+</span><span class="nx">stn</span>
-        <span class="n">LoadModule</span> <span class="o">=</span> <span class="nx">admin</span>
-        <span class="n">Server</span>     <span class="o">=</span> <span class="nx">CUSTOMIRCSERVER</span> <span class="o">+</span><span class="mi">6697</span> <span class="nx">IRCSERVERPASSWORD</span>
-        <span class="n">BindHost</span>   <span class="o">=</span> <span class="mf">0.0.0.0</span>
-<span class="o">&lt;/</span><span class="nb">User</span><span class="o">&gt;</span>
+<span class="nt">&lt;User</span> <span class="err">USER2</span><span class="nt">&gt;</span>
+        Pass       = PASSWORDHASHHERE
+        Admin      = true
+        Nick       = NICK1
+        AltNick    = NICK2
+        Ident      = NICK1
+        RealName   = REALNAME
+        Buffer     = 500
+        KeepBuffer = true
+        ChanModes  = +stn
+        LoadModule = admin
+        Server     = CUSTOMIRCSERVER +6697 IRCSERVERPASSWORD
+        BindHost   = 0.0.0.0
+<span class="nt">&lt;/User&gt;</span>
 </pre></div>
 
 
@@ -303,118 +303,8 @@ USER1:PASSORDHASHHERE).</p>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
 <li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
     <a href="./tag/raspbian.html">
         <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
     </a>
 </li>
 <li class="tag-4">
@@ -423,28 +313,13 @@ USER1:PASSORDHASHHERE).</p>
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
     <a href="./tag/ring.html">
         <i class="icon-tag icon-large"></i>Ring
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/docker.html">
+        <i class="icon-tag icon-large"></i>Docker
     </a>
 </li>
 <li class="tag-4">
@@ -453,8 +328,138 @@ USER1:PASSORDHASHHERE).</p>
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/ssh.html">
+        <i class="icon-tag icon-large"></i>SSH
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/keystone.html">
+        <i class="icon-tag icon-large"></i>Keystone
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/microsft.html">
+        <i class="icon-tag icon-large"></i>Microsft
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/apple.html">
+        <i class="icon-tag icon-large"></i>Apple
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-security.html">
+        <i class="icon-tag icon-large"></i>Data Security
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/kvm.html">
+        <i class="icon-tag icon-large"></i>KVM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/znc.html">
+        <i class="icon-tag icon-large"></i>ZNC
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/costs.html">
+        <i class="icon-tag icon-large"></i>Costs
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/windows.html">
+        <i class="icon-tag icon-large"></i>Windows
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/vm.html">
+        <i class="icon-tag icon-large"></i>VM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ceph.html">
+        <i class="icon-tag icon-large"></i>Ceph
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ubuntu.html">
+        <i class="icon-tag icon-large"></i>Ubuntu
+    </a>
+</li>
+<li class="tag-1">
+    <a href="./tag/openstack.html">
+        <i class="icon-tag icon-large"></i>OpenStack
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/bug.html">
+        <i class="icon-tag icon-large"></i>bug
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/virtualization.html">
+        <i class="icon-tag icon-large"></i>Virtualization
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/swift.html">
+        <i class="icon-tag icon-large"></i>Swift
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/operations.html">
         <i class="icon-tag icon-large"></i>operations
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/policies.html">
+        <i class="icon-tag icon-large"></i>Policies
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-safety.html">
+        <i class="icon-tag icon-large"></i>Data Safety
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/linux.html">
+        <i class="icon-tag icon-large"></i>Linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/printers.html">
+        <i class="icon-tag icon-large"></i>Printers
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/libvirt.html">
+        <i class="icon-tag icon-large"></i>libvirt
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/cinder.html">
+        <i class="icon-tag icon-large"></i>Cinder
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-management.html">
+        <i class="icon-tag icon-large"></i>Data management
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/chef.html">
+        <i class="icon-tag icon-large"></i>Chef
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/git.html">
+        <i class="icon-tag icon-large"></i>Git
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/hardware.html">
+        <i class="icon-tag icon-large"></i>Hardware
     </a>
 </li>
 

@@ -106,7 +106,7 @@
                 <div class="well">
 <footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2014-01-04T00:00:00">
+<abbr class="published" title="2014-01-04T00:00:00+01:00">
         <i class="icon-calendar"></i>Sat 04 January 2014
 </abbr>
 <span class="label">By</span>
@@ -222,10 +222,10 @@ entries in the database manually...</p>
 inconsistent state, is to manually update entries in the Cinder
 database.</p>
 <div class="highlight"><pre><span class="nv">$ </span>mysql cinder
-Reading table information <span class="k">for </span>completion of table and column names
+Reading table information <span class="k">for</span> completion of table and column names
 You can turn off this feature to get a quicker startup with -A
 
-Welcome to the MySQL monitor.  Commands end with ; or <span class="se">\g</span>.
+Welcome to the MySQL monitor.  Commands end with <span class="p">;</span> or <span class="se">\g</span>.
 Your MySQL connection id is 1900
 Server version: 5.5.34-0ubuntu0.12.04.1-log <span class="o">(</span>Ubuntu<span class="o">)</span>
 
@@ -235,46 +235,46 @@ Oracle is a registered trademark of Oracle Corporation and/or its
 affiliates. Other names may be trademarks of their respective
 owners.
 
-Type <span class="s1">&#39;help;&#39;</span> or <span class="s1">&#39;\h&#39;</span> <span class="k">for </span>help. Type <span class="s1">&#39;\c&#39;</span> to clear the current input statement.
+Type <span class="s1">&#39;help;&#39;</span> or <span class="s1">&#39;\h&#39;</span> <span class="k">for</span> help. Type <span class="s1">&#39;\c&#39;</span> to clear the current input statement.
 
-mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes;
+mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<span class="p">;</span>
 +--------------------------------------+---------+---------------+------------+--------------------------------------+
-| id                                   | status  | attach_status | mountpoint | instance_uuid                        |
+<span class="p">|</span> id                                   <span class="p">|</span> status  <span class="p">|</span> attach_status <span class="p">|</span> mountpoint <span class="p">|</span> instance_uuid                        <span class="p">|</span>
 +--------------------------------------+---------+---------------+------------+--------------------------------------+
-| 0580142b-bfb5-4113-8676-4fb783ec05f2 | deleted | detached      | NULL       | NULL                                 |
-| 1085d96e-ae82-484b-8495-27cc2f25c9c3 | deleted | detached      | NULL       | NULL                                 |
-| 4fbff7ce-2c9f-4116-ad1e-12f78001da2d | deleted | detached      | NULL       | NULL                                 |
-| 57b32eaf-7b71-49bf-a8fd-4115567a6cda | in-use  | attached      | /dev/vdb   | fa53d190-426b-4ce6-8d36-1af408c25225 |
-| 60a7eb30-9849-4b8d-9ca1-8f554b9a4045 | deleted | detached      | NULL       | NULL                                 |
-| a34ca08a-2e6b-4820-b472-91aa27b47261 | deleted | detached      | NULL       | NULL                                 |
-| d827daa5-c8d7-427b-a53c-8be918a1a6fb | deleted | detached      | NULL       | NULL                                 |
+<span class="p">|</span> 0580142b-bfb5-4113-8676-4fb783ec05f2 <span class="p">|</span> deleted <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL                                 <span class="p">|</span>
+<span class="p">|</span> 1085d96e-ae82-484b-8495-27cc2f25c9c3 <span class="p">|</span> deleted <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL                                 <span class="p">|</span>
+<span class="p">|</span> 4fbff7ce-2c9f-4116-ad1e-12f78001da2d <span class="p">|</span> deleted <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL                                 <span class="p">|</span>
+<span class="p">|</span> 57b32eaf-7b71-49bf-a8fd-4115567a6cda <span class="p">|</span> in-use  <span class="p">|</span> attached      <span class="p">|</span> /dev/vdb   <span class="p">|</span> fa53d190-426b-4ce6-8d36-1af408c25225 <span class="p">|</span>
+<span class="p">|</span> 60a7eb30-9849-4b8d-9ca1-8f554b9a4045 <span class="p">|</span> deleted <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL                                 <span class="p">|</span>
+<span class="p">|</span> a34ca08a-2e6b-4820-b472-91aa27b47261 <span class="p">|</span> deleted <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL                                 <span class="p">|</span>
+<span class="p">|</span> d827daa5-c8d7-427b-a53c-8be918a1a6fb <span class="p">|</span> deleted <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL                                 <span class="p">|</span>
 +--------------------------------------+---------+---------------+------------+--------------------------------------+
-7 rows in <span class="nb">set</span> <span class="o">(</span>0.00 sec<span class="o">)</span>
+<span class="m">7</span> rows in <span class="nb">set</span> <span class="o">(</span>0.00 sec<span class="o">)</span>
 
-mysql&gt; UPDATE volumes SET <span class="nv">status</span><span class="o">=</span><span class="s2">&quot;available&quot;</span>, <span class="nv">attach_status</span><span class="o">=</span><span class="s2">&quot;detached&quot;</span>, <span class="nv">mountpoint</span><span class="o">=</span>NULL, <span class="nv">instance_uuid</span><span class="o">=</span>NULL WHERE <span class="nv">id</span><span class="o">=</span><span class="s2">&quot;57b32eaf-7b71-49bf-a8fd-4115567a6cda&quot;</span>;
-Query OK, 1 row affected <span class="o">(</span>0.00 sec<span class="o">)</span>
-Rows matched: 1  Changed: 1  Warnings: 0
+mysql&gt; UPDATE volumes SET <span class="nv">status</span><span class="o">=</span><span class="s2">&quot;available&quot;</span>, <span class="nv">attach_status</span><span class="o">=</span><span class="s2">&quot;detached&quot;</span>, <span class="nv">mountpoint</span><span class="o">=</span>NULL, <span class="nv">instance_uuid</span><span class="o">=</span>NULL WHERE <span class="nv">id</span><span class="o">=</span><span class="s2">&quot;57b32eaf-7b71-49bf-a8fd-4115567a6cda&quot;</span><span class="p">;</span>
+Query OK, <span class="m">1</span> row affected <span class="o">(</span>0.00 sec<span class="o">)</span>
+Rows matched: <span class="m">1</span>  Changed: <span class="m">1</span>  Warnings: 0
 
-mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes;
+mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<span class="p">;</span>
 +--------------------------------------+-----------+---------------+------------+---------------+
-| id                                   | status    | attach_status | mountpoint | instance_uuid |
+<span class="p">|</span> id                                   <span class="p">|</span> status    <span class="p">|</span> attach_status <span class="p">|</span> mountpoint <span class="p">|</span> instance_uuid <span class="p">|</span>
 +--------------------------------------+-----------+---------------+------------+---------------+
-| 0580142b-bfb5-4113-8676-4fb783ec05f2 | deleted   | detached      | NULL       | NULL          |
-| 1085d96e-ae82-484b-8495-27cc2f25c9c3 | deleted   | detached      | NULL       | NULL          |
-| 4fbff7ce-2c9f-4116-ad1e-12f78001da2d | deleted   | detached      | NULL       | NULL          |
-| 57b32eaf-7b71-49bf-a8fd-4115567a6cda | available | detached      | NULL       | NULL          |
-| 60a7eb30-9849-4b8d-9ca1-8f554b9a4045 | deleted   | detached      | NULL       | NULL          |
-| a34ca08a-2e6b-4820-b472-91aa27b47261 | deleted   | detached      | NULL       | NULL          |
-| d827daa5-c8d7-427b-a53c-8be918a1a6fb | deleted   | detached      | NULL       | NULL          |
+<span class="p">|</span> 0580142b-bfb5-4113-8676-4fb783ec05f2 <span class="p">|</span> deleted   <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL          <span class="p">|</span>
+<span class="p">|</span> 1085d96e-ae82-484b-8495-27cc2f25c9c3 <span class="p">|</span> deleted   <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL          <span class="p">|</span>
+<span class="p">|</span> 4fbff7ce-2c9f-4116-ad1e-12f78001da2d <span class="p">|</span> deleted   <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL          <span class="p">|</span>
+<span class="p">|</span> 57b32eaf-7b71-49bf-a8fd-4115567a6cda <span class="p">|</span> available <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL          <span class="p">|</span>
+<span class="p">|</span> 60a7eb30-9849-4b8d-9ca1-8f554b9a4045 <span class="p">|</span> deleted   <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL          <span class="p">|</span>
+<span class="p">|</span> a34ca08a-2e6b-4820-b472-91aa27b47261 <span class="p">|</span> deleted   <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL          <span class="p">|</span>
+<span class="p">|</span> d827daa5-c8d7-427b-a53c-8be918a1a6fb <span class="p">|</span> deleted   <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL          <span class="p">|</span>
 +--------------------------------------+-----------+---------------+------------+---------------+
-7 rows in <span class="nb">set</span> <span class="o">(</span>0.00 sec<span class="o">)</span>
+<span class="m">7</span> rows in <span class="nb">set</span> <span class="o">(</span>0.00 sec<span class="o">)</span>
 
 mysql&gt; Bye
 <span class="nv">$ </span>cinder list
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
-|                  ID                  |   Status  | Name | Size | Volume Type | Bootable | Attached to |
+<span class="p">|</span>                  ID                  <span class="p">|</span>   Status  <span class="p">|</span> Name <span class="p">|</span> Size <span class="p">|</span> Volume Type <span class="p">|</span> Bootable <span class="p">|</span> Attached to <span class="p">|</span>
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
-| 57b32eaf-7b71-49bf-a8fd-4115567a6cda | available | vol1 |  1   |     None    |  <span class="nb">false</span>   |             |
+<span class="p">|</span> 57b32eaf-7b71-49bf-a8fd-4115567a6cda <span class="p">|</span> available <span class="p">|</span> vol1 <span class="p">|</span>  <span class="m">1</span>   <span class="p">|</span>     None    <span class="p">|</span>  <span class="nb">false</span>   <span class="p">|</span>             <span class="p">|</span>
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
 </pre></div>
                 </div><!-- /.entry-content -->
@@ -319,118 +319,8 @@ mysql&gt; Bye
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
 <li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
     <a href="./tag/raspbian.html">
         <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
     </a>
 </li>
 <li class="tag-4">
@@ -439,28 +329,13 @@ mysql&gt; Bye
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
     <a href="./tag/ring.html">
         <i class="icon-tag icon-large"></i>Ring
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/docker.html">
+        <i class="icon-tag icon-large"></i>Docker
     </a>
 </li>
 <li class="tag-4">
@@ -469,8 +344,138 @@ mysql&gt; Bye
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/ssh.html">
+        <i class="icon-tag icon-large"></i>SSH
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/keystone.html">
+        <i class="icon-tag icon-large"></i>Keystone
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/microsft.html">
+        <i class="icon-tag icon-large"></i>Microsft
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/apple.html">
+        <i class="icon-tag icon-large"></i>Apple
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-security.html">
+        <i class="icon-tag icon-large"></i>Data Security
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/kvm.html">
+        <i class="icon-tag icon-large"></i>KVM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/znc.html">
+        <i class="icon-tag icon-large"></i>ZNC
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/costs.html">
+        <i class="icon-tag icon-large"></i>Costs
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/windows.html">
+        <i class="icon-tag icon-large"></i>Windows
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/vm.html">
+        <i class="icon-tag icon-large"></i>VM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ceph.html">
+        <i class="icon-tag icon-large"></i>Ceph
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ubuntu.html">
+        <i class="icon-tag icon-large"></i>Ubuntu
+    </a>
+</li>
+<li class="tag-1">
+    <a href="./tag/openstack.html">
+        <i class="icon-tag icon-large"></i>OpenStack
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/bug.html">
+        <i class="icon-tag icon-large"></i>bug
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/virtualization.html">
+        <i class="icon-tag icon-large"></i>Virtualization
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/swift.html">
+        <i class="icon-tag icon-large"></i>Swift
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/operations.html">
         <i class="icon-tag icon-large"></i>operations
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/policies.html">
+        <i class="icon-tag icon-large"></i>Policies
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-safety.html">
+        <i class="icon-tag icon-large"></i>Data Safety
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/linux.html">
+        <i class="icon-tag icon-large"></i>Linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/printers.html">
+        <i class="icon-tag icon-large"></i>Printers
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/libvirt.html">
+        <i class="icon-tag icon-large"></i>libvirt
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/cinder.html">
+        <i class="icon-tag icon-large"></i>Cinder
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-management.html">
+        <i class="icon-tag icon-large"></i>Data management
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/chef.html">
+        <i class="icon-tag icon-large"></i>Chef
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/git.html">
+        <i class="icon-tag icon-large"></i>Git
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/hardware.html">
+        <i class="icon-tag icon-large"></i>Hardware
     </a>
 </li>
 

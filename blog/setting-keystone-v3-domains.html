@@ -106,7 +106,7 @@
                 <div class="well">
 <footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2014-01-18T00:00:00">
+<abbr class="published" title="2014-01-18T00:00:00+01:00">
         <i class="icon-calendar"></i>Sat 18 January 2014
 </abbr>
 <span class="label">By</span>
@@ -169,12 +169,12 @@ curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
 <span class="s1">            }</span>
 <span class="s1">        }</span>
 <span class="s1">    }</span>
-<span class="s1">}&#39;</span> | grep ^X-Subject-Token: | awk <span class="s1">&#39;{print $2}&#39;</span> <span class="k">)</span>
+<span class="s1">}&#39;</span> <span class="p">|</span> grep ^X-Subject-Token: <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span> <span class="k">)</span>
 
 <span class="nv">ID_ADMIN_DOMAIN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/domains <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
     -d <span class="s1">&#39;</span>
 <span class="s1">{</span>
@@ -182,9 +182,9 @@ curl http://localhost:5000/v3/domains <span class="se">\</span>
 <span class="s1">    &quot;enabled&quot;: true,</span>
 <span class="s1">    &quot;name&quot;: &quot;admin_domain&quot;</span>
 <span class="s1">    }</span>
-<span class="s1">}&#39;</span> | jq .domain.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+<span class="s1">}&#39;</span> <span class="p">|</span> jq .domain.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
 
-<span class="nb">echo</span> <span class="s2">&quot;ID of domain cloud: $ID_ADMIN_DOMAIN&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;ID of domain cloud: </span><span class="nv">$ID_ADMIN_DOMAIN</span><span class="s2">&quot;</span>
 </pre></div>
 
 
@@ -195,20 +195,20 @@ curl http://localhost:5000/v3/domains <span class="se">\</span>
 <div class="highlight"><pre><span class="nv">ID_CLOUD_ADMIN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/users <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
     -d <span class="s2">&quot;</span>
 <span class="s2">{</span>
 <span class="s2">    \&quot;user\&quot;: {</span>
 <span class="s2">        \&quot;description\&quot;: \&quot;Cloud administrator\&quot;,</span>
-<span class="s2">        \&quot;domain_id\&quot;: \&quot;$ID_ADMIN_DOMAIN\&quot;,</span>
+<span class="s2">        \&quot;domain_id\&quot;: \&quot;</span><span class="nv">$ID_ADMIN_DOMAIN</span><span class="s2">\&quot;,</span>
 <span class="s2">        \&quot;enabled\&quot;: true,</span>
 <span class="s2">        \&quot;name\&quot;: \&quot;cloud_admin\&quot;,</span>
 <span class="s2">        \&quot;password\&quot;: \&quot;password\&quot;</span>
 <span class="s2">    }</span>
-<span class="s2">}&quot;</span> | jq .user.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+<span class="s2">}&quot;</span> <span class="p">|</span> jq .user.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
 
-<span class="nb">echo</span> <span class="s2">&quot;ID of user cloud_admin: $ID_CLOUD_ADMIN&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;ID of user cloud_admin: </span><span class="nv">$ID_CLOUD_ADMIN</span><span class="s2">&quot;</span>
 </pre></div>
 
 
@@ -219,18 +219,18 @@ curl http://localhost:5000/v3/users <span class="se">\</span>
 <div class="highlight"><pre><span class="nv">ADMIN_ROLE_ID</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/roles?name<span class="o">=</span>admin <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $ADMIN_TOKEN&quot;</span> <span class="se">\</span>
-| jq .roles<span class="o">[</span>0<span class="o">]</span>.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
+<span class="p">|</span> jq .roles<span class="o">[</span>0<span class="o">]</span>.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
 
-curl -X PUT http://localhost:5000/v3/domains/<span class="k">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_CLOUD_ADMIN</span><span class="k">}</span>/roles/<span class="k">${</span><span class="nv">ADMIN_ROLE_ID</span><span class="k">}</span> <span class="se">\</span>
+curl -X PUT http://localhost:5000/v3/domains/<span class="si">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="si">}</span>/users/<span class="si">${</span><span class="nv">ID_CLOUD_ADMIN</span><span class="si">}</span>/roles/<span class="si">${</span><span class="nv">ADMIN_ROLE_ID</span><span class="si">}</span> <span class="se">\</span>
     -s <span class="se">\</span>
     -i <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span>
 
-curl http://localhost:5000/v3/domains/<span class="k">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_CLOUD_ADMIN</span><span class="k">}</span>/roles<span class="se">\</span>
+curl http://localhost:5000/v3/domains/<span class="si">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="si">}</span>/users/<span class="si">${</span><span class="nv">ID_CLOUD_ADMIN</span><span class="si">}</span>/roles<span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $ADMIN_TOKEN&quot;</span> | jq .roles
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="p">|</span> jq .roles
 </pre></div>
 
 
@@ -243,7 +243,7 @@ curl http://localhost:5000/v3/domains/<span class="k">${</span><span class="nv">
   <code>admin_domain_id</code> by the ID of the <code>admin_domain</code> we just
   created. Locate the <code>policy.v3cloudsample.json</code> file into the <code>etc</code>
   directory of Keystone's source.</p>
-<div class="highlight"><pre>sed s/admin_domain_id/<span class="k">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="k">}</span>/ <span class="se">\</span>
+<div class="highlight"><pre>sed s/admin_domain_id/<span class="si">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="si">}</span>/ <span class="se">\</span>
     &lt; policy.v3cloudsample.json <span class="se">\</span>
     &gt; /etc/keystone/policy.json
 </pre></div>
@@ -291,7 +291,7 @@ curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
 <span class="s1">            }</span>
 <span class="s1">        }</span>
 <span class="s1">    }</span>
-<span class="s1">}&#39;</span> | grep ^X-Subject-Token: | awk <span class="s1">&#39;{print $2}&#39;</span> <span class="k">)</span>
+<span class="s1">}&#39;</span> <span class="p">|</span> grep ^X-Subject-Token: <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span> <span class="k">)</span>
 </pre></div>
 
 
@@ -301,7 +301,7 @@ curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
 <div class="highlight"><pre><span class="nv">ID_DOM1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/domains <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$CLOUD_ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
     -d <span class="s1">&#39;</span>
 <span class="s1">{</span>
@@ -309,14 +309,14 @@ curl http://localhost:5000/v3/domains <span class="se">\</span>
 <span class="s1">        &quot;enabled&quot;: true,</span>
 <span class="s1">        &quot;name&quot;: &quot;dom1&quot;</span>
 <span class="s1">    }</span>
-<span class="s1">}&#39;</span> | jq .domain.id | tr -d <span class="s1">&#39;&quot;&#39;</span><span class="k">)</span>
+<span class="s1">}&#39;</span> <span class="p">|</span> jq .domain.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span><span class="k">)</span>
 
-<span class="nb">echo</span> <span class="s2">&quot;ID of dom1: $ID_DOM1&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;ID of dom1: </span><span class="nv">$ID_DOM1</span><span class="s2">&quot;</span>
 
 <span class="nv">ID_DOM2</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/domains <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$CLOUD_ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
     -d <span class="s1">&#39;</span>
 <span class="s1">{</span>
@@ -324,9 +324,9 @@ curl http://localhost:5000/v3/domains <span class="se">\</span>
 <span class="s1">        &quot;enabled&quot;: true,</span>
 <span class="s1">        &quot;name&quot;: &quot;dom2&quot;</span>
 <span class="s1">    }</span>
-<span class="s1">}&#39;</span> | jq .domain.id | tr -d <span class="s1">&#39;&quot;&#39;</span><span class="k">)</span>
+<span class="s1">}&#39;</span> <span class="p">|</span> jq .domain.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span><span class="k">)</span>
 
-<span class="nb">echo</span> <span class="s2">&quot;ID of dom2: $ID_DOM2&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;ID of dom2: </span><span class="nv">$ID_DOM2</span><span class="s2">&quot;</span>
 </pre></div>
 
 
@@ -336,20 +336,20 @@ curl http://localhost:5000/v3/domains <span class="se">\</span>
 <div class="highlight"><pre><span class="nv">ID_ADM1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/users <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$CLOUD_ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
     -d <span class="s2">&quot;</span>
 <span class="s2">{</span>
 <span class="s2">    \&quot;user\&quot;: {</span>
 <span class="s2">        \&quot;description\&quot;: \&quot;Administrator of domain dom1\&quot;,</span>
-<span class="s2">        \&quot;domain_id\&quot;: \&quot;$ID_DOM1\&quot;,</span>
+<span class="s2">        \&quot;domain_id\&quot;: \&quot;</span><span class="nv">$ID_DOM1</span><span class="s2">\&quot;,</span>
 <span class="s2">        \&quot;enabled\&quot;: true,</span>
 <span class="s2">        \&quot;name\&quot;: \&quot;adm1\&quot;,</span>
 <span class="s2">        \&quot;password\&quot;: \&quot;password\&quot;</span>
 <span class="s2">    }</span>
-<span class="s2">}&quot;</span> | jq .user.id | tr -d <span class="s1">&#39;&quot;&#39;</span><span class="k">)</span>
+<span class="s2">}&quot;</span> <span class="p">|</span> jq .user.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span><span class="k">)</span>
 
-<span class="nb">echo</span> <span class="s2">&quot;ID of user adm1: $ID_ADM1&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;ID of user adm1: </span><span class="nv">$ID_ADM1</span><span class="s2">&quot;</span>
 </pre></div>
 
 
@@ -357,15 +357,15 @@ curl http://localhost:5000/v3/users <span class="se">\</span>
 <li>
 <p>We will also grant the <code>admin</code> role on domain <code>dom1</code> to this <code>adm1</code>
   user.</p>
-<div class="highlight"><pre>curl -X PUT http://localhost:5000/v3/domains/<span class="k">${</span><span class="nv">ID_DOM1</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_ADM1</span><span class="k">}</span>/roles/<span class="k">${</span><span class="nv">ADMIN_ROLE_ID</span><span class="k">}</span> <span class="se">\</span>
+<div class="highlight"><pre>curl -X PUT http://localhost:5000/v3/domains/<span class="si">${</span><span class="nv">ID_DOM1</span><span class="si">}</span>/users/<span class="si">${</span><span class="nv">ID_ADM1</span><span class="si">}</span>/roles/<span class="si">${</span><span class="nv">ADMIN_ROLE_ID</span><span class="si">}</span> <span class="se">\</span>
     -s <span class="se">\</span>
     -i <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$CLOUD_ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span>
 
-curl http://localhost:5000/v3/domains/<span class="k">${</span><span class="nv">ID_DOM1</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_ADM1</span><span class="k">}</span>/roles <span class="se">\</span>
+curl http://localhost:5000/v3/domains/<span class="si">${</span><span class="nv">ID_DOM1</span><span class="si">}</span>/users/<span class="si">${</span><span class="nv">ID_ADM1</span><span class="si">}</span>/roles <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&quot;</span> | jq .roles
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$CLOUD_ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="p">|</span> jq .roles
 </pre></div>
 
 
@@ -406,7 +406,7 @@ curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
 <span class="s1">            }</span>
 <span class="s1">        }</span>
 <span class="s1">    }</span>
-<span class="s1">}&#39;</span> | grep ^X-Subject-Token: | awk <span class="s1">&#39;{print $2}&#39;</span> <span class="k">)</span>
+<span class="s1">}&#39;</span> <span class="p">|</span> grep ^X-Subject-Token: <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span> <span class="k">)</span>
 </pre></div>
 
 
@@ -416,18 +416,18 @@ curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
 <div class="highlight"><pre><span class="nv">ID_PRJ1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/projects <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADM1_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
     -d <span class="s2">&quot;</span>
 <span class="s2">{</span>
 <span class="s2">    \&quot;project\&quot;: {</span>
 <span class="s2">        \&quot;enabled\&quot;: true,</span>
-<span class="s2">        \&quot;domain_id\&quot;: \&quot;$ID_DOM1\&quot;,</span>
+<span class="s2">        \&quot;domain_id\&quot;: \&quot;</span><span class="nv">$ID_DOM1</span><span class="s2">\&quot;,</span>
 <span class="s2">        \&quot;name\&quot;: \&quot;prj1\&quot;</span>
 <span class="s2">    }\</span>
-<span class="s2">}&quot;</span> | jq .project.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+<span class="s2">}&quot;</span> <span class="p">|</span> jq .project.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
 
-<span class="nb">echo</span> <span class="s2">&quot;ID of prj1: $ID_PRJ1&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;ID of prj1: </span><span class="nv">$ID_PRJ1</span><span class="s2">&quot;</span>
 </pre></div>
 
 
@@ -436,16 +436,16 @@ curl http://localhost:5000/v3/projects <span class="se">\</span>
 <p>When trying and creating a project in domain <code>dom2</code>, it fails.</p>
 <div class="highlight"><pre>curl http://localhost:5000/v3/projects <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADM1_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
     -d <span class="s2">&quot;</span>
 <span class="s2">{</span>
 <span class="s2">    \&quot;project\&quot;: {</span>
 <span class="s2">        \&quot;enabled\&quot;: true,</span>
-<span class="s2">        \&quot;domain_id\&quot;: \&quot;$ID_DOM2\&quot;,</span>
+<span class="s2">        \&quot;domain_id\&quot;: \&quot;</span><span class="nv">$ID_DOM2</span><span class="s2">\&quot;,</span>
 <span class="s2">        \&quot;name\&quot;: \&quot;prj2\&quot;</span>
 <span class="s2">    }\</span>
-<span class="s2">}&quot;</span> | jq .
+<span class="s2">}&quot;</span> <span class="p">|</span> jq .
 </pre></div>
 
 
@@ -455,21 +455,21 @@ curl http://localhost:5000/v3/projects <span class="se">\</span>
 <div class="highlight"><pre><span class="nv">ID_USR1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/users <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADM1_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
     -d <span class="s2">&quot;</span>
 <span class="s2">{</span>
 <span class="s2">    \&quot;user\&quot;: {</span>
-<span class="s2">        \&quot;default_project_id\&quot;: \&quot;$ID_PRJ1\&quot;,</span>
+<span class="s2">        \&quot;default_project_id\&quot;: \&quot;</span><span class="nv">$ID_PRJ1</span><span class="s2">\&quot;,</span>
 <span class="s2">        \&quot;description\&quot;: \&quot;Just a user of dom1\&quot;,</span>
-<span class="s2">        \&quot;domain_id\&quot;: \&quot;$ID_DOM1\&quot;,</span>
+<span class="s2">        \&quot;domain_id\&quot;: \&quot;</span><span class="nv">$ID_DOM1</span><span class="s2">\&quot;,</span>
 <span class="s2">        \&quot;enabled\&quot;: true,</span>
 <span class="s2">        \&quot;name\&quot;: \&quot;usr1\&quot;,</span>
 <span class="s2">        \&quot;password\&quot;: \&quot;password\&quot;</span>
 <span class="s2">    }</span>
-<span class="s2">}&quot;</span> | jq .user.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+<span class="s2">}&quot;</span> <span class="p">|</span> jq .user.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
 
-<span class="nb">echo</span> <span class="s2">&quot;ID of user usr1: $ID_USR1&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;ID of user usr1: </span><span class="nv">$ID_USR1</span><span class="s2">&quot;</span>
 </pre></div>
 
 
@@ -479,18 +479,18 @@ curl http://localhost:5000/v3/users <span class="se">\</span>
 <div class="highlight"><pre><span class="nv">MEMBER_ROLE_ID</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/roles?name<span class="o">=</span>Member <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> <span class="se">\</span>
-| jq .roles<span class="o">[</span>0<span class="o">]</span>.id | tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADM1_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
+<span class="p">|</span> jq .roles<span class="o">[</span>0<span class="o">]</span>.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
 
-curl -X PUT http://localhost:5000/v3/projects/<span class="k">${</span><span class="nv">ID_PRJ1</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_USR1</span><span class="k">}</span>/roles/<span class="k">${</span><span class="nv">MEMBER_ROLE_ID</span><span class="k">}</span> <span class="se">\</span>
+curl -X PUT http://localhost:5000/v3/projects/<span class="si">${</span><span class="nv">ID_PRJ1</span><span class="si">}</span>/users/<span class="si">${</span><span class="nv">ID_USR1</span><span class="si">}</span>/roles/<span class="si">${</span><span class="nv">MEMBER_ROLE_ID</span><span class="si">}</span> <span class="se">\</span>
     -s <span class="se">\</span>
     -i <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> <span class="se">\</span>
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADM1_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span>
 
-curl http://localhost:5000/v3/projects/<span class="k">${</span><span class="nv">ID_PRJ1</span><span class="k">}</span>/users/<span class="k">${</span><span class="nv">ID_USR1</span><span class="k">}</span>/roles <span class="se">\</span>
+curl http://localhost:5000/v3/projects/<span class="si">${</span><span class="nv">ID_PRJ1</span><span class="si">}</span>/users/<span class="si">${</span><span class="nv">ID_USR1</span><span class="si">}</span>/roles <span class="se">\</span>
     -s <span class="se">\</span>
-    -H <span class="s2">&quot;X-Auth-Token: $ADM1_TOKEN&quot;</span> | jq .roles
+    -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADM1_TOKEN</span><span class="s2">&quot;</span> <span class="p">|</span> jq .roles
 </pre></div>
 
 
@@ -541,118 +541,8 @@ on <code>prj1</code> and manage resources into this project.</p>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
 <li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
     <a href="./tag/raspbian.html">
         <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
     </a>
 </li>
 <li class="tag-4">
@@ -661,28 +551,13 @@ on <code>prj1</code> and manage resources into this project.</p>
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
     <a href="./tag/ring.html">
         <i class="icon-tag icon-large"></i>Ring
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/docker.html">
+        <i class="icon-tag icon-large"></i>Docker
     </a>
 </li>
 <li class="tag-4">
@@ -691,8 +566,138 @@ on <code>prj1</code> and manage resources into this project.</p>
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/ssh.html">
+        <i class="icon-tag icon-large"></i>SSH
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/keystone.html">
+        <i class="icon-tag icon-large"></i>Keystone
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/microsft.html">
+        <i class="icon-tag icon-large"></i>Microsft
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/apple.html">
+        <i class="icon-tag icon-large"></i>Apple
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-security.html">
+        <i class="icon-tag icon-large"></i>Data Security
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/kvm.html">
+        <i class="icon-tag icon-large"></i>KVM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/znc.html">
+        <i class="icon-tag icon-large"></i>ZNC
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/costs.html">
+        <i class="icon-tag icon-large"></i>Costs
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/windows.html">
+        <i class="icon-tag icon-large"></i>Windows
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/vm.html">
+        <i class="icon-tag icon-large"></i>VM
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ceph.html">
+        <i class="icon-tag icon-large"></i>Ceph
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/ubuntu.html">
+        <i class="icon-tag icon-large"></i>Ubuntu
+    </a>
+</li>
+<li class="tag-1">
+    <a href="./tag/openstack.html">
+        <i class="icon-tag icon-large"></i>OpenStack
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/bug.html">
+        <i class="icon-tag icon-large"></i>bug
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/virtualization.html">
+        <i class="icon-tag icon-large"></i>Virtualization
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/swift.html">
+        <i class="icon-tag icon-large"></i>Swift
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/operations.html">
         <i class="icon-tag icon-large"></i>operations
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/policies.html">
+        <i class="icon-tag icon-large"></i>Policies
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-safety.html">
+        <i class="icon-tag icon-large"></i>Data Safety
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/linux.html">
+        <i class="icon-tag icon-large"></i>Linux
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/printers.html">
+        <i class="icon-tag icon-large"></i>Printers
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/libvirt.html">
+        <i class="icon-tag icon-large"></i>libvirt
+    </a>
+</li>
+<li class="tag-2">
+    <a href="./tag/cinder.html">
+        <i class="icon-tag icon-large"></i>Cinder
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/data-management.html">
+        <i class="icon-tag icon-large"></i>Data management
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/chef.html">
+        <i class="icon-tag icon-large"></i>Chef
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/git.html">
+        <i class="icon-tag icon-large"></i>Git
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/hardware.html">
+        <i class="icon-tag icon-large"></i>Hardware
     </a>
 </li>
 

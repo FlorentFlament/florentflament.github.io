@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/openstack.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-10-20T23:25:00+02:00</updated><entry><title>Splitting Swift cluster</title><link href="http://www.florentflament.com/blog/splitting-swift-cluster.html" rel="alternate"></link><updated>2014-10-20T23:25:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-10-20:splitting-swift-cluster.html</id><summary type="html">&lt;p&gt;At &lt;a href="https://www.cloudwatt.com/en/"&gt;Cloudwatt&lt;/a&gt;, we have been operating a near hundred nodes Swift
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/openstack.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2014-10-20T23:25:00+02:00</updated><entry><title>Splitting Swift cluster</title><link href="http://www.florentflament.com/blog/splitting-swift-cluster.html" rel="alternate"></link><updated>2014-10-20T23:25:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-10-20:blog/splitting-swift-cluster.html</id><summary type="html">&lt;p&gt;At &lt;a href="https://www.cloudwatt.com/en/"&gt;Cloudwatt&lt;/a&gt;, we have been operating a near hundred nodes Swift
 cluster in a unique datacenter for a few years. The decision to split
 the cluster on two datacenters has been taken recently. The goal is to
 have at least one replica of each object on each site in order to
@@ -123,20 +123,20 @@ auth_key = DEDICATED_ACCOUNT_PASSWORD
 &lt;p&gt;Once properly set, we can initiate dispersion monitoring by populating
 our new account with test data:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;cloud@swproxy:~&lt;span class="nv"&gt;$ &lt;/span&gt;swift-dispersion-populate
-Created 2621 containers &lt;span class="k"&gt;for &lt;/span&gt;dispersion reporting, 4m, 0 retries
-Created 2621 objects &lt;span class="k"&gt;for &lt;/span&gt;dispersion reporting, 2m, 0 retries
+Created &lt;span class="m"&gt;2621&lt;/span&gt; containers &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 4m, &lt;span class="m"&gt;0&lt;/span&gt; retries
+Created &lt;span class="m"&gt;2621&lt;/span&gt; objects &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 2m, &lt;span class="m"&gt;0&lt;/span&gt; retries
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Our objects should have been placed on appropriate devices. We can
 check this:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;cloud@swproxy:~&lt;span class="nv"&gt;$ &lt;/span&gt;swift-dispersion-report
-Queried 2622 containers &lt;span class="k"&gt;for &lt;/span&gt;dispersion reporting, 2m, 31 retries
-100.00% of container copies found &lt;span class="o"&gt;(&lt;/span&gt;7866 of 7866&lt;span class="o"&gt;)&lt;/span&gt;
+Queried &lt;span class="m"&gt;2622&lt;/span&gt; containers &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 2m, &lt;span class="m"&gt;31&lt;/span&gt; retries
+100.00% of container copies found &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;7866&lt;/span&gt; of 7866&lt;span class="o"&gt;)&lt;/span&gt;
 Sample represents 1.00% of the container partition space
-Queried 2621 objects &lt;span class="k"&gt;for &lt;/span&gt;dispersion reporting, 45s, 1 retries
-There were 2621 partitions missing 0 copy.
-100.00% of object copies found &lt;span class="o"&gt;(&lt;/span&gt;7863 of 7863&lt;span class="o"&gt;)&lt;/span&gt;
+Queried &lt;span class="m"&gt;2621&lt;/span&gt; objects &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 45s, &lt;span class="m"&gt;1&lt;/span&gt; retries
+There were &lt;span class="m"&gt;2621&lt;/span&gt; partitions missing &lt;span class="m"&gt;0&lt;/span&gt; copy.
+100.00% of object copies found &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;7863&lt;/span&gt; of 7863&lt;span class="o"&gt;)&lt;/span&gt;
 Sample represents 1.00% of the object partition space
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -148,24 +148,24 @@ can follow the data redistribution with the
 of objects copies reach 100%. Here's an example of results obtained on
 a 6 nodes cluster.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;cloud@swproxy:~&lt;span class="nv"&gt;$ &lt;/span&gt;swift-dispersion-report
-Queried 2622 containers &lt;span class="k"&gt;for &lt;/span&gt;dispersion reporting, 3m, 29 retries
-100.00% of container copies found &lt;span class="o"&gt;(&lt;/span&gt;7866 of 7866&lt;span class="o"&gt;)&lt;/span&gt;
+Queried &lt;span class="m"&gt;2622&lt;/span&gt; containers &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 3m, &lt;span class="m"&gt;29&lt;/span&gt; retries
+100.00% of container copies found &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;7866&lt;/span&gt; of 7866&lt;span class="o"&gt;)&lt;/span&gt;
 Sample represents 1.00% of the container partition space
-Queried 2621 objects &lt;span class="k"&gt;for &lt;/span&gt;dispersion reporting, 33s, 0 retries
-There were 23 partitions missing 0 copy.
-There were 2598 partitions missing 1 copy.
-66.96% of object copies found &lt;span class="o"&gt;(&lt;/span&gt;5265 of 7863&lt;span class="o"&gt;)&lt;/span&gt;
+Queried &lt;span class="m"&gt;2621&lt;/span&gt; objects &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 33s, &lt;span class="m"&gt;0&lt;/span&gt; retries
+There were &lt;span class="m"&gt;23&lt;/span&gt; partitions missing &lt;span class="m"&gt;0&lt;/span&gt; copy.
+There were &lt;span class="m"&gt;2598&lt;/span&gt; partitions missing &lt;span class="m"&gt;1&lt;/span&gt; copy.
+66.96% of object copies found &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;5265&lt;/span&gt; of 7863&lt;span class="o"&gt;)&lt;/span&gt;
 Sample represents 1.00% of the object partition space
 
 &lt;span class="c"&gt;# Then some minutes later&lt;/span&gt;
 cloud@swproxy:~&lt;span class="nv"&gt;$ &lt;/span&gt;swift-dispersion-report
-Queried 2622 containers &lt;span class="k"&gt;for &lt;/span&gt;dispersion reporting, 5m, 0 retries
-100.00% of container copies found &lt;span class="o"&gt;(&lt;/span&gt;7866 of 7866&lt;span class="o"&gt;)&lt;/span&gt;
+Queried &lt;span class="m"&gt;2622&lt;/span&gt; containers &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 5m, &lt;span class="m"&gt;0&lt;/span&gt; retries
+100.00% of container copies found &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;7866&lt;/span&gt; of 7866&lt;span class="o"&gt;)&lt;/span&gt;
 Sample represents 1.00% of the container partition space
-Queried 2621 objects &lt;span class="k"&gt;for &lt;/span&gt;dispersion reporting, 26s, 0 retries
-There were 91 partitions missing 0 copy.
-There were 2530 partitions missing 1 copy.
-67.82% of object copies found &lt;span class="o"&gt;(&lt;/span&gt;5333 of 7863&lt;span class="o"&gt;)&lt;/span&gt;
+Queried &lt;span class="m"&gt;2621&lt;/span&gt; objects &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 26s, &lt;span class="m"&gt;0&lt;/span&gt; retries
+There were &lt;span class="m"&gt;91&lt;/span&gt; partitions missing &lt;span class="m"&gt;0&lt;/span&gt; copy.
+There were &lt;span class="m"&gt;2530&lt;/span&gt; partitions missing &lt;span class="m"&gt;1&lt;/span&gt; copy.
+67.82% of object copies found &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;5333&lt;/span&gt; of 7863&lt;span class="o"&gt;)&lt;/span&gt;
 Sample represents 1.00% of the object partition space
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -271,7 +271,7 @@ check that everything (network, hardware, ...) is working as
 expected. We can use the &lt;code&gt;swift-add-nodes.py&lt;/code&gt; script to easily add
 nodes to our new region with a minimal weight so that only 1 partition
 will be assigned to each device:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python swift-add-nodes.py object.builder object.builder.s1 2 6000 127.0.0.1 127.0.0.2 127.0.0.3
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python swift-add-nodes.py object.builder object.builder.s1 &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="m"&gt;6000&lt;/span&gt; 127.0.0.1 127.0.0.2 127.0.0.3
 Adding device: &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;weight&amp;#39;&lt;/span&gt;: 5.11, &lt;span class="s1"&gt;&amp;#39;zone&amp;#39;&lt;/span&gt;: 0, &lt;span class="s1"&gt;&amp;#39;ip&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;127.0.0.1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;: 2, &lt;span class="s1"&gt;&amp;#39;device&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;sdb1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;port&amp;#39;&lt;/span&gt;: 6000&lt;span class="o"&gt;}&lt;/span&gt;
 Adding device: &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;weight&amp;#39;&lt;/span&gt;: 5.11, &lt;span class="s1"&gt;&amp;#39;zone&amp;#39;&lt;/span&gt;: 0, &lt;span class="s1"&gt;&amp;#39;ip&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;127.0.0.1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;: 2, &lt;span class="s1"&gt;&amp;#39;device&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;sdc1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;port&amp;#39;&lt;/span&gt;: 6000&lt;span class="o"&gt;}&lt;/span&gt;
 Adding device: &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;weight&amp;#39;&lt;/span&gt;: 5.11, &lt;span class="s1"&gt;&amp;#39;zone&amp;#39;&lt;/span&gt;: 0, &lt;span class="s1"&gt;&amp;#39;ip&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;127.0.0.1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;: 2, &lt;span class="s1"&gt;&amp;#39;device&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;sdd1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;port&amp;#39;&lt;/span&gt;: 6000&lt;span class="o"&gt;}&lt;/span&gt;
@@ -286,7 +286,7 @@ Adding device: &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#
 Adding device: &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;weight&amp;#39;&lt;/span&gt;: 5.11, &lt;span class="s1"&gt;&amp;#39;zone&amp;#39;&lt;/span&gt;: 0, &lt;span class="s1"&gt;&amp;#39;ip&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;127.0.0.3&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;: 2, &lt;span class="s1"&gt;&amp;#39;device&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;sde1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;port&amp;#39;&lt;/span&gt;: 6000&lt;span class="o"&gt;}&lt;/span&gt;
 
 &lt;span class="nv"&gt;$ &lt;/span&gt;swift-ring-builder object.builder.s1 rebalance
-Reassigned 12 &lt;span class="o"&gt;(&lt;/span&gt;0.00%&lt;span class="o"&gt;)&lt;/span&gt; partitions. Balance is now 0.18.
+Reassigned &lt;span class="m"&gt;12&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0.00%&lt;span class="o"&gt;)&lt;/span&gt; partitions. Balance is now 0.18.
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -295,7 +295,7 @@ steps of some percentage (let's say 3%) until one third of total
 cluster data is stored in the new region. Script
 &lt;code&gt;swift-assign-partitions.py&lt;/code&gt; allows assigning a chosen ratio of
 partitions to the new region:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python swift-assign-partitions.py object.builder.s2 object.builder.s3 2 0.03
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python swift-assign-partitions.py object.builder.s2 object.builder.s3 &lt;span class="m"&gt;2&lt;/span&gt; 0.03
 Setting new weight of 10376.28 to device 1342
 Setting new weight of 10376.28 to device 1343
 Setting new weight of 10376.28 to device 1344
@@ -310,7 +310,7 @@ Setting new weight of 10376.28 to device 1352
 Setting new weight of 10376.28 to device 1353
 
 &lt;span class="nv"&gt;$ &lt;/span&gt;swift-ring-builder object.builder.s3 rebalance
-Reassigned 25119 &lt;span class="o"&gt;(&lt;/span&gt;9.58%&lt;span class="o"&gt;)&lt;/span&gt; partitions. Balance is now 0.25.
+Reassigned &lt;span class="m"&gt;25119&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;9.58%&lt;span class="o"&gt;)&lt;/span&gt; partitions. Balance is now 0.25.
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -321,7 +321,7 @@ improve the &lt;code&gt;swift-ring-builder&lt;/code&gt;.&lt;/p&gt;
 working&lt;/a&gt; ?&lt;/p&gt;
 &lt;p&gt;Want to know more about all of this ? Come to see our talk &lt;a href="https://openstacksummitnovember2014paris.sched.org/event/15afea20487919ec1e55c7f385df3f68#.VEVpSoXzTFY"&gt;Using
 OpenStack Swift for Extreme Data Durability&lt;/a&gt; at the next OpenStack
-Summit in Paris !&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Swift"></category><category term="operations"></category></entry><entry><title>OpenStack Swift Ring made understandable</title><link href="http://www.florentflament.com/blog/openstack-swift-ring-made-understandable.html" rel="alternate"></link><updated>2014-10-11T22:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-10-11:openstack-swift-ring-made-understandable.html</id><summary type="html">&lt;p&gt;When people talk about OpenStack Swift, we often hear the word
+Summit in Paris !&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Swift"></category><category term="operations"></category></entry><entry><title>OpenStack Swift Ring made understandable</title><link href="http://www.florentflament.com/blog/openstack-swift-ring-made-understandable.html" rel="alternate"></link><updated>2014-10-11T22:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-10-11:blog/openstack-swift-ring-made-understandable.html</id><summary type="html">&lt;p&gt;When people talk about OpenStack Swift, we often hear the word
 Ring. This is because the Ring is a central piece in how Swift is
 working. But what &lt;em&gt;is&lt;/em&gt; this thing everyone's talking about ?&lt;/p&gt;
 &lt;p&gt;The Ring refers to 3 files that are shared among every Swift nodes
@@ -394,13 +394,13 @@ partition number 2, we select the line of index 1 and column of index
 &lt;code&gt;swift-ring-builder&lt;/code&gt; with only the builder file as argument:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;swift-ring-builder mybuilder 
 mybuilder, build version 4
-8 partitions, 3.000000 replicas, 1 regions, 1 zones, 4 devices, 0.00 balance
+&lt;span class="m"&gt;8&lt;/span&gt; partitions, 3.000000 replicas, &lt;span class="m"&gt;1&lt;/span&gt; regions, &lt;span class="m"&gt;1&lt;/span&gt; zones, &lt;span class="m"&gt;4&lt;/span&gt; devices, 0.00 balance
 The minimum number of hours before a partition can be reassigned is 0
 Devices:    id  region  zone      ip address  port  replication ip  replication port      name weight partitions balance meta
-             0       1     1    192.168.0.10  6000    192.168.0.10              6000      sdb1 100.00          6    0.00 
-             1       1     1    192.168.0.10  6000    192.168.0.10              6000      sdc1 100.00          6    0.00 
-             2       1     1    192.168.0.11  6000    192.168.0.11              6000      sdb1 100.00          6    0.00 
-             3       1     1    192.168.0.11  6000    192.168.0.11              6000      sdc1 100.00          6    0.00
+             &lt;span class="m"&gt;0&lt;/span&gt;       &lt;span class="m"&gt;1&lt;/span&gt;     &lt;span class="m"&gt;1&lt;/span&gt;    192.168.0.10  &lt;span class="m"&gt;6000&lt;/span&gt;    192.168.0.10              &lt;span class="m"&gt;6000&lt;/span&gt;      sdb1 100.00          &lt;span class="m"&gt;6&lt;/span&gt;    0.00 
+             &lt;span class="m"&gt;1&lt;/span&gt;       &lt;span class="m"&gt;1&lt;/span&gt;     &lt;span class="m"&gt;1&lt;/span&gt;    192.168.0.10  &lt;span class="m"&gt;6000&lt;/span&gt;    192.168.0.10              &lt;span class="m"&gt;6000&lt;/span&gt;      sdc1 100.00          &lt;span class="m"&gt;6&lt;/span&gt;    0.00 
+             &lt;span class="m"&gt;2&lt;/span&gt;       &lt;span class="m"&gt;1&lt;/span&gt;     &lt;span class="m"&gt;1&lt;/span&gt;    192.168.0.11  &lt;span class="m"&gt;6000&lt;/span&gt;    192.168.0.11              &lt;span class="m"&gt;6000&lt;/span&gt;      sdb1 100.00          &lt;span class="m"&gt;6&lt;/span&gt;    0.00 
+             &lt;span class="m"&gt;3&lt;/span&gt;       &lt;span class="m"&gt;1&lt;/span&gt;     &lt;span class="m"&gt;1&lt;/span&gt;    192.168.0.11  &lt;span class="m"&gt;6000&lt;/span&gt;    192.168.0.11              &lt;span class="m"&gt;6000&lt;/span&gt;      sdc1 100.00          &lt;span class="m"&gt;6&lt;/span&gt;    0.00
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -434,7 +434,7 @@ been well separated between:&lt;/p&gt;
 &lt;/ul&gt;
 &lt;h2&gt;More&lt;/h2&gt;
 &lt;p&gt;For more information about the ring, one can read the &lt;a href="http://docs.openstack.org/developer/swift/overview_ring.html"&gt;Swift's
-developer documentation about the Ring&lt;/a&gt;.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Swift"></category><category term="Ring"></category></entry><entry><title>Windows Images for OpenStack</title><link href="http://www.florentflament.com/blog/windows-images-for-openstack.html" rel="alternate"></link><updated>2014-03-30T19:15:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-03-30:windows-images-for-openstack.html</id><summary type="html">&lt;p&gt;This note summarizes articles from other places about Microsoft
+developer documentation about the Ring&lt;/a&gt;.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Swift"></category><category term="Ring"></category></entry><entry><title>Windows Images for OpenStack</title><link href="http://www.florentflament.com/blog/windows-images-for-openstack.html" rel="alternate"></link><updated>2014-03-30T19:15:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-03-30:blog/windows-images-for-openstack.html</id><summary type="html">&lt;p&gt;This note summarizes articles from other places about Microsoft
 Windows images for OpenStack creation, along with some first hand
 experience. The whole process of creating Windows 2008 and Windows
 2012 images fully usable on OpenStack instances is described there.&lt;/p&gt;
@@ -476,7 +476,7 @@ details.&lt;/p&gt;
 &lt;p&gt;Next step is to launch Windows' installation in a (KVM) virtual
   machine. The following command is an example for that:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;kvm &lt;span class="se"&gt;\&lt;/span&gt;
-    -m 2048 &lt;span class="se"&gt;\&lt;/span&gt;
+    -m &lt;span class="m"&gt;2048&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -cdrom &amp;lt;WINDOWS_INSTALLER_ISO&amp;gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Windows-Server-2008-R2.qcow2,if&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
     -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;VIRTIO_DRIVERS_ISO&amp;gt;,index&lt;span class="o"&gt;=&lt;/span&gt;3,media&lt;span class="o"&gt;=&lt;/span&gt;cdrom &lt;span class="se"&gt;\&lt;/span&gt;
@@ -558,7 +558,7 @@ downloaded. To to that, we have to follow these steps:&lt;/p&gt;
 &lt;p&gt;Restart Windows in KVM with the same command that we used to install
   Windows in the first place:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;kvm &lt;span class="se"&gt;\&lt;/span&gt;
-    -m 2048 &lt;span class="se"&gt;\&lt;/span&gt;
+    -m &lt;span class="m"&gt;2048&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -cdrom &amp;lt;WINDOWS_INSTALLER_ISO&amp;gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Windows-Server-2008-R2.qcow2,if&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
     -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;VIRTIO_DRIVERS_ISO&amp;gt;,index&lt;span class="o"&gt;=&lt;/span&gt;3,media&lt;span class="o"&gt;=&lt;/span&gt;cdrom &lt;span class="se"&gt;\&lt;/span&gt;
@@ -633,7 +633,7 @@ tested yet). Cloud-Init base creates an &lt;code&gt;Admin&lt;/code&gt; user, wit
 &lt;/ul&gt;
 &lt;p&gt;Note that to connect to a Windows VM from Linux, prefer using
 &lt;code&gt;xfreerdp&lt;/code&gt; instead of &lt;code&gt;rdesktop&lt;/code&gt;. The pointer is bogus when connecting
-to a windows 2012 VM using &lt;code&gt;rdesktop&lt;/code&gt;.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Microsft"></category><category term="Windows"></category></entry><entry><title>Customizing OpenStack RBAC policies</title><link href="http://www.florentflament.com/blog/customizing-openstack-rbac-policies.html" rel="alternate"></link><updated>2014-02-09T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-02-09:customizing-openstack-rbac-policies.html</id><summary type="html">&lt;p&gt;OpenStack uses a &lt;a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac"&gt;role based access control&lt;/a&gt; (RBAC) mechanism to
+to a windows 2012 VM using &lt;code&gt;rdesktop&lt;/code&gt;.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Microsft"></category><category term="Windows"></category></entry><entry><title>Customizing OpenStack RBAC policies</title><link href="http://www.florentflament.com/blog/customizing-openstack-rbac-policies.html" rel="alternate"></link><updated>2014-02-09T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-02-09:blog/customizing-openstack-rbac-policies.html</id><summary type="html">&lt;p&gt;OpenStack uses a &lt;a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac"&gt;role based access control&lt;/a&gt; (RBAC) mechanism to
 manage accesses to its resources. With the current architecture,
 users' roles granted on each project and domain are stored into
 Keystone, and can be updated through &lt;a href="http://api.openstack.org/api-ref-identity.html#identity-v3"&gt;Keystone's API&lt;/a&gt;. However,
@@ -791,7 +791,7 @@ policy.v3cloudsample.json&lt;/a&gt;.&lt;/p&gt;
 the blueprint allowing the policy engine to &lt;a href="https://blueprints.launchpad.net/oslo/+spec/policy-constant-check"&gt;check contextual
 attributes against constant values&lt;/a&gt;. This patch will have to be
 synchronized into the OpenStack projects for them to benefit from this
-feature.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Keystone"></category><category term="Policies"></category></entry><entry><title>Setting Keystone v3 domains</title><link href="http://www.florentflament.com/blog/setting-keystone-v3-domains.html" rel="alternate"></link><updated>2014-01-18T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-01-18:setting-keystone-v3-domains.html</id><summary type="html">&lt;p&gt;The &lt;a href="http://api.openstack.org/api-ref-identity.html#identity-v3"&gt;Openstack Identity v3 API&lt;/a&gt;, provided by Keystone, offers
+feature.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Keystone"></category><category term="Policies"></category></entry><entry><title>Setting Keystone v3 domains</title><link href="http://www.florentflament.com/blog/setting-keystone-v3-domains.html" rel="alternate"></link><updated>2014-01-18T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-01-18:blog/setting-keystone-v3-domains.html</id><summary type="html">&lt;p&gt;The &lt;a href="http://api.openstack.org/api-ref-identity.html#identity-v3"&gt;Openstack Identity v3 API&lt;/a&gt;, provided by Keystone, offers
 features that were lacking in the previous version. Among these
 features, it introduces the concept of domains, allowing isolation of
 projects and users. For instance, an administrator allowed to create
@@ -841,12 +841,12 @@ curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;span class="s1"&gt;            }&lt;/span&gt;
 &lt;span class="s1"&gt;        }&lt;/span&gt;
 &lt;span class="s1"&gt;    }&lt;/span&gt;
-&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | grep ^X-Subject-Token: | awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep ^X-Subject-Token: &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
 
 &lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -d &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
 &lt;span class="s1"&gt;{&lt;/span&gt;
@@ -854,9 +854,9 @@ curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;span class="s1"&gt;    &amp;quot;enabled&amp;quot;: true,&lt;/span&gt;
 &lt;span class="s1"&gt;    &amp;quot;name&amp;quot;: &amp;quot;admin_domain&amp;quot;&lt;/span&gt;
 &lt;span class="s1"&gt;    }&lt;/span&gt;
-&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | jq .domain.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; jq .domain.id &lt;span class="p"&gt;|&lt;/span&gt; tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
 
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of domain cloud: $ID_ADMIN_DOMAIN&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of domain cloud: &lt;/span&gt;&lt;span class="nv"&gt;$ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -867,20 +867,20 @@ curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_CLOUD_ADMIN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;span class="s2"&gt;{&lt;/span&gt;
 &lt;span class="s2"&gt;    \&amp;quot;user\&amp;quot;: {&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;description\&amp;quot;: \&amp;quot;Cloud administrator\&amp;quot;,&lt;/span&gt;
-&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;$ID_ADMIN_DOMAIN\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="s2"&gt;\&amp;quot;,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;enabled\&amp;quot;: true,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;name\&amp;quot;: \&amp;quot;cloud_admin\&amp;quot;,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;password\&amp;quot;: \&amp;quot;password\&amp;quot;&lt;/span&gt;
 &lt;span class="s2"&gt;    }&lt;/span&gt;
-&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; | jq .user.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; jq .user.id &lt;span class="p"&gt;|&lt;/span&gt; tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
 
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of user cloud_admin: $ID_CLOUD_ADMIN&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of user cloud_admin: &lt;/span&gt;&lt;span class="nv"&gt;$ID_CLOUD_ADMIN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -891,18 +891,18 @@ curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/roles?name&lt;span class="o"&gt;=&lt;/span&gt;admin &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
-| jq .roles&lt;span class="o"&gt;[&lt;/span&gt;0&lt;span class="o"&gt;]&lt;/span&gt;.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; jq .roles&lt;span class="o"&gt;[&lt;/span&gt;0&lt;span class="o"&gt;]&lt;/span&gt;.id &lt;span class="p"&gt;|&lt;/span&gt; tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
 
-curl -X PUT http://localhost:5000/v3/domains/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_CLOUD_ADMIN&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+curl -X PUT http://localhost:5000/v3/domains/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/users/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_CLOUD_ADMIN&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/roles/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -i &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt;
 
-curl http://localhost:5000/v3/domains/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_CLOUD_ADMIN&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles&lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/domains/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/users/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_CLOUD_ADMIN&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/roles&lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADMIN_TOKEN&amp;quot;&lt;/span&gt; | jq .roles
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; jq .roles
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -915,7 +915,7 @@ curl http://localhost:5000/v3/domains/&lt;span class="k"&gt;${&lt;/span&gt;&lt;s
   &lt;code&gt;admin_domain_id&lt;/code&gt; by the ID of the &lt;code&gt;admin_domain&lt;/code&gt; we just
   created. Locate the &lt;code&gt;policy.v3cloudsample.json&lt;/code&gt; file into the &lt;code&gt;etc&lt;/code&gt;
   directory of Keystone's source.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;sed s/admin_domain_id/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/ &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sed s/admin_domain_id/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/ &lt;span class="se"&gt;\&lt;/span&gt;
     &amp;lt; policy.v3cloudsample.json &lt;span class="se"&gt;\&lt;/span&gt;
     &amp;gt; /etc/keystone/policy.json
 &lt;/pre&gt;&lt;/div&gt;
@@ -963,7 +963,7 @@ curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;span class="s1"&gt;            }&lt;/span&gt;
 &lt;span class="s1"&gt;        }&lt;/span&gt;
 &lt;span class="s1"&gt;    }&lt;/span&gt;
-&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | grep ^X-Subject-Token: | awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep ^X-Subject-Token: &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -973,7 +973,7 @@ curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$CLOUD_ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -d &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
 &lt;span class="s1"&gt;{&lt;/span&gt;
@@ -981,14 +981,14 @@ curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;span class="s1"&gt;        &amp;quot;enabled&amp;quot;: true,&lt;/span&gt;
 &lt;span class="s1"&gt;        &amp;quot;name&amp;quot;: &amp;quot;dom1&amp;quot;&lt;/span&gt;
 &lt;span class="s1"&gt;    }&lt;/span&gt;
-&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | jq .domain.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; jq .domain.id &lt;span class="p"&gt;|&lt;/span&gt; tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
 
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of dom1: $ID_DOM1&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of dom1: &lt;/span&gt;&lt;span class="nv"&gt;$ID_DOM1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 
 &lt;span class="nv"&gt;ID_DOM2&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$CLOUD_ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -d &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
 &lt;span class="s1"&gt;{&lt;/span&gt;
@@ -996,9 +996,9 @@ curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;span class="s1"&gt;        &amp;quot;enabled&amp;quot;: true,&lt;/span&gt;
 &lt;span class="s1"&gt;        &amp;quot;name&amp;quot;: &amp;quot;dom2&amp;quot;&lt;/span&gt;
 &lt;span class="s1"&gt;    }&lt;/span&gt;
-&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | jq .domain.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; jq .domain.id &lt;span class="p"&gt;|&lt;/span&gt; tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
 
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of dom2: $ID_DOM2&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of dom2: &lt;/span&gt;&lt;span class="nv"&gt;$ID_DOM2&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1008,20 +1008,20 @@ curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$CLOUD_ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;span class="s2"&gt;{&lt;/span&gt;
 &lt;span class="s2"&gt;    \&amp;quot;user\&amp;quot;: {&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;description\&amp;quot;: \&amp;quot;Administrator of domain dom1\&amp;quot;,&lt;/span&gt;
-&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;$ID_DOM1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$ID_DOM1&lt;/span&gt;&lt;span class="s2"&gt;\&amp;quot;,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;enabled\&amp;quot;: true,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;name\&amp;quot;: \&amp;quot;adm1\&amp;quot;,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;password\&amp;quot;: \&amp;quot;password\&amp;quot;&lt;/span&gt;
 &lt;span class="s2"&gt;    }&lt;/span&gt;
-&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; | jq .user.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; jq .user.id &lt;span class="p"&gt;|&lt;/span&gt; tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
 
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of user adm1: $ID_ADM1&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of user adm1: &lt;/span&gt;&lt;span class="nv"&gt;$ID_ADM1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1029,15 +1029,15 @@ curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;li&gt;
 &lt;p&gt;We will also grant the &lt;code&gt;admin&lt;/code&gt; role on domain &lt;code&gt;dom1&lt;/code&gt; to this &lt;code&gt;adm1&lt;/code&gt;
   user.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;curl -X PUT http://localhost:5000/v3/domains/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;curl -X PUT http://localhost:5000/v3/domains/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/users/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/roles/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -i &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$CLOUD_ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt;
 
-curl http://localhost:5000/v3/domains/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles &lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/domains/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/users/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/roles &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $CLOUD_ADMIN_TOKEN&amp;quot;&lt;/span&gt; | jq .roles
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$CLOUD_ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; jq .roles
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1078,7 +1078,7 @@ curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;span class="s1"&gt;            }&lt;/span&gt;
 &lt;span class="s1"&gt;        }&lt;/span&gt;
 &lt;span class="s1"&gt;    }&lt;/span&gt;
-&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; | grep ^X-Subject-Token: | awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep ^X-Subject-Token: &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1088,18 +1088,18 @@ curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_PRJ1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/projects &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADM1_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;span class="s2"&gt;{&lt;/span&gt;
 &lt;span class="s2"&gt;    \&amp;quot;project\&amp;quot;: {&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;enabled\&amp;quot;: true,&lt;/span&gt;
-&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;$ID_DOM1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$ID_DOM1&lt;/span&gt;&lt;span class="s2"&gt;\&amp;quot;,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;name\&amp;quot;: \&amp;quot;prj1\&amp;quot;&lt;/span&gt;
 &lt;span class="s2"&gt;    }\&lt;/span&gt;
-&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; | jq .project.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; jq .project.id &lt;span class="p"&gt;|&lt;/span&gt; tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
 
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of prj1: $ID_PRJ1&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of prj1: &lt;/span&gt;&lt;span class="nv"&gt;$ID_PRJ1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1108,16 +1108,16 @@ curl http://localhost:5000/v3/projects &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;p&gt;When trying and creating a project in domain &lt;code&gt;dom2&lt;/code&gt;, it fails.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;curl http://localhost:5000/v3/projects &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADM1_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;span class="s2"&gt;{&lt;/span&gt;
 &lt;span class="s2"&gt;    \&amp;quot;project\&amp;quot;: {&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;enabled\&amp;quot;: true,&lt;/span&gt;
-&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;$ID_DOM2\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$ID_DOM2&lt;/span&gt;&lt;span class="s2"&gt;\&amp;quot;,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;name\&amp;quot;: \&amp;quot;prj2\&amp;quot;&lt;/span&gt;
 &lt;span class="s2"&gt;    }\&lt;/span&gt;
-&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; | jq .
+&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; jq .
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1127,21 +1127,21 @@ curl http://localhost:5000/v3/projects &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_USR1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADM1_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -d &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;span class="s2"&gt;{&lt;/span&gt;
 &lt;span class="s2"&gt;    \&amp;quot;user\&amp;quot;: {&lt;/span&gt;
-&lt;span class="s2"&gt;        \&amp;quot;default_project_id\&amp;quot;: \&amp;quot;$ID_PRJ1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;default_project_id\&amp;quot;: \&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$ID_PRJ1&lt;/span&gt;&lt;span class="s2"&gt;\&amp;quot;,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;description\&amp;quot;: \&amp;quot;Just a user of dom1\&amp;quot;,&lt;/span&gt;
-&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;$ID_DOM1\&amp;quot;,&lt;/span&gt;
+&lt;span class="s2"&gt;        \&amp;quot;domain_id\&amp;quot;: \&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$ID_DOM1&lt;/span&gt;&lt;span class="s2"&gt;\&amp;quot;,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;enabled\&amp;quot;: true,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;name\&amp;quot;: \&amp;quot;usr1\&amp;quot;,&lt;/span&gt;
 &lt;span class="s2"&gt;        \&amp;quot;password\&amp;quot;: \&amp;quot;password\&amp;quot;&lt;/span&gt;
 &lt;span class="s2"&gt;    }&lt;/span&gt;
-&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; | jq .user.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="s2"&gt;}&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; jq .user.id &lt;span class="p"&gt;|&lt;/span&gt; tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
 
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of user usr1: $ID_USR1&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ID of user usr1: &lt;/span&gt;&lt;span class="nv"&gt;$ID_USR1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1151,18 +1151,18 @@ curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;MEMBER_ROLE_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/roles?name&lt;span class="o"&gt;=&lt;/span&gt;Member &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
-| jq .roles&lt;span class="o"&gt;[&lt;/span&gt;0&lt;span class="o"&gt;]&lt;/span&gt;.id | tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADM1_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; jq .roles&lt;span class="o"&gt;[&lt;/span&gt;0&lt;span class="o"&gt;]&lt;/span&gt;.id &lt;span class="p"&gt;|&lt;/span&gt; tr -d &lt;span class="s1"&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;
 
-curl -X PUT http://localhost:5000/v3/projects/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_PRJ1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_USR1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;MEMBER_ROLE_ID&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+curl -X PUT http://localhost:5000/v3/projects/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_PRJ1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/users/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_USR1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/roles/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;MEMBER_ROLE_ID&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -i &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADM1_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt;
 
-curl http://localhost:5000/v3/projects/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_PRJ1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/users/&lt;span class="k"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_USR1&lt;/span&gt;&lt;span class="k"&gt;}&lt;/span&gt;/roles &lt;span class="se"&gt;\&lt;/span&gt;
+curl http://localhost:5000/v3/projects/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_PRJ1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/users/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_USR1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/roles &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
-    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: $ADM1_TOKEN&amp;quot;&lt;/span&gt; | jq .roles
+    -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADM1_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; jq .roles
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1170,7 +1170,7 @@ curl http://localhost:5000/v3/projects/&lt;span class="k"&gt;${&lt;/span&gt;&lt;
 &lt;/ul&gt;
 &lt;p&gt;The domain administrator &lt;code&gt;adm1&lt;/code&gt; ended up creating a project &lt;code&gt;prj1&lt;/code&gt; and
 a user &lt;code&gt;usr1&lt;/code&gt; member of the project. &lt;code&gt;usr1&lt;/code&gt; can now get a token scoped
-on &lt;code&gt;prj1&lt;/code&gt; and manage resources into this project.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Keystone"></category></entry><entry><title>Openstack volume in-use although VM doesn't exist</title><link href="http://www.florentflament.com/blog/openstack-volume-in-use-although-vm-doesnt-exist.html" rel="alternate"></link><updated>2014-01-04T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2014-01-04:openstack-volume-in-use-although-vm-doesnt-exist.html</id><summary type="html">&lt;p&gt;A user at &lt;a href="http://www.cloudwatt.com"&gt;Cloudwatt&lt;/a&gt; had an issue about Cinder volumes with
+on &lt;code&gt;prj1&lt;/code&gt; and manage resources into this project.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Keystone"></category></entry><entry><title>Openstack volume in-use although VM doesn't exist</title><link href="http://www.florentflament.com/blog/openstack-volume-in-use-although-vm-doesnt-exist.html" rel="alternate"></link><updated>2014-01-04T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-01-04:blog/openstack-volume-in-use-although-vm-doesnt-exist.html</id><summary type="html">&lt;p&gt;A user at &lt;a href="http://www.cloudwatt.com"&gt;Cloudwatt&lt;/a&gt; had an issue about Cinder volumes with
 status &lt;code&gt;in-use&lt;/code&gt;, attached to VMs that didn't exist anymore. I could
 find similar bugs referenced in launchpad &lt;a href="https://bugs.launchpad.net/cinder/+bug/1201418"&gt;here&lt;/a&gt; and &lt;a href="https://bugs.launchpad.net/nova/+bug/1096197"&gt;there&lt;/a&gt;,
 both with status &lt;code&gt;invalid&lt;/code&gt;... But I didn't succeed in reproducing the
@@ -1272,10 +1272,10 @@ entries in the database manually...&lt;/p&gt;
 inconsistent state, is to manually update entries in the Cinder
 database.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;mysql cinder
-Reading table information &lt;span class="k"&gt;for &lt;/span&gt;completion of table and column names
+Reading table information &lt;span class="k"&gt;for&lt;/span&gt; completion of table and column names
 You can turn off this feature to get a quicker startup with -A
 
-Welcome to the MySQL monitor.  Commands end with ; or &lt;span class="se"&gt;\g&lt;/span&gt;.
+Welcome to the MySQL monitor.  Commands end with &lt;span class="p"&gt;;&lt;/span&gt; or &lt;span class="se"&gt;\g&lt;/span&gt;.
 Your MySQL connection id is 1900
 Server version: 5.5.34-0ubuntu0.12.04.1-log &lt;span class="o"&gt;(&lt;/span&gt;Ubuntu&lt;span class="o"&gt;)&lt;/span&gt;
 
@@ -1285,48 +1285,48 @@ Oracle is a registered trademark of Oracle Corporation and/or its
 affiliates. Other names may be trademarks of their respective
 owners.
 
-Type &lt;span class="s1"&gt;&amp;#39;help;&amp;#39;&lt;/span&gt; or &lt;span class="s1"&gt;&amp;#39;\h&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;for &lt;/span&gt;help. Type &lt;span class="s1"&gt;&amp;#39;\c&amp;#39;&lt;/span&gt; to clear the current input statement.
+Type &lt;span class="s1"&gt;&amp;#39;help;&amp;#39;&lt;/span&gt; or &lt;span class="s1"&gt;&amp;#39;\h&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; help. Type &lt;span class="s1"&gt;&amp;#39;\c&amp;#39;&lt;/span&gt; to clear the current input statement.
 
-mysql&amp;gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes;
+mysql&amp;gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes&lt;span class="p"&gt;;&lt;/span&gt;
 +--------------------------------------+---------+---------------+------------+--------------------------------------+
-| id                                   | status  | attach_status | mountpoint | instance_uuid                        |
+&lt;span class="p"&gt;|&lt;/span&gt; id                                   &lt;span class="p"&gt;|&lt;/span&gt; status  &lt;span class="p"&gt;|&lt;/span&gt; attach_status &lt;span class="p"&gt;|&lt;/span&gt; mountpoint &lt;span class="p"&gt;|&lt;/span&gt; instance_uuid                        &lt;span class="p"&gt;|&lt;/span&gt;
 +--------------------------------------+---------+---------------+------------+--------------------------------------+
-| 0580142b-bfb5-4113-8676-4fb783ec05f2 | deleted | detached      | NULL       | NULL                                 |
-| 1085d96e-ae82-484b-8495-27cc2f25c9c3 | deleted | detached      | NULL       | NULL                                 |
-| 4fbff7ce-2c9f-4116-ad1e-12f78001da2d | deleted | detached      | NULL       | NULL                                 |
-| 57b32eaf-7b71-49bf-a8fd-4115567a6cda | in-use  | attached      | /dev/vdb   | fa53d190-426b-4ce6-8d36-1af408c25225 |
-| 60a7eb30-9849-4b8d-9ca1-8f554b9a4045 | deleted | detached      | NULL       | NULL                                 |
-| a34ca08a-2e6b-4820-b472-91aa27b47261 | deleted | detached      | NULL       | NULL                                 |
-| d827daa5-c8d7-427b-a53c-8be918a1a6fb | deleted | detached      | NULL       | NULL                                 |
+&lt;span class="p"&gt;|&lt;/span&gt; 0580142b-bfb5-4113-8676-4fb783ec05f2 &lt;span class="p"&gt;|&lt;/span&gt; deleted &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL                                 &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; 1085d96e-ae82-484b-8495-27cc2f25c9c3 &lt;span class="p"&gt;|&lt;/span&gt; deleted &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL                                 &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; 4fbff7ce-2c9f-4116-ad1e-12f78001da2d &lt;span class="p"&gt;|&lt;/span&gt; deleted &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL                                 &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; 57b32eaf-7b71-49bf-a8fd-4115567a6cda &lt;span class="p"&gt;|&lt;/span&gt; in-use  &lt;span class="p"&gt;|&lt;/span&gt; attached      &lt;span class="p"&gt;|&lt;/span&gt; /dev/vdb   &lt;span class="p"&gt;|&lt;/span&gt; fa53d190-426b-4ce6-8d36-1af408c25225 &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; 60a7eb30-9849-4b8d-9ca1-8f554b9a4045 &lt;span class="p"&gt;|&lt;/span&gt; deleted &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL                                 &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; a34ca08a-2e6b-4820-b472-91aa27b47261 &lt;span class="p"&gt;|&lt;/span&gt; deleted &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL                                 &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; d827daa5-c8d7-427b-a53c-8be918a1a6fb &lt;span class="p"&gt;|&lt;/span&gt; deleted &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL                                 &lt;span class="p"&gt;|&lt;/span&gt;
 +--------------------------------------+---------+---------------+------------+--------------------------------------+
-7 rows in &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0.00 sec&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="m"&gt;7&lt;/span&gt; rows in &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0.00 sec&lt;span class="o"&gt;)&lt;/span&gt;
 
-mysql&amp;gt; UPDATE volumes SET &lt;span class="nv"&gt;status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;available&amp;quot;&lt;/span&gt;, &lt;span class="nv"&gt;attach_status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;detached&amp;quot;&lt;/span&gt;, &lt;span class="nv"&gt;mountpoint&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;NULL, &lt;span class="nv"&gt;instance_uuid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;NULL WHERE &lt;span class="nv"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;57b32eaf-7b71-49bf-a8fd-4115567a6cda&amp;quot;&lt;/span&gt;;
-Query OK, 1 row affected &lt;span class="o"&gt;(&lt;/span&gt;0.00 sec&lt;span class="o"&gt;)&lt;/span&gt;
-Rows matched: 1  Changed: 1  Warnings: 0
+mysql&amp;gt; UPDATE volumes SET &lt;span class="nv"&gt;status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;available&amp;quot;&lt;/span&gt;, &lt;span class="nv"&gt;attach_status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;detached&amp;quot;&lt;/span&gt;, &lt;span class="nv"&gt;mountpoint&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;NULL, &lt;span class="nv"&gt;instance_uuid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;NULL WHERE &lt;span class="nv"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;57b32eaf-7b71-49bf-a8fd-4115567a6cda&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+Query OK, &lt;span class="m"&gt;1&lt;/span&gt; row affected &lt;span class="o"&gt;(&lt;/span&gt;0.00 sec&lt;span class="o"&gt;)&lt;/span&gt;
+Rows matched: &lt;span class="m"&gt;1&lt;/span&gt;  Changed: &lt;span class="m"&gt;1&lt;/span&gt;  Warnings: 0
 
-mysql&amp;gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes;
+mysql&amp;gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes&lt;span class="p"&gt;;&lt;/span&gt;
 +--------------------------------------+-----------+---------------+------------+---------------+
-| id                                   | status    | attach_status | mountpoint | instance_uuid |
+&lt;span class="p"&gt;|&lt;/span&gt; id                                   &lt;span class="p"&gt;|&lt;/span&gt; status    &lt;span class="p"&gt;|&lt;/span&gt; attach_status &lt;span class="p"&gt;|&lt;/span&gt; mountpoint &lt;span class="p"&gt;|&lt;/span&gt; instance_uuid &lt;span class="p"&gt;|&lt;/span&gt;
 +--------------------------------------+-----------+---------------+------------+---------------+
-| 0580142b-bfb5-4113-8676-4fb783ec05f2 | deleted   | detached      | NULL       | NULL          |
-| 1085d96e-ae82-484b-8495-27cc2f25c9c3 | deleted   | detached      | NULL       | NULL          |
-| 4fbff7ce-2c9f-4116-ad1e-12f78001da2d | deleted   | detached      | NULL       | NULL          |
-| 57b32eaf-7b71-49bf-a8fd-4115567a6cda | available | detached      | NULL       | NULL          |
-| 60a7eb30-9849-4b8d-9ca1-8f554b9a4045 | deleted   | detached      | NULL       | NULL          |
-| a34ca08a-2e6b-4820-b472-91aa27b47261 | deleted   | detached      | NULL       | NULL          |
-| d827daa5-c8d7-427b-a53c-8be918a1a6fb | deleted   | detached      | NULL       | NULL          |
+&lt;span class="p"&gt;|&lt;/span&gt; 0580142b-bfb5-4113-8676-4fb783ec05f2 &lt;span class="p"&gt;|&lt;/span&gt; deleted   &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL          &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; 1085d96e-ae82-484b-8495-27cc2f25c9c3 &lt;span class="p"&gt;|&lt;/span&gt; deleted   &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL          &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; 4fbff7ce-2c9f-4116-ad1e-12f78001da2d &lt;span class="p"&gt;|&lt;/span&gt; deleted   &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL          &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; 57b32eaf-7b71-49bf-a8fd-4115567a6cda &lt;span class="p"&gt;|&lt;/span&gt; available &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL          &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; 60a7eb30-9849-4b8d-9ca1-8f554b9a4045 &lt;span class="p"&gt;|&lt;/span&gt; deleted   &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL          &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; a34ca08a-2e6b-4820-b472-91aa27b47261 &lt;span class="p"&gt;|&lt;/span&gt; deleted   &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL          &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; d827daa5-c8d7-427b-a53c-8be918a1a6fb &lt;span class="p"&gt;|&lt;/span&gt; deleted   &lt;span class="p"&gt;|&lt;/span&gt; detached      &lt;span class="p"&gt;|&lt;/span&gt; NULL       &lt;span class="p"&gt;|&lt;/span&gt; NULL          &lt;span class="p"&gt;|&lt;/span&gt;
 +--------------------------------------+-----------+---------------+------------+---------------+
-7 rows in &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0.00 sec&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="m"&gt;7&lt;/span&gt; rows in &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0.00 sec&lt;span class="o"&gt;)&lt;/span&gt;
 
 mysql&amp;gt; Bye
 &lt;span class="nv"&gt;$ &lt;/span&gt;cinder list
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
-|                  ID                  |   Status  | Name | Size | Volume Type | Bootable | Attached to |
+&lt;span class="p"&gt;|&lt;/span&gt;                  ID                  &lt;span class="p"&gt;|&lt;/span&gt;   Status  &lt;span class="p"&gt;|&lt;/span&gt; Name &lt;span class="p"&gt;|&lt;/span&gt; Size &lt;span class="p"&gt;|&lt;/span&gt; Volume Type &lt;span class="p"&gt;|&lt;/span&gt; Bootable &lt;span class="p"&gt;|&lt;/span&gt; Attached to &lt;span class="p"&gt;|&lt;/span&gt;
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
-| 57b32eaf-7b71-49bf-a8fd-4115567a6cda | available | vol1 |  1   |     None    |  &lt;span class="nb"&gt;false&lt;/span&gt;   |             |
+&lt;span class="p"&gt;|&lt;/span&gt; 57b32eaf-7b71-49bf-a8fd-4115567a6cda &lt;span class="p"&gt;|&lt;/span&gt; available &lt;span class="p"&gt;|&lt;/span&gt; vol1 &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="m"&gt;1&lt;/span&gt;   &lt;span class="p"&gt;|&lt;/span&gt;     None    &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="nb"&gt;false&lt;/span&gt;   &lt;span class="p"&gt;|&lt;/span&gt;             &lt;span class="p"&gt;|&lt;/span&gt;
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="OpenStack"></category><category term="Cinder"></category><category term="bug"></category></entry><entry><title>Ceph and Cinder multi-backend</title><link href="http://www.florentflament.com/blog/ceph-and-cinder-multi-backend.html" rel="alternate"></link><updated>2013-11-17T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com/blog,2013-11-17:ceph-and-cinder-multi-backend.html</id><summary type="html">&lt;p&gt;&lt;a href="http://ceph.com/docs/master/"&gt;Ceph's documentation&lt;/a&gt; is quite extensive. However, when trying and
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="OpenStack"></category><category term="Cinder"></category><category term="bug"></category></entry><entry><title>Ceph and Cinder multi-backend</title><link href="http://www.florentflament.com/blog/ceph-and-cinder-multi-backend.html" rel="alternate"></link><updated>2013-11-17T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-17:blog/ceph-and-cinder-multi-backend.html</id><summary type="html">&lt;p&gt;&lt;a href="http://ceph.com/docs/master/"&gt;Ceph's documentation&lt;/a&gt; is quite extensive. However, when trying and
 &lt;a href="http://ceph.com/docs/master/rbd/rbd-openstack/"&gt;installing Ceph on a running Openstack platform&lt;/a&gt;, I met two main
 issues: How to deal with a multi-backend setup? And how to deal with
 several nova-compute nodes?  This note will focus on the steps that I
