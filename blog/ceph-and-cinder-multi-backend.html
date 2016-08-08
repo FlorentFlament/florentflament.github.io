@@ -98,8 +98,6 @@
                                         title="Permalink to Ceph and Cinder multi-backend">
                                         Ceph and Cinder multi-backend
                                 </a>
-<a href="http://twitter.com/share" class="twitter-share-button"
-   data-count="horizontal" data-via="florentflament_">Tweet</a>
                         </h1>
                 </header>
                 <div class="entry-content">
@@ -131,35 +129,35 @@ other backends), using <a href="http://ceph.com/docs/master/rados/operations/aut
 Ceph nodes (Ceph's doc provides extensive <a href="http://ceph.com/docs/master/rados/operations/placement-groups/">documentation about the
 number of placement groups that should be used</a>). The following
 command has to be launched on any Ceph node:</p>
-<div class="highlight"><pre>ceph osd pool create volumes 128
+<div class="highlight"><pre><span></span>ceph osd pool create volumes 128
 </pre></div>
 
 
 <p>Because of cephx authentication, we have to create a new user with the
 appropriate rights for cinder and nova to be able to access Ceph's
 storage. The following command has to be launched on a Ceph node:</p>
-<div class="highlight"><pre>ceph auth get-or-create client.volumes mon <span class="s1">&#39;allow r&#39;</span> osd <span class="s1">&#39;allow class-read object_prefix rbd_children, allow rwx pool=volumes, allow rx pool=images&#39;</span>
+<div class="highlight"><pre><span></span>ceph auth get-or-create client.volumes mon <span class="s1">&#39;allow r&#39;</span> osd <span class="s1">&#39;allow class-read object_prefix rbd_children, allow rwx pool=volumes, allow rx pool=images&#39;</span>
 </pre></div>
 
 
 <p>The keyring (token used to identify Ceph users) has to be copied on
 cinder-volume nodes. The keyring file can be created with the
 following command on a Ceph node:</p>
-<div class="highlight"><pre>ceph auth get-or-create client.volumes &gt; ceph.client.images.keyring
+<div class="highlight"><pre><span></span>ceph auth get-or-create client.volumes &gt; ceph.client.images.keyring
 </pre></div>
 
 
 <h2>Cinder-volume nodes</h2>
 <p>The file created above has to be copied on the cinder-volume nodes, in
 the directory <code>/etc/ceph</code> with the propoer uid and gid:</p>
-<div class="highlight"><pre>chown cinder:cinder /etc/ceph/ceph.client.images.keyring
+<div class="highlight"><pre><span></span>chown cinder:cinder /etc/ceph/ceph.client.images.keyring
 </pre></div>
 
 
 <p>Ceph's configuration file <code>/etc/ceph/ceph.conf</code> has to be copied at
 the same location.</p>
 <p>Then we have to install the following packages on these nodes:</p>
-<div class="highlight"><pre>sudo apt-get install python-ceph ceph-common
+<div class="highlight"><pre><span></span>sudo apt-get install python-ceph ceph-common
 </pre></div>
 
 
@@ -167,7 +165,7 @@ the same location.</p>
 by <a href="https://wiki.openstack.org/wiki/Cinder-multi-backend">setting a new backend</a>. A new backend that we'll call <code>ceph</code>
 will be added to the <code>enabled_backends</code> parameter, and the
 corresponding backend section will be created:</p>
-<div class="highlight"><pre><span class="n">enabled_backends</span> <span class="o">=</span> <span class="n">former</span><span class="o">-</span><span class="n">backend</span><span class="p">,</span><span class="n">ceph</span>
+<div class="highlight"><pre><span></span><span class="n">enabled_backends</span> <span class="o">=</span> <span class="n">former</span><span class="o">-</span><span class="n">backend</span><span class="p">,</span><span class="n">ceph</span>
 <span class="p">[</span><span class="n">former</span><span class="o">-</span><span class="n">backend</span><span class="p">]</span>
 <span class="o">...</span>
 <span class="p">[</span><span class="n">ceph</span><span class="p">]</span>
@@ -185,27 +183,27 @@ will allow nova to mount Ceph block devices. We will update this value
 in a next step.</p>
 <p>If the <code>scheduler_driver</code> parameter is not set to FilterScheduler, it
 has to be updated:</p>
-<div class="highlight"><pre><span class="n">scheduler_driver</span> <span class="o">=</span> <span class="n">cinder</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">filter_scheduler</span><span class="o">.</span><span class="n">FilterScheduler</span>
+<div class="highlight"><pre><span></span><span class="n">scheduler_driver</span> <span class="o">=</span> <span class="n">cinder</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">filter_scheduler</span><span class="o">.</span><span class="n">FilterScheduler</span>
 </pre></div>
 
 
 <p>Once the configuration file updated, cinder-volume service has to be
 restarted to load the new configuration:</p>
-<div class="highlight"><pre>sudo service cinder-volume restart
+<div class="highlight"><pre><span></span>sudo service cinder-volume restart
 </pre></div>
 
 
 <p>And a new volume-type has to be added to Cinder, with the following
 command, which has to be called with an adminitrator credentials
 (OS_USERNAME, OS_TENANT_NAME and OS_PASSWORD):</p>
-<div class="highlight"><pre>cinder <span class="nb">type</span>-create ceph
-cinder <span class="nb">type</span>-key ceph <span class="nb">set </span><span class="nv">volume_backend_name</span><span class="o">=</span>ceph
+<div class="highlight"><pre><span></span>cinder type-create ceph
+cinder type-key ceph <span class="nb">set</span> <span class="nv">volume_backend_name</span><span class="o">=</span>ceph
 </pre></div>
 
 
 <p>At that point, we should be able to create new Cinder volumes using
 Ceph as a backend, with the following command:</p>
-<div class="highlight"><pre>cinder create --volume-type ceph --display-name ceph-test 1
+<div class="highlight"><pre><span></span>cinder create --volume-type ceph --display-name ceph-test 1
 cinder list
 </pre></div>
 
@@ -215,13 +213,13 @@ cinder list
 mount Ceph block devices. To do that, we have to dump Ceph's
 authentication token to a file that we'll use on each nova-compute
 node. On a Ceph node:</p>
-<div class="highlight"><pre>ceph auth get-key client.volumes &gt; client.volumes.key
+<div class="highlight"><pre><span></span>ceph auth get-key client.volumes &gt; client.volumes.key
 </pre></div>
 
 
 <p>We will also need a <code>secret.xml</code> file that will be used on each
 compute node, with the following initial content:</p>
-<div class="highlight"><pre><span class="nt">&lt;secret</span> <span class="na">ephemeral=</span><span class="s">&#39;no&#39;</span> <span class="na">private=</span><span class="s">&#39;no&#39;</span><span class="nt">&gt;</span>
+<div class="highlight"><pre><span></span><span class="nt">&lt;secret</span> <span class="na">ephemeral=</span><span class="s">&#39;no&#39;</span> <span class="na">private=</span><span class="s">&#39;no&#39;</span><span class="nt">&gt;</span>
   <span class="nt">&lt;usage</span> <span class="na">type=</span><span class="s">&#39;ceph&#39;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;name&gt;</span>client.volumes secret<span class="nt">&lt;/name&gt;</span>
   <span class="nt">&lt;/usage&gt;</span>
@@ -233,7 +231,7 @@ compute node, with the following initial content:</p>
 <code>secret.xml</code>) on any nova-compute node. We'll call this node our first
 nova-compute node. On this first node we will define a secret with the
 following command:</p>
-<div class="highlight"><pre>virsh secret-define --file secret.xml
+<div class="highlight"><pre><span></span>virsh secret-define --file secret.xml
 </pre></div>
 
 
@@ -241,7 +239,7 @@ following command:</p>
 be used multiple times to configure nova-compute, as well as
 cinder-volume. We can then update the secret's value with the
 following command:</p>
-<div class="highlight"><pre>virsh secret-set-value --secret UUID_OF_SECRET --base64 <span class="k">$(</span>cat client.volumes.key<span class="k">)</span>
+<div class="highlight"><pre><span></span>virsh secret-set-value --secret UUID_OF_SECRET --base64 <span class="k">$(</span>cat client.volumes.key<span class="k">)</span>
 </pre></div>
 
 
@@ -249,46 +247,32 @@ following command:</p>
 updated on the first nova-compute node (in order to ensure that the
 same UUID_OF_SECRET will be used on each nova-compute node), with the
 following command:</p>
-<div class="highlight"><pre>virsh secret-dumpxml UUID_OF_SECRET &gt; secret.xml
+<div class="highlight"><pre><span></span>virsh secret-dumpxml UUID_OF_SECRET &gt; secret.xml
 </pre></div>
 
 
 <p>Then with the new <code>secret.xml</code> file and the <code>client.volumes.key</code>
  file, the previous operation has to be repeated on each nova-compute
  node (except the first one that is already configured):</p>
-<div class="highlight"><pre>virsh secret-define --file secret.xml
+<div class="highlight"><pre><span></span>virsh secret-define --file secret.xml
 virsh secret-set-value --secret UUID_OF_SECRET --base64 <span class="k">$(</span>cat client.volumes.key<span class="k">)</span>
 </pre></div>
 
 
 <p>Finally, cinder-volume configuration files <code>/etc/cinder/cinder.conf</code>
 have to be updated with the proper UUID_OF_SECRET value:</p>
-<div class="highlight"><pre><span class="n">rbd_secret_uuid</span> <span class="o">=</span> <span class="n">UUID_OF_SECRET</span>
+<div class="highlight"><pre><span></span><span class="n">rbd_secret_uuid</span> <span class="o">=</span> <span class="n">UUID_OF_SECRET</span>
 </pre></div>
 
 
 <p>And cinder-volume service restarted:</p>
-<div class="highlight"><pre>sudo service cinder-volume restart
+<div class="highlight"><pre><span></span>sudo service cinder-volume restart
 </pre></div>
 
 
 <p>After that point, any VM should be able to mount volumes using Ceph
 backend!</p>
                 </div><!-- /.entry-content -->
-                <div class="comments">
-                <h2>Comments !</h2>
-                        <div id="disqus_thread"></div>
-                        <script type="text/javascript">
-                           var disqus_identifier = "ceph-and-cinder-multi-backend.html";
-                           (function() {
-                                var dsq = document.createElement('script');
-                                dsq.type = 'text/javascript'; dsq.async = true;
-                                dsq.src = 'http://florentflament.disqus.com/embed.js';
-                                (document.getElementsByTagName('head')[0] ||
-                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
-                          })();
-                        </script>
-                </div>
         </article>
 </section>
         </div><!--/span-->
@@ -296,10 +280,7 @@ backend!</p>
                 <div class="span3 well sidebar-nav" id="sidebar">
 <ul class="nav nav-list">
 <li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
-    <li><a href="http://adam.younglogic.com/"><i class="icon-external-link"></i>Adam Young's Web Log</a></li>
     <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
-    <li><a href="http://dev.cloudwatt.com/en/blog/"><i class="icon-external-link"></i>Cloudwatt's Tech Blog</a></li>
-    <li><a href="http://www.jamielennox.net/"><i class="icon-external-link"></i>Jamie Lennox's Blog</a></li>
     <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
 
 <li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
@@ -315,171 +296,7 @@ backend!</p>
 </li>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-4">
-    <a href="./tag/raspbian.html">
-        <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/irc.html">
-        <i class="icon-tag icon-large"></i>IRC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ring.html">
-        <i class="icon-tag icon-large"></i>Ring
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/raspberry-pi.html">
-        <i class="icon-tag icon-large"></i>Raspberry Pi
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/operations.html">
-        <i class="icon-tag icon-large"></i>operations
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/printers.html">
-        <i class="icon-tag icon-large"></i>Printers
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
 
-<li class="nav-header">
-<a href="https://twitter.com/florentflament_" class="twitter-follow-button" data-show-count="false">Follow @florentflament_</a>
-</li>
-<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 
 </ul>        </div><!--/.well -->
 
@@ -496,24 +313,6 @@ backend!</p>
     </div><!--/.fluid-container-->
 
 
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-	var pageTracker = _gat._getTracker("UA-23791515-4");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<script type="text/javascript">
-    var disqus_shortname = 'florentflament';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
 
     <!-- Le javascript -->
     <!-- Placed at the end of the document so the pages load faster -->

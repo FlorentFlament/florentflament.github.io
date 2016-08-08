@@ -98,8 +98,6 @@
                                         title="Permalink to Git SSH Docker container">
                                         Git SSH Docker container
                                 </a>
-<a href="http://twitter.com/share" class="twitter-share-button"
-   data-count="horizontal" data-via="florentflament_">Tweet</a>
                         </h1>
                 </header>
                 <div class="entry-content">
@@ -132,27 +130,27 @@ container. This has the following advantages over other solutions:</p>
 <h2>Dockerfile</h2>
 <p>The proposed Git SSH Dockerfile is based on the <a href="https://docs.docker.com/examples/running_ssh_service/">Dockerizing an SSH
 service</a> example.</p>
-<div class="highlight"><pre>FROM ubuntu:14.04
+<div class="highlight"><pre><span></span>FROM ubuntu:14.04
 
 RUN apt-get -y update
 RUN apt-get -y install openssh-server
 RUN apt-get -y install git
 
-<span class="c"># Setting openssh</span>
+<span class="c1"># Setting openssh</span>
 RUN mkdir /var/run/sshd
 RUN sed -i <span class="s2">&quot;s/#PasswordAuthentication yes/PasswordAuthentication no/&quot;</span> /etc/ssh/sshd_config
 
-<span class="c"># Adding git user</span>
+<span class="c1"># Adding git user</span>
 RUN adduser --system git
 RUN mkdir -p /home/git/.ssh
 
-<span class="c"># Clearing and setting authorized ssh keys</span>
+<span class="c1"># Clearing and setting authorized ssh keys</span>
 RUN <span class="nb">echo</span> <span class="s1">&#39;&#39;</span> &gt; /home/git/.ssh/authorized_keys
 RUN <span class="nb">echo</span> <span class="s1">&#39;First SSH public key&#39;</span> &gt;&gt; /home/git/.ssh/authorized_keys
 RUN <span class="nb">echo</span> <span class="s1">&#39;Second SSH public key&#39;</span> &gt;&gt; /home/git/.ssh/authorized_keys
-<span class="c"># ...</span>
+<span class="c1"># ...</span>
 
-<span class="c"># Updating shell to bash</span>
+<span class="c1"># Updating shell to bash</span>
 RUN sed -i s#/home/git:/bin/false#/home/git:/bin/bash# /etc/passwd
 
 EXPOSE 22
@@ -164,14 +162,14 @@ CMD <span class="o">[</span><span class="s2">&quot;/usr/sbin/sshd&quot;</span>, 
 <ul>
 <li>
 <p>Building the image</p>
-<div class="highlight"><pre><span class="nv">$ </span>docker.io build -t git-ssh_img .
+<div class="highlight"><pre><span></span>$ docker.io build -t git-ssh_img .
 </pre></div>
 
 
 </li>
 <li>
 <p>Running the image</p>
-<div class="highlight"><pre><span class="nv">$ </span>sudo docker.io run -p 1234:22 -d --name git-ssh git-ssh_img
+<div class="highlight"><pre><span></span>$ sudo docker.io run -p 1234:22 -d --name git-ssh git-ssh_img
 </pre></div>
 
 
@@ -180,23 +178,9 @@ CMD <span class="o">[</span><span class="s2">&quot;/usr/sbin/sshd&quot;</span>, 
 <p>The previous command maps the container's host port 1234 on the
 container's SSH port. Of course, this port can be changed to any
 value. One can then ssh to the container with the following command:</p>
-<div class="highlight"><pre><span class="nv">$ </span>ssh -p <span class="m">1234</span> git@&lt;container_host&gt;
+<div class="highlight"><pre><span></span>$ ssh -p <span class="m">1234</span> git@&lt;container_host&gt;
 </pre></div>
                 </div><!-- /.entry-content -->
-                <div class="comments">
-                <h2>Comments !</h2>
-                        <div id="disqus_thread"></div>
-                        <script type="text/javascript">
-                           var disqus_identifier = "git-ssh-docker-container.html";
-                           (function() {
-                                var dsq = document.createElement('script');
-                                dsq.type = 'text/javascript'; dsq.async = true;
-                                dsq.src = 'http://florentflament.disqus.com/embed.js';
-                                (document.getElementsByTagName('head')[0] ||
-                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
-                          })();
-                        </script>
-                </div>
         </article>
 </section>
         </div><!--/span-->
@@ -204,10 +188,7 @@ value. One can then ssh to the container with the following command:</p>
                 <div class="span3 well sidebar-nav" id="sidebar">
 <ul class="nav nav-list">
 <li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
-    <li><a href="http://adam.younglogic.com/"><i class="icon-external-link"></i>Adam Young's Web Log</a></li>
     <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
-    <li><a href="http://dev.cloudwatt.com/en/blog/"><i class="icon-external-link"></i>Cloudwatt's Tech Blog</a></li>
-    <li><a href="http://www.jamielennox.net/"><i class="icon-external-link"></i>Jamie Lennox's Blog</a></li>
     <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
 
 <li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
@@ -223,171 +204,7 @@ value. One can then ssh to the container with the following command:</p>
 </li>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-4">
-    <a href="./tag/raspbian.html">
-        <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/irc.html">
-        <i class="icon-tag icon-large"></i>IRC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ring.html">
-        <i class="icon-tag icon-large"></i>Ring
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/raspberry-pi.html">
-        <i class="icon-tag icon-large"></i>Raspberry Pi
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/operations.html">
-        <i class="icon-tag icon-large"></i>operations
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/printers.html">
-        <i class="icon-tag icon-large"></i>Printers
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
 
-<li class="nav-header">
-<a href="https://twitter.com/florentflament_" class="twitter-follow-button" data-show-count="false">Follow @florentflament_</a>
-</li>
-<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 
 </ul>        </div><!--/.well -->
 
@@ -404,24 +221,6 @@ value. One can then ssh to the container with the following command:</p>
     </div><!--/.fluid-container-->
 
 
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-	var pageTracker = _gat._getTracker("UA-23791515-4");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<script type="text/javascript">
-    var disqus_shortname = 'florentflament';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
 
     <!-- Le javascript -->
     <!-- Placed at the end of the document so the pages load faster -->

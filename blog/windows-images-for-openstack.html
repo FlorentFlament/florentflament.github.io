@@ -98,8 +98,6 @@
                                         title="Permalink to Windows Images for OpenStack">
                                         Windows Images for OpenStack
                                 </a>
-<a href="http://twitter.com/share" class="twitter-share-button"
-   data-count="horizontal" data-via="florentflament_">Tweet</a>
                         </h1>
                 </header>
                 <div class="entry-content">
@@ -153,7 +151,7 @@ details.</p>
   install our OS). I typically use a 9 GB image for Windows 2008, and
   a 17 GB for Windows 2012 (although I think it should work with a 11
   or 12 GB image). Example:</p>
-<div class="highlight"><pre><span class="nv">$ </span>qemu-img create -f qcow2 Windows-Server-2008-R2.qcow2 9G
+<div class="highlight"><pre><span></span>$ qemu-img create -f qcow2 Windows-Server-2008-R2.qcow2 9G
 </pre></div>
 
 
@@ -161,7 +159,7 @@ details.</p>
 <li>
 <p>Next step is to launch Windows' installation in a (KVM) virtual
   machine. The following command is an example for that:</p>
-<div class="highlight"><pre><span class="nv">$ </span>kvm <span class="se">\</span>
+<div class="highlight"><pre><span></span>$ kvm <span class="se">\</span>
     -m <span class="m">2048</span> <span class="se">\</span>
     -cdrom &lt;WINDOWS_INSTALLER_ISO&gt; <span class="se">\</span>
     -drive <span class="nv">file</span><span class="o">=</span>Windows-Server-2008-R2.qcow2,if<span class="o">=</span>virtio <span class="se">\</span>
@@ -180,7 +178,7 @@ details.</p>
 <p>The following step consists in connecting to the display of the VM
   launched previously through VNC, in order to manually pursue the
   installation. This can be done with the following command:</p>
-<div class="highlight"><pre><span class="nv">$ </span>xvncviewer &lt;IP_OF_HYPERVISOR&gt;:9
+<div class="highlight"><pre><span></span>$ xvncviewer &lt;IP_OF_HYPERVISOR&gt;:9
 </pre></div>
 
 
@@ -231,11 +229,11 @@ downloaded. To to that, we have to follow these steps:</p>
 <li>
 <p>Mount the qcow2 image on the hypervisor filesystem, then copy the
   installer on Windows' administrator desktop, with something like:</p>
-<div class="highlight"><pre><span class="nv">$ </span>sudo qemu-nbd -c /dev/nbd2 Windows-Server-2008-R2.qcow2
-<span class="nv">$ </span>sudo mount /dev/nbd2p2 mnt/
-<span class="nv">$ </span>cp &lt;INSTALLER&gt; &lt;ADMINISTRATOR_DESKTOP_ON_WINDOWS&gt;
-<span class="nv">$ </span>sudo umount mnt/
-<span class="nv">$ </span>sudo qemu-nbd -d /dev/nbd2
+<div class="highlight"><pre><span></span>$ sudo qemu-nbd -c /dev/nbd2 Windows-Server-2008-R2.qcow2
+$ sudo mount /dev/nbd2p2 mnt/
+$ cp &lt;INSTALLER&gt; &lt;ADMINISTRATOR_DESKTOP_ON_WINDOWS&gt;
+$ sudo umount mnt/
+$ sudo qemu-nbd -d /dev/nbd2
 </pre></div>
 
 
@@ -243,7 +241,7 @@ downloaded. To to that, we have to follow these steps:</p>
 <li>
 <p>Restart Windows in KVM with the same command that we used to install
   Windows in the first place:</p>
-<div class="highlight"><pre><span class="nv">$ </span>kvm <span class="se">\</span>
+<div class="highlight"><pre><span></span>$ kvm <span class="se">\</span>
     -m <span class="m">2048</span> <span class="se">\</span>
     -cdrom &lt;WINDOWS_INSTALLER_ISO&gt; <span class="se">\</span>
     -drive <span class="nv">file</span><span class="o">=</span>Windows-Server-2008-R2.qcow2,if<span class="o">=</span>virtio <span class="se">\</span>
@@ -260,7 +258,7 @@ downloaded. To to that, we have to follow these steps:</p>
 </li>
 <li>
 <p>Then connect again with xvncviewer:</p>
-<div class="highlight"><pre><span class="nv">$ </span>xvncviewer &lt;IP_OF_HYPERVISOR&gt;:9
+<div class="highlight"><pre><span></span>$ xvncviewer &lt;IP_OF_HYPERVISOR&gt;:9
 </pre></div>
 
 
@@ -277,7 +275,7 @@ downloaded. To to that, we have to follow these steps:</p>
 <p>Once the installation is done, we can clean any temporary files
   created, then shutdown the system. The image is ready to be uploaded
   in OpenStack Glance:</p>
-<div class="highlight"><pre><span class="nv">$ </span>glance add <span class="nv">name</span><span class="o">=</span>&lt;OPENSTACK_IMAGE_NAME&gt; <span class="nv">is_public</span><span class="o">=</span><span class="nb">true</span> <span class="se">\</span>
+<div class="highlight"><pre><span></span>$ glance add <span class="nv">name</span><span class="o">=</span>&lt;OPENSTACK_IMAGE_NAME&gt; <span class="nv">is_public</span><span class="o">=</span><span class="nb">true</span> <span class="se">\</span>
     <span class="nv">container_format</span><span class="o">=</span>bare <span class="nv">disk_format</span><span class="o">=</span>qcow2 &lt; &lt;IMAGE_FILENAME&gt;
 </pre></div>
 
@@ -298,7 +296,7 @@ tested yet). Cloud-Init base creates an <code>Admin</code> user, with either:</p
   password must respect Windows password strength constraints (upper
   and lower case characters, as well as numbers). If not it will be
   silently ignored. For instance:</p>
-<div class="highlight"><pre><span class="nv">$ </span>nova boot --key-name &lt;KEYPAIR_NAME&gt; --image &lt;IMAGE_ID&gt; <span class="se">\</span>
+<div class="highlight"><pre><span></span>$ nova boot --key-name &lt;KEYPAIR_NAME&gt; --image &lt;IMAGE_ID&gt; <span class="se">\</span>
     --flavor &lt;FLAVOR_ID&gt; --nic net-id<span class="o">=</span>&lt;NET_ID&gt; <span class="se">\</span>
     --meta <span class="nv">admin_pass</span><span class="o">=</span>&lt;ADMIN_PASSWORD&gt; &lt;VM_NAME&gt;
 </pre></div>
@@ -311,7 +309,7 @@ tested yet). Cloud-Init base creates an <code>Admin</code> user, with either:</p
   VM. Such password can be retrieved and decrypted with the
   corresponding private ssh key, by using the following command (note
   that the private key is used locally):</p>
-<div class="highlight"><pre><span class="nv">$ </span>nova get-password &lt;VM_NAME_OR_ID&gt; &lt;SSH_PRIVATE_KEY&gt;
+<div class="highlight"><pre><span></span>$ nova get-password &lt;VM_NAME_OR_ID&gt; &lt;SSH_PRIVATE_KEY&gt;
 </pre></div>
 
 
@@ -321,20 +319,6 @@ tested yet). Cloud-Init base creates an <code>Admin</code> user, with either:</p
 <code>xfreerdp</code> instead of <code>rdesktop</code>. The pointer is bogus when connecting
 to a windows 2012 VM using <code>rdesktop</code>.</p>
                 </div><!-- /.entry-content -->
-                <div class="comments">
-                <h2>Comments !</h2>
-                        <div id="disqus_thread"></div>
-                        <script type="text/javascript">
-                           var disqus_identifier = "windows-images-for-openstack.html";
-                           (function() {
-                                var dsq = document.createElement('script');
-                                dsq.type = 'text/javascript'; dsq.async = true;
-                                dsq.src = 'http://florentflament.disqus.com/embed.js';
-                                (document.getElementsByTagName('head')[0] ||
-                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
-                          })();
-                        </script>
-                </div>
         </article>
 </section>
         </div><!--/span-->
@@ -342,10 +326,7 @@ to a windows 2012 VM using <code>rdesktop</code>.</p>
                 <div class="span3 well sidebar-nav" id="sidebar">
 <ul class="nav nav-list">
 <li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
-    <li><a href="http://adam.younglogic.com/"><i class="icon-external-link"></i>Adam Young's Web Log</a></li>
     <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
-    <li><a href="http://dev.cloudwatt.com/en/blog/"><i class="icon-external-link"></i>Cloudwatt's Tech Blog</a></li>
-    <li><a href="http://www.jamielennox.net/"><i class="icon-external-link"></i>Jamie Lennox's Blog</a></li>
     <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
 
 <li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
@@ -361,171 +342,7 @@ to a windows 2012 VM using <code>rdesktop</code>.</p>
 </li>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-4">
-    <a href="./tag/raspbian.html">
-        <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/irc.html">
-        <i class="icon-tag icon-large"></i>IRC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ring.html">
-        <i class="icon-tag icon-large"></i>Ring
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/raspberry-pi.html">
-        <i class="icon-tag icon-large"></i>Raspberry Pi
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/operations.html">
-        <i class="icon-tag icon-large"></i>operations
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/printers.html">
-        <i class="icon-tag icon-large"></i>Printers
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
 
-<li class="nav-header">
-<a href="https://twitter.com/florentflament_" class="twitter-follow-button" data-show-count="false">Follow @florentflament_</a>
-</li>
-<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 
 </ul>        </div><!--/.well -->
 
@@ -542,24 +359,6 @@ to a windows 2012 VM using <code>rdesktop</code>.</p>
     </div><!--/.fluid-container-->
 
 
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-	var pageTracker = _gat._getTracker("UA-23791515-4");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<script type="text/javascript">
-    var disqus_shortname = 'florentflament';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
 
     <!-- Le javascript -->
     <!-- Placed at the end of the document so the pages load faster -->

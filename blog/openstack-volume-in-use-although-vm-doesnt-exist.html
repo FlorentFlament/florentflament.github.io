@@ -98,8 +98,6 @@
                                         title="Permalink to Openstack volume in-use although VM doesn't exist">
                                         Openstack volume in-use although VM doesn't exist
                                 </a>
-<a href="http://twitter.com/share" class="twitter-share-button"
-   data-count="horizontal" data-via="florentflament_">Tweet</a>
                         </h1>
                 </header>
                 <div class="entry-content">
@@ -138,43 +136,43 @@ some weird methods for both version of the API.</p>
 which is neither documented <a href="http://docs.openstack.org/api/openstack-block-storage/2.0/content/Volumes.html">here</a> nor <a href="http://api.openstack.org/api-ref-blockstorage.html">there</a>. They can be used
 to "set attachment metadata", which according to my opinion has no
 good reason to be performed directly by a user.</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">time</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">cinderclient.v1.client</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">novaclient.v1_1.client</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c"># Creating manager</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Creating manager</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;username&quot;</span><span class="p">,</span> <span class="s">&quot;password&quot;</span><span class="p">,</span> <span class="s">&quot;project_name&quot;</span><span class="p">,</span> <span class="s">&quot;auth_url&quot;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;project_name&quot;</span><span class="p">,</span> <span class="s2">&quot;auth_url&quot;</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span> <span class="o">=</span> <span class="n">cinderclient</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span> <span class="o">=</span> <span class="n">novaclient</span><span class="o">.</span><span class="n">v1_1</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c"># Getting an image and a flavor to launch our VM</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Getting an image and a flavor to launch our VM</span>
 <span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">img</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">list</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">fla</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">flavors</span><span class="o">.</span><span class="n">list</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c"># Creating our resources (vm and volume)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Creating our resources (vm and volume)</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">vm</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;MyVm&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">fla</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">vol</span> <span class="o">=</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s">&quot;MyVol&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">vm</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;MyVm&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">fla</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">vol</span> <span class="o">=</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;MyVol&quot;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c"># Waiting for VM to be spawned</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Waiting for VM to be spawned</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">while</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="s">&quot;ACTIVE&quot;</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">while</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="s2">&quot;ACTIVE&quot;</span><span class="p">:</span>
 <span class="o">...</span>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c"># Try an attach the volume using the VolumeManager.attach method</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Try an attach the volume using the VolumeManager.attach method</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">vol</span><span class="p">,</span> <span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s">&quot;/dev/vdb&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">vol</span><span class="p">,</span> <span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;/dev/vdb&quot;</span><span class="p">)</span>
 <span class="p">(</span><span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">202</span><span class="p">]</span><span class="o">&gt;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s">&quot;attachments&quot;</span><span class="p">]</span>
-<span class="p">[{</span><span class="s">u&#39;device&#39;</span><span class="p">:</span> <span class="s">u&#39;/dev/vdb&#39;</span><span class="p">,</span> <span class="s">u&#39;server_id&#39;</span><span class="p">:</span> <span class="s">u&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">,</span> <span class="s">u&#39;volume_id&#39;</span><span class="p">:</span> <span class="s">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">,</span> <span class="s">u&#39;host_name&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">u&#39;id&#39;</span><span class="p">:</span> <span class="s">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c"># Well it looks like it is attached</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;attachments&quot;</span><span class="p">]</span>
+<span class="p">[{</span><span class="s1">u&#39;device&#39;</span><span class="p">:</span> <span class="s1">u&#39;/dev/vdb&#39;</span><span class="p">,</span> <span class="s1">u&#39;server_id&#39;</span><span class="p">:</span> <span class="s1">u&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">,</span> <span class="s1">u&#39;volume_id&#39;</span><span class="p">:</span> <span class="s1">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">,</span> <span class="s1">u&#39;host_name&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s1">u&#39;id&#39;</span><span class="p">:</span> <span class="s1">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Well it looks like it is attached</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">vm</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">vm</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">vm</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">vm</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
 <span class="p">[]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c"># But actually it isn&#39;t</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># But actually it isn&#39;t</span>
 <span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span>
 </pre></div>
@@ -186,25 +184,25 @@ instance. This should be done by using the
 <a href="https://github.com/openstack/python-novaclient/blob/master/novaclient/v1_1/volumes.py">novaclient.v1_1.volumes.VolumeManager.create_server_volume</a>
 method. It actually allows to "attach a volume to a server", which is
 what we want to do (And yes the method's name is not super clear).</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="c"># Let&#39;s continue on the example above</span>
-<span class="o">...</span> <span class="c"># First by clearing our volume attachment&#39;s metadata</span>
-<span class="o">...</span> <span class="c"># to recover a consistent state</span>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="c1"># Let&#39;s continue on the example above</span>
+<span class="o">...</span> <span class="c1"># First by clearing our volume attachment&#39;s metadata</span>
+<span class="o">...</span> <span class="c1"># to recover a consistent state</span>
 <span class="o">...</span> 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">vol</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
 <span class="p">(</span><span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">202</span><span class="p">]</span><span class="o">&gt;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s">&#39;attachments&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;attachments&#39;</span><span class="p">]</span>
 <span class="p">[]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
 <span class="p">[]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c"># Now we can use the VolumeManager.create_server_volume method</span>
-<span class="o">...</span> <span class="c"># to really attach our volume to our vm</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Now we can use the VolumeManager.create_server_volume method</span>
+<span class="o">...</span> <span class="c1"># to really attach our volume to our vm</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">create_server_volume</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s">&quot;/dev/vdb&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">create_server_volume</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;/dev/vdb&quot;</span><span class="p">)</span>
 <span class="o">&lt;</span><span class="n">Volume</span><span class="p">:</span> <span class="n">f024883d</span><span class="o">-</span><span class="mi">4</span><span class="n">b35</span><span class="o">-</span><span class="mi">4894</span><span class="o">-</span><span class="mi">9</span><span class="n">fbf</span><span class="o">-</span><span class="mf">51498e6</span><span class="n">c3c09</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s">&quot;attachments&quot;</span><span class="p">]</span>
-<span class="p">[{</span><span class="s">u&#39;device&#39;</span><span class="p">:</span> <span class="s">u&#39;/dev/vdb&#39;</span><span class="p">,</span> <span class="s">u&#39;server_id&#39;</span><span class="p">:</span> <span class="s">u&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">,</span> <span class="s">u&#39;volume_id&#39;</span><span class="p">:</span> <span class="s">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">,</span> <span class="s">u&#39;host_name&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">u&#39;id&#39;</span><span class="p">:</span> <span class="s">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
-<span class="p">[{</span><span class="s">u&#39;id&#39;</span><span class="p">:</span> <span class="s">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;attachments&quot;</span><span class="p">]</span>
+<span class="p">[{</span><span class="s1">u&#39;device&#39;</span><span class="p">:</span> <span class="s1">u&#39;/dev/vdb&#39;</span><span class="p">,</span> <span class="s1">u&#39;server_id&#39;</span><span class="p">:</span> <span class="s1">u&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">,</span> <span class="s1">u&#39;volume_id&#39;</span><span class="p">:</span> <span class="s1">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">,</span> <span class="s1">u&#39;host_name&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s1">u&#39;id&#39;</span><span class="p">:</span> <span class="s1">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
+<span class="p">[{</span><span class="s1">u&#39;id&#39;</span><span class="p">:</span> <span class="s1">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
 <span class="o">&gt;&gt;&gt;</span>
 </pre></div>
 
@@ -221,7 +219,7 @@ entries in the database manually...</p>
 <p>One way to recover from a "volume attached to non-existent VM"
 inconsistent state, is to manually update entries in the Cinder
 database.</p>
-<div class="highlight"><pre><span class="nv">$ </span>mysql cinder
+<div class="highlight"><pre><span></span>$ mysql cinder
 Reading table information <span class="k">for</span> completion of table and column names
 You can turn off this feature to get a quicker startup with -A
 
@@ -270,7 +268,7 @@ mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<s
 <span class="m">7</span> rows in <span class="nb">set</span> <span class="o">(</span>0.00 sec<span class="o">)</span>
 
 mysql&gt; Bye
-<span class="nv">$ </span>cinder list
+$ cinder list
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
 <span class="p">|</span>                  ID                  <span class="p">|</span>   Status  <span class="p">|</span> Name <span class="p">|</span> Size <span class="p">|</span> Volume Type <span class="p">|</span> Bootable <span class="p">|</span> Attached to <span class="p">|</span>
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
@@ -278,20 +276,6 @@ mysql&gt; Bye
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
 </pre></div>
                 </div><!-- /.entry-content -->
-                <div class="comments">
-                <h2>Comments !</h2>
-                        <div id="disqus_thread"></div>
-                        <script type="text/javascript">
-                           var disqus_identifier = "openstack-volume-in-use-although-vm-doesnt-exist.html";
-                           (function() {
-                                var dsq = document.createElement('script');
-                                dsq.type = 'text/javascript'; dsq.async = true;
-                                dsq.src = 'http://florentflament.disqus.com/embed.js';
-                                (document.getElementsByTagName('head')[0] ||
-                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
-                          })();
-                        </script>
-                </div>
         </article>
 </section>
         </div><!--/span-->
@@ -299,10 +283,7 @@ mysql&gt; Bye
                 <div class="span3 well sidebar-nav" id="sidebar">
 <ul class="nav nav-list">
 <li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
-    <li><a href="http://adam.younglogic.com/"><i class="icon-external-link"></i>Adam Young's Web Log</a></li>
     <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
-    <li><a href="http://dev.cloudwatt.com/en/blog/"><i class="icon-external-link"></i>Cloudwatt's Tech Blog</a></li>
-    <li><a href="http://www.jamielennox.net/"><i class="icon-external-link"></i>Jamie Lennox's Blog</a></li>
     <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
 
 <li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
@@ -318,171 +299,7 @@ mysql&gt; Bye
 </li>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-4">
-    <a href="./tag/raspbian.html">
-        <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/irc.html">
-        <i class="icon-tag icon-large"></i>IRC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ring.html">
-        <i class="icon-tag icon-large"></i>Ring
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/raspberry-pi.html">
-        <i class="icon-tag icon-large"></i>Raspberry Pi
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/operations.html">
-        <i class="icon-tag icon-large"></i>operations
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/printers.html">
-        <i class="icon-tag icon-large"></i>Printers
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
 
-<li class="nav-header">
-<a href="https://twitter.com/florentflament_" class="twitter-follow-button" data-show-count="false">Follow @florentflament_</a>
-</li>
-<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 
 </ul>        </div><!--/.well -->
 
@@ -499,24 +316,6 @@ mysql&gt; Bye
     </div><!--/.fluid-container-->
 
 
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-	var pageTracker = _gat._getTracker("UA-23791515-4");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<script type="text/javascript">
-    var disqus_shortname = 'florentflament';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
 
     <!-- Le javascript -->
     <!-- Placed at the end of the document so the pages load faster -->

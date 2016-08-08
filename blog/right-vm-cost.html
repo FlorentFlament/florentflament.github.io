@@ -98,8 +98,6 @@
                                         title="Permalink to Right VM cost">
                                         Right VM cost
                                 </a>
-<a href="http://twitter.com/share" class="twitter-share-button"
-   data-count="horizontal" data-via="florentflament_">Tweet</a>
                         </h1>
                 </header>
                 <div class="entry-content">
@@ -150,7 +148,7 @@ ratio of dedicated servers.</p>
 <p>We can make an estimate of the cost of hardware by performing a
 <a href="http://en.wikipedia.org/wiki/Regression_analysis">multiple regression analysis</a> on dedicated server prices.</p>
 <p><a href="http://www.ovh.com/fr/serveurs_dedies/enterprise/">OVH prices</a> (only considering Intel Xeon CPUs):</p>
-<div class="highlight"><pre>|-------------------------------------------------------------------------------------------|
+<div class="highlight"><pre><span></span>|-------------------------------------------------------------------------------------------|
 |         CPU type        | # threads | RAM (GB) | HDD (TB) | SSD (GB) | Price (€/month HT) |
 |-------------------------------------------------------------------------------------------|
 |                                 OVH Enterprise                                            |
@@ -200,7 +198,7 @@ where:</p>
 </ul>
 <p>We can estimate ßj coefficients with the following formula:
 ß = (Xt<em>X)-¹</em>Xt*Y</p>
-<div class="highlight"><pre><span class="nv">$ </span>python pricing_vm_simple.py
+<div class="highlight"><pre><span></span>$ python pricing_vm_simple.py
 Constant: 31.3530724158
 Eur / CPU thread: 3.12689639938
 Eur / GB of RAM: 0.639580183605
@@ -240,82 +238,68 @@ SSD storage (which is recommended when sharing a disk with many users)
 is costly. Therefore, in the case of huge storage space requirements,
 dedicated servers with big HDDs may be more appropriate.</p>
 <h2>Annex - Regression Analysis code</h2>
-<div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 
 <span class="n">X</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
-<span class="s">&#39;1,  8,  64,   4,    0;&#39;</span>
-<span class="s">&#39;1, 12, 128,   4,    0;&#39;</span>
-<span class="s">&#39;1, 32, 128,   4,    0;&#39;</span>
-<span class="s">&#39;1, 40, 256,   4,    0;&#39;</span>
-<span class="s">&#39;1,  8,  32,   6,    0;&#39;</span>
-<span class="s">&#39;1, 12,  64,   6,    0;&#39;</span>
-<span class="s">&#39;1, 16, 128,   6,    0;&#39;</span>
-<span class="s">&#39;1, 32, 128,   6,    0;&#39;</span>
-<span class="s">&#39;1, 40, 256,   6,    0;&#39;</span>
-<span class="s">&#39;1, 12,  48,  48,    0;&#39;</span>
-<span class="s">&#39;1, 12,  48,  72,    0;&#39;</span>
-<span class="s">&#39;1, 24,  64, 144,    0;&#39;</span>
-<span class="s">&#39;1, 24,  64, 216,    0;&#39;</span>
-<span class="s">&#39;1, 12,  48,  36,  360;&#39;</span>
-<span class="s">&#39;1, 12,  48,  54,  360;&#39;</span>
-<span class="s">&#39;1, 24,  64, 108, 1080;&#39;</span>
-<span class="s">&#39;1, 24,  64, 162, 1080&#39;</span><span class="p">)</span>
+<span class="s1">&#39;1,  8,  64,   4,    0;&#39;</span>
+<span class="s1">&#39;1, 12, 128,   4,    0;&#39;</span>
+<span class="s1">&#39;1, 32, 128,   4,    0;&#39;</span>
+<span class="s1">&#39;1, 40, 256,   4,    0;&#39;</span>
+<span class="s1">&#39;1,  8,  32,   6,    0;&#39;</span>
+<span class="s1">&#39;1, 12,  64,   6,    0;&#39;</span>
+<span class="s1">&#39;1, 16, 128,   6,    0;&#39;</span>
+<span class="s1">&#39;1, 32, 128,   6,    0;&#39;</span>
+<span class="s1">&#39;1, 40, 256,   6,    0;&#39;</span>
+<span class="s1">&#39;1, 12,  48,  48,    0;&#39;</span>
+<span class="s1">&#39;1, 12,  48,  72,    0;&#39;</span>
+<span class="s1">&#39;1, 24,  64, 144,    0;&#39;</span>
+<span class="s1">&#39;1, 24,  64, 216,    0;&#39;</span>
+<span class="s1">&#39;1, 12,  48,  36,  360;&#39;</span>
+<span class="s1">&#39;1, 12,  48,  54,  360;&#39;</span>
+<span class="s1">&#39;1, 24,  64, 108, 1080;&#39;</span>
+<span class="s1">&#39;1, 24,  64, 162, 1080&#39;</span><span class="p">)</span>
 
 <span class="n">Y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span>
-<span class="s">&#39;  81.99;&#39;</span>
-<span class="s">&#39; 131.99;&#39;</span>
-<span class="s">&#39; 202.99;&#39;</span>
-<span class="s">&#39; 302.99;&#39;</span>
-<span class="s">&#39;  81.99;&#39;</span>
-<span class="s">&#39; 141.99;&#39;</span>
-<span class="s">&#39; 191.99;&#39;</span>
-<span class="s">&#39; 302.99;&#39;</span>
-<span class="s">&#39; 402.99;&#39;</span>
-<span class="s">&#39; 372.99;&#39;</span>
-<span class="s">&#39; 522.00;&#39;</span>
-<span class="s">&#39; 822.00;&#39;</span>
-<span class="s">&#39;1272.00;&#39;</span>
-<span class="s">&#39; 372.99;&#39;</span>
-<span class="s">&#39; 522.00;&#39;</span>
-<span class="s">&#39; 822.00;&#39;</span>
-<span class="s">&#39;1272.00&#39;</span><span class="p">)</span>
+<span class="s1">&#39;  81.99;&#39;</span>
+<span class="s1">&#39; 131.99;&#39;</span>
+<span class="s1">&#39; 202.99;&#39;</span>
+<span class="s1">&#39; 302.99;&#39;</span>
+<span class="s1">&#39;  81.99;&#39;</span>
+<span class="s1">&#39; 141.99;&#39;</span>
+<span class="s1">&#39; 191.99;&#39;</span>
+<span class="s1">&#39; 302.99;&#39;</span>
+<span class="s1">&#39; 402.99;&#39;</span>
+<span class="s1">&#39; 372.99;&#39;</span>
+<span class="s1">&#39; 522.00;&#39;</span>
+<span class="s1">&#39; 822.00;&#39;</span>
+<span class="s1">&#39;1272.00;&#39;</span>
+<span class="s1">&#39; 372.99;&#39;</span>
+<span class="s1">&#39; 522.00;&#39;</span>
+<span class="s1">&#39; 822.00;&#39;</span>
+<span class="s1">&#39;1272.00&#39;</span><span class="p">)</span>
 
-<span class="c"># Computing model parameters</span>
+<span class="c1"># Computing model parameters</span>
 <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">I</span> <span class="o">*</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">Y</span>
 
-<span class="c"># Computing predictions based on models</span>
+<span class="c1"># Computing predictions based on models</span>
 <span class="n">F</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">B</span>
 
-<span class="c"># Computing R^2</span>
+<span class="c1"># Computing R^2</span>
 <span class="n">M</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">SStot</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">Y</span><span class="o">-</span><span class="n">M</span><span class="p">,</span> <span class="n">Y</span><span class="o">-</span><span class="n">M</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="n">SSres</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">Y</span><span class="o">-</span><span class="n">F</span><span class="p">,</span> <span class="n">Y</span><span class="o">-</span><span class="n">F</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="n">Rsq</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">SSres</span> <span class="o">/</span> <span class="n">SStot</span>
 
-<span class="k">print</span> <span class="s">&quot;Constant:&quot;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;Eur / CPU thread:&quot;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;Eur / GB of RAM:&quot;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;Eur / TB of HDD:&quot;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;Eur / GB of SSD:&quot;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;R^2:&quot;</span><span class="p">,</span> <span class="n">Rsq</span>
+<span class="k">print</span> <span class="s2">&quot;Constant:&quot;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;Eur / CPU thread:&quot;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;Eur / GB of RAM:&quot;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;Eur / TB of HDD:&quot;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;Eur / GB of SSD:&quot;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;R^2:&quot;</span><span class="p">,</span> <span class="n">Rsq</span>
 </pre></div>
                 </div><!-- /.entry-content -->
-                <div class="comments">
-                <h2>Comments !</h2>
-                        <div id="disqus_thread"></div>
-                        <script type="text/javascript">
-                           var disqus_identifier = "right-vm-cost.html";
-                           (function() {
-                                var dsq = document.createElement('script');
-                                dsq.type = 'text/javascript'; dsq.async = true;
-                                dsq.src = 'http://florentflament.disqus.com/embed.js';
-                                (document.getElementsByTagName('head')[0] ||
-                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
-                          })();
-                        </script>
-                </div>
         </article>
 </section>
         </div><!--/span-->
@@ -323,10 +307,7 @@ dedicated servers with big HDDs may be more appropriate.</p>
                 <div class="span3 well sidebar-nav" id="sidebar">
 <ul class="nav nav-list">
 <li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
-    <li><a href="http://adam.younglogic.com/"><i class="icon-external-link"></i>Adam Young's Web Log</a></li>
     <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
-    <li><a href="http://dev.cloudwatt.com/en/blog/"><i class="icon-external-link"></i>Cloudwatt's Tech Blog</a></li>
-    <li><a href="http://www.jamielennox.net/"><i class="icon-external-link"></i>Jamie Lennox's Blog</a></li>
     <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
 
 <li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
@@ -342,171 +323,7 @@ dedicated servers with big HDDs may be more appropriate.</p>
 </li>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-4">
-    <a href="./tag/raspbian.html">
-        <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/irc.html">
-        <i class="icon-tag icon-large"></i>IRC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ring.html">
-        <i class="icon-tag icon-large"></i>Ring
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/raspberry-pi.html">
-        <i class="icon-tag icon-large"></i>Raspberry Pi
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/operations.html">
-        <i class="icon-tag icon-large"></i>operations
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/printers.html">
-        <i class="icon-tag icon-large"></i>Printers
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
 
-<li class="nav-header">
-<a href="https://twitter.com/florentflament_" class="twitter-follow-button" data-show-count="false">Follow @florentflament_</a>
-</li>
-<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 
 </ul>        </div><!--/.well -->
 
@@ -523,24 +340,6 @@ dedicated servers with big HDDs may be more appropriate.</p>
     </div><!--/.fluid-container-->
 
 
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-	var pageTracker = _gat._getTracker("UA-23791515-4");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<script type="text/javascript">
-    var disqus_shortname = 'florentflament';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
 
     <!-- Le javascript -->
     <!-- Placed at the end of the document so the pages load faster -->

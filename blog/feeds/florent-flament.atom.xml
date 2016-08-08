@@ -1,5 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/florent-flament.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2015-05-09T00:00:00+02:00</updated><entry><title>Inkjet versus laser printer</title><link href="http://www.florentflament.com/blog/inkjet-versus-laser-printer.html" rel="alternate"></link><updated>2015-05-09T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2015-05-09:blog/inkjet-versus-laser-printer.html</id><summary type="html">&lt;p&gt;Contrary to what I found on most websites when googling about
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/florent-flament.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2016-08-08T00:00:00+02:00</updated><entry><title>Arduino Hello World without IDE</title><link href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html" rel="alternate"></link><published>2016-08-08T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-08-08:blog/arduino-hello-world-without-ide.html</id><summary type="html">&lt;p&gt;There is already a number of resources available about programming the
+Arduino with or without the IDE (I won't discuss here the pros and
+cons of using it). This aims at being a quick memo for those who
+already have some knowledge about C programming, and just want the
+minimal information required to compile C code and upload it to an
+Arduino board. This is basically a compilation of chunks of code
+retrieved here and there a couple of months ago and possibly updated.&lt;/p&gt;
+&lt;h2&gt;Packages to install&lt;/h2&gt;
+&lt;p&gt;To be able to compile and upload C code to an Arduino board, one has
+to install the following packages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;avr-gcc&lt;/code&gt; : Cross Compiling GNU GCC targeted at avr&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;avr-libc&lt;/code&gt; : C library for use with GCC on Atmel AVR microcontrollers&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;avrdude&lt;/code&gt; : Software for programming Atmel AVR microcontroller&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Note the &lt;code&gt;avr-libc&lt;/code&gt; (and to some extend &lt;code&gt;avr-gcc&lt;/code&gt;) install a lot of
+interesting libraries. Corresponding headers can be found in the
+following directory: &lt;code&gt;/usr/avr/include/&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Makefile&lt;/h2&gt;
+&lt;p&gt;The following Makefile summarizes the commands (with parameters)
+needed to compile a C project and upload it to an Arduino board:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;baud&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;115200
+&lt;span class="nv"&gt;avrType&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;atmega328p
+&lt;span class="nv"&gt;avrFreq&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;16000000&lt;/span&gt; &lt;span class="c1"&gt;# 16 Mhz&lt;/span&gt;
+&lt;span class="nv"&gt;programmerDev&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/ttyUSB0
+&lt;span class="nv"&gt;programmerType&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;arduino
+
+&lt;span class="nv"&gt;cflags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-DF_CPU&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;avrFreq&lt;span class="k"&gt;)&lt;/span&gt; -mmcu&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;avrType&lt;span class="k"&gt;)&lt;/span&gt; -Wall -Werror -Wextra -Os
+&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;patsubst %.c,%.o,&lt;span class="k"&gt;$(&lt;/span&gt;wildcard *.c&lt;span class="k"&gt;))&lt;/span&gt;
+
+&lt;span class="nf"&gt;.PHONY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;flash&lt;/span&gt; &lt;span class="n"&gt;clean&lt;/span&gt;
+
+&lt;span class="nf"&gt;all&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;.&lt;span class="n"&gt;hex&lt;/span&gt;
+
+&lt;span class="nf"&gt;%.o&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; %.&lt;span class="n"&gt;c&lt;/span&gt;
+    avr-gcc &lt;span class="k"&gt;$(&lt;/span&gt;cflags&lt;span class="k"&gt;)&lt;/span&gt; -c $&amp;lt; -o &lt;span class="nv"&gt;$@&lt;/span&gt;
+
+&lt;span class="nf"&gt;main.elf&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+    avr-gcc &lt;span class="k"&gt;$(&lt;/span&gt;cflags&lt;span class="k"&gt;)&lt;/span&gt; -o &lt;span class="nv"&gt;$@&lt;/span&gt; $^
+
+&lt;span class="nf"&gt;main.hex&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;.&lt;span class="n"&gt;elf&lt;/span&gt;
+    avr-objcopy -j .text -j .data -O ihex $^ &lt;span class="nv"&gt;$@&lt;/span&gt;
+
+&lt;span class="nf"&gt;flash&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;.&lt;span class="n"&gt;hex&lt;/span&gt;
+    avrdude -p&lt;span class="k"&gt;$(&lt;/span&gt;avrType&lt;span class="k"&gt;)&lt;/span&gt; -c&lt;span class="k"&gt;$(&lt;/span&gt;programmerType&lt;span class="k"&gt;)&lt;/span&gt; -P&lt;span class="k"&gt;$(&lt;/span&gt;programmerDev&lt;span class="k"&gt;)&lt;/span&gt; -b&lt;span class="k"&gt;$(&lt;/span&gt;baud&lt;span class="k"&gt;)&lt;/span&gt; -v -U flash:w:$&amp;lt;
+
+&lt;span class="nf"&gt;clean&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    rm -f main.hex main.elf &lt;span class="k"&gt;$(&lt;/span&gt;objects&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To compile and upload a C project, one has to type the following
+commands (actually the last one is enough, since it will automatically
+build the &lt;code&gt;main.hex&lt;/code&gt; file if required):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  $ make
+  ...
+  $ make flash
+  ...
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Depending on the board being used, one may have to tune the parameters
+at the beginning of the file. For instance, the &lt;code&gt;avrType&lt;/code&gt; must reflect
+the type of AVR microcontroller on the board. The following header
+contains an extensive list of the supported hardware:
+&lt;code&gt;/usr/avr/include/avr/io.h&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Arduino Hello World&lt;/h2&gt;
+&lt;p&gt;The minimal program on an Arduino consists in having a LED blink. I
+found this code somewhere (though I couldn't recover where from..):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;util/delay.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;avr/io.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define LED PORTB5&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;DDRB&lt;/span&gt; &lt;span class="o"&gt;|=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;LED&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="cm"&gt;/*ever*/&lt;/span&gt;&lt;span class="p"&gt;(;;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;|=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;LED&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;_delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;LED&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;_delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's all folks. With the packages installed and the Makefile
+described earlier, one can compile this little C code and upload it to
+an Arduino board and see the little red LED blinking. From this
+starting point, one can easily work on bigger Arduino based projects.&lt;/p&gt;</summary><category term="Arduino"></category></entry><entry><title>Inkjet versus laser printer</title><link href="http://www.florentflament.com/blog/inkjet-versus-laser-printer.html" rel="alternate"></link><published>2015-05-09T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2015-05-09:blog/inkjet-versus-laser-printer.html</id><summary type="html">&lt;p&gt;Contrary to what I found on most websites when googling about
 comparisons between inkjet and laser printers, the cost per page on
 high end inkjet printers is lower than that of laser printers.&lt;/p&gt;
 &lt;p&gt;Moreover, when buying a new printer one has to consider the number of
@@ -498,7 +587,7 @@ page). On the other hand, the printer with the lowest cost per page
 of $1000.&lt;/p&gt;
 &lt;p&gt;In the end, the ideal printer depends on the usage that will be done
 (number of pages printed). Besides, one may consider additional
-features (print speed, duplex printing, ...) when choosing a printer.&lt;/p&gt;</summary><category term="Printers"></category><category term="Costs"></category></entry><entry><title>Splitting Swift cluster</title><link href="http://www.florentflament.com/blog/splitting-swift-cluster.html" rel="alternate"></link><updated>2014-10-20T23:25:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-10-20:blog/splitting-swift-cluster.html</id><summary type="html">&lt;p&gt;At &lt;a href="https://www.cloudwatt.com/en/"&gt;Cloudwatt&lt;/a&gt;, we have been operating a near hundred nodes Swift
+features (print speed, duplex printing, ...) when choosing a printer.&lt;/p&gt;</summary><category term="Printers"></category><category term="Costs"></category></entry><entry><title>Splitting Swift cluster</title><link href="http://www.florentflament.com/blog/splitting-swift-cluster.html" rel="alternate"></link><published>2014-10-20T23:25:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-10-20:blog/splitting-swift-cluster.html</id><summary type="html">&lt;p&gt;At &lt;a href="https://www.cloudwatt.com/en/"&gt;Cloudwatt&lt;/a&gt;, we have been operating a near hundred nodes Swift
 cluster in a unique datacenter for a few years. The decision to split
 the cluster on two datacenters has been taken recently. The goal is to
 have at least one replica of each object on each site in order to
@@ -568,16 +657,16 @@ the data is removed from the node and the &lt;em&gt;replication&lt;/em&gt; mecha
 takes care of replacing the missing data. Below is an example of what
 concretely happens when manually corrupting an object.&lt;/p&gt;
 &lt;p&gt;Let's corrupt data by hand:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;root@swnode0:/srv/node/d1/objects/154808/c3a# cat 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@swnode0:/srv/node/d1/objects/154808/c3a# cat 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
 blabla
-root@swnode0:/srv/node/d1/objects/154808/c3a# &lt;span class="nb"&gt;echo &lt;/span&gt;blablb &amp;gt; 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
+root@swnode0:/srv/node/d1/objects/154808/c3a# &lt;span class="nb"&gt;echo&lt;/span&gt; blablb &amp;gt; 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;The corrupted object is 'quarantined' by the object-auditor when it
 checks the files integrity. Here's how it appears in the
 &lt;code&gt;/var/log/syslog&lt;/code&gt; log file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;Sep 10 13:56:44 swnode0 object-auditor: Quarantined object /srv/node/d1/objects/154808/c3a/972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data: ETag 9b36b2e89df94bc458d629499d38cf86 and file&amp;#39;s md5 6235440677e53f66877f0c1fec6a89bd do not match
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Sep 10 13:56:44 swnode0 object-auditor: Quarantined object /srv/node/d1/objects/154808/c3a/972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data: ETag 9b36b2e89df94bc458d629499d38cf86 and file&amp;#39;s md5 6235440677e53f66877f0c1fec6a89bd do not match
 Sep 10 13:56:44 swnode0 object-auditor: ERROR Object /srv/node/d1/objects/154808/c3a/972e359caf9df6fdd3b8e295afd4cc3a failed audit and was quarantined: ETag 9b36b2e89df94bc458d629499d38cf86 and file&amp;#39;s md5 6235440677e53f66877f0c1fec6a89bd do not match
 Sep 10 13:56:44 swnode0 object-auditor: Object audit (ALL) &amp;quot;forever&amp;quot; mode completed: 0.02s. Total quarantined: 1, Total errors: 0, Total files/sec: 46.71, Total bytes/sec: 326.94, Auditing time: 0.02, Rate: 0.98
 &lt;/pre&gt;&lt;/div&gt;
@@ -586,7 +675,7 @@ Sep 10 13:56:44 swnode0 object-auditor: Object audit (ALL) &amp;quot;forever&amp
 &lt;p&gt;The quarantined object is then overwritten by the object-replicator of
 a node that has the appropriate replica uncorrupted. Below is an
 extract of the log file on such node:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;Sep 10 13:57:01 swnode1 object-replicator: Starting object replication pass.
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Sep 10 13:57:01 swnode1 object-replicator: Starting object replication pass.
 Sep 10 13:57:01 swnode1 object-replicator: &amp;lt;f+++++++++ c3a/972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
 Sep 10 13:57:01 swnode1 object-replicator: Successful rsync of /srv/node/d1/objects/154808/c3a at 192.168.100.10::object/d1/objects/154808 (0.182)
 Sep 10 13:57:01 swnode1 object-replicator: 1/1 (100.00%) partitions replicated in 0.21s (4.84/sec, 0s remaining)
@@ -598,7 +687,7 @@ Sep 10 13:57:01 swnode1 object-replicator: Object replication complete. (0.00 mi
 
 &lt;p&gt;The corrupted data has been replaced by the correct data on the
 initial storage node (where the file had been corrupted):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;root@swnode0:/srv/node/d1/objects/154808/c3a# cat 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@swnode0:/srv/node/d1/objects/154808/c3a# cat 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
 blabla
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -612,7 +701,7 @@ that will be used by &lt;code&gt;swift-dispersion-populate&lt;/code&gt; to creat
 and objects.&lt;/p&gt;
 &lt;p&gt;Then we have to configure appropriately the &lt;code&gt;swift-dispersion-report&lt;/code&gt;
 tool with the &lt;code&gt;/etc/swift/dispersion.conf&lt;/code&gt; file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;[dispersion]
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[dispersion]
 auth_url = http://SWIFT_PROXY_URL/auth/v1.0
 auth_user = DEDICATED_ACCOUNT_USERNAME
 auth_key = DEDICATED_ACCOUNT_PASSWORD
@@ -621,7 +710,7 @@ auth_key = DEDICATED_ACCOUNT_PASSWORD
 
 &lt;p&gt;Once properly set, we can initiate dispersion monitoring by populating
 our new account with test data:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;cloud@swproxy:~&lt;span class="nv"&gt;$ &lt;/span&gt;swift-dispersion-populate
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cloud@swproxy:~$ swift-dispersion-populate
 Created &lt;span class="m"&gt;2621&lt;/span&gt; containers &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 4m, &lt;span class="m"&gt;0&lt;/span&gt; retries
 Created &lt;span class="m"&gt;2621&lt;/span&gt; objects &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 2m, &lt;span class="m"&gt;0&lt;/span&gt; retries
 &lt;/pre&gt;&lt;/div&gt;
@@ -629,7 +718,7 @@ Created &lt;span class="m"&gt;2621&lt;/span&gt; objects &lt;span class="k"&gt;fo
 
 &lt;p&gt;Our objects should have been placed on appropriate devices. We can
 check this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;cloud@swproxy:~&lt;span class="nv"&gt;$ &lt;/span&gt;swift-dispersion-report
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cloud@swproxy:~$ swift-dispersion-report
 Queried &lt;span class="m"&gt;2622&lt;/span&gt; containers &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 2m, &lt;span class="m"&gt;31&lt;/span&gt; retries
 100.00% of container copies found &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;7866&lt;/span&gt; of 7866&lt;span class="o"&gt;)&lt;/span&gt;
 Sample represents 1.00% of the container partition space
@@ -646,7 +735,7 @@ can follow the data redistribution with the
 &lt;code&gt;swift-dispersion-report&lt;/code&gt;. The migration is terminated when the number
 of objects copies reach 100%. Here's an example of results obtained on
 a 6 nodes cluster.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;cloud@swproxy:~&lt;span class="nv"&gt;$ &lt;/span&gt;swift-dispersion-report
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cloud@swproxy:~$ swift-dispersion-report
 Queried &lt;span class="m"&gt;2622&lt;/span&gt; containers &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 3m, &lt;span class="m"&gt;29&lt;/span&gt; retries
 100.00% of container copies found &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;7866&lt;/span&gt; of 7866&lt;span class="o"&gt;)&lt;/span&gt;
 Sample represents 1.00% of the container partition space
@@ -656,8 +745,8 @@ There were &lt;span class="m"&gt;2598&lt;/span&gt; partitions missing &lt;span c
 66.96% of object copies found &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;5265&lt;/span&gt; of 7863&lt;span class="o"&gt;)&lt;/span&gt;
 Sample represents 1.00% of the object partition space
 
-&lt;span class="c"&gt;# Then some minutes later&lt;/span&gt;
-cloud@swproxy:~&lt;span class="nv"&gt;$ &lt;/span&gt;swift-dispersion-report
+&lt;span class="c1"&gt;# Then some minutes later&lt;/span&gt;
+cloud@swproxy:~$ swift-dispersion-report
 Queried &lt;span class="m"&gt;2622&lt;/span&gt; containers &lt;span class="k"&gt;for&lt;/span&gt; dispersion reporting, 5m, &lt;span class="m"&gt;0&lt;/span&gt; retries
 100.00% of container copies found &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;7866&lt;/span&gt; of 7866&lt;span class="o"&gt;)&lt;/span&gt;
 Sample represents 1.00% of the container partition space
@@ -770,7 +859,7 @@ check that everything (network, hardware, ...) is working as
 expected. We can use the &lt;code&gt;swift-add-nodes.py&lt;/code&gt; script to easily add
 nodes to our new region with a minimal weight so that only 1 partition
 will be assigned to each device:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python swift-add-nodes.py object.builder object.builder.s1 &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="m"&gt;6000&lt;/span&gt; 127.0.0.1 127.0.0.2 127.0.0.3
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python swift-add-nodes.py object.builder object.builder.s1 &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="m"&gt;6000&lt;/span&gt; 127.0.0.1 127.0.0.2 127.0.0.3
 Adding device: &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;weight&amp;#39;&lt;/span&gt;: 5.11, &lt;span class="s1"&gt;&amp;#39;zone&amp;#39;&lt;/span&gt;: 0, &lt;span class="s1"&gt;&amp;#39;ip&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;127.0.0.1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;: 2, &lt;span class="s1"&gt;&amp;#39;device&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;sdb1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;port&amp;#39;&lt;/span&gt;: 6000&lt;span class="o"&gt;}&lt;/span&gt;
 Adding device: &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;weight&amp;#39;&lt;/span&gt;: 5.11, &lt;span class="s1"&gt;&amp;#39;zone&amp;#39;&lt;/span&gt;: 0, &lt;span class="s1"&gt;&amp;#39;ip&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;127.0.0.1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;: 2, &lt;span class="s1"&gt;&amp;#39;device&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;sdc1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;port&amp;#39;&lt;/span&gt;: 6000&lt;span class="o"&gt;}&lt;/span&gt;
 Adding device: &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;weight&amp;#39;&lt;/span&gt;: 5.11, &lt;span class="s1"&gt;&amp;#39;zone&amp;#39;&lt;/span&gt;: 0, &lt;span class="s1"&gt;&amp;#39;ip&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;127.0.0.1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;: 2, &lt;span class="s1"&gt;&amp;#39;device&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;sdd1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;port&amp;#39;&lt;/span&gt;: 6000&lt;span class="o"&gt;}&lt;/span&gt;
@@ -784,7 +873,7 @@ Adding device: &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#
 Adding device: &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;weight&amp;#39;&lt;/span&gt;: 5.11, &lt;span class="s1"&gt;&amp;#39;zone&amp;#39;&lt;/span&gt;: 0, &lt;span class="s1"&gt;&amp;#39;ip&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;127.0.0.3&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;: 2, &lt;span class="s1"&gt;&amp;#39;device&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;sdd1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;port&amp;#39;&lt;/span&gt;: 6000&lt;span class="o"&gt;}&lt;/span&gt;
 Adding device: &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;weight&amp;#39;&lt;/span&gt;: 5.11, &lt;span class="s1"&gt;&amp;#39;zone&amp;#39;&lt;/span&gt;: 0, &lt;span class="s1"&gt;&amp;#39;ip&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;127.0.0.3&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;: 2, &lt;span class="s1"&gt;&amp;#39;device&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;sde1&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;port&amp;#39;&lt;/span&gt;: 6000&lt;span class="o"&gt;}&lt;/span&gt;
 
-&lt;span class="nv"&gt;$ &lt;/span&gt;swift-ring-builder object.builder.s1 rebalance
+$ swift-ring-builder object.builder.s1 rebalance
 Reassigned &lt;span class="m"&gt;12&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0.00%&lt;span class="o"&gt;)&lt;/span&gt; partitions. Balance is now 0.18.
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -794,7 +883,7 @@ steps of some percentage (let's say 3%) until one third of total
 cluster data is stored in the new region. Script
 &lt;code&gt;swift-assign-partitions.py&lt;/code&gt; allows assigning a chosen ratio of
 partitions to the new region:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python swift-assign-partitions.py object.builder.s2 object.builder.s3 &lt;span class="m"&gt;2&lt;/span&gt; 0.03
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python swift-assign-partitions.py object.builder.s2 object.builder.s3 &lt;span class="m"&gt;2&lt;/span&gt; 0.03
 Setting new weight of 10376.28 to device 1342
 Setting new weight of 10376.28 to device 1343
 Setting new weight of 10376.28 to device 1344
@@ -808,7 +897,7 @@ Setting new weight of 10376.28 to device 1351
 Setting new weight of 10376.28 to device 1352
 Setting new weight of 10376.28 to device 1353
 
-&lt;span class="nv"&gt;$ &lt;/span&gt;swift-ring-builder object.builder.s3 rebalance
+$ swift-ring-builder object.builder.s3 rebalance
 Reassigned &lt;span class="m"&gt;25119&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;9.58%&lt;span class="o"&gt;)&lt;/span&gt; partitions. Balance is now 0.25.
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -820,7 +909,7 @@ improve the &lt;code&gt;swift-ring-builder&lt;/code&gt;.&lt;/p&gt;
 working&lt;/a&gt; ?&lt;/p&gt;
 &lt;p&gt;Want to know more about all of this ? Come to see our talk &lt;a href="https://openstacksummitnovember2014paris.sched.org/event/15afea20487919ec1e55c7f385df3f68#.VEVpSoXzTFY"&gt;Using
 OpenStack Swift for Extreme Data Durability&lt;/a&gt; at the next OpenStack
-Summit in Paris !&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Swift"></category><category term="operations"></category></entry><entry><title>OpenStack Swift Ring made understandable</title><link href="http://www.florentflament.com/blog/openstack-swift-ring-made-understandable.html" rel="alternate"></link><updated>2014-10-11T22:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-10-11:blog/openstack-swift-ring-made-understandable.html</id><summary type="html">&lt;p&gt;When people talk about OpenStack Swift, we often hear the word
+Summit in Paris !&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Swift"></category><category term="operations"></category></entry><entry><title>OpenStack Swift Ring made understandable</title><link href="http://www.florentflament.com/blog/openstack-swift-ring-made-understandable.html" rel="alternate"></link><published>2014-10-11T22:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-10-11:blog/openstack-swift-ring-made-understandable.html</id><summary type="html">&lt;p&gt;When people talk about OpenStack Swift, we often hear the word
 Ring. This is because the Ring is a central piece in how Swift is
 working. But what &lt;em&gt;is&lt;/em&gt; this thing everyone's talking about ?&lt;/p&gt;
 &lt;p&gt;The Ring refers to 3 files that are shared among every Swift nodes
@@ -873,7 +962,7 @@ Swift cluster with 2 storage nodes, with the following IPs addresses:
 &lt;code&gt;sdb1&lt;/code&gt; and &lt;code&gt;sdc1&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;An example of &lt;code&gt;_replica2part2dev&lt;/code&gt; table with 3 replicas, 8 partitions
 and 4 devices would be:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;r
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;r
 e  |   +-----------------+
 p  | 0 | 0 1 2 3 0 1 2 3 |
 l  | 1 | 1 2 3 0 1 2 3 0 |
@@ -891,7 +980,7 @@ partition number 2, we select the line of index 1 and column of index
 2. This lead us to the device ID 3.&lt;/p&gt;
 &lt;p&gt;The devices table is very similar to what we can obtain by using the
 &lt;code&gt;swift-ring-builder&lt;/code&gt; with only the builder file as argument:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;swift-ring-builder mybuilder 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ swift-ring-builder mybuilder 
 mybuilder, build version 4
 &lt;span class="m"&gt;8&lt;/span&gt; partitions, 3.000000 replicas, &lt;span class="m"&gt;1&lt;/span&gt; regions, &lt;span class="m"&gt;1&lt;/span&gt; zones, &lt;span class="m"&gt;4&lt;/span&gt; devices, 0.00 balance
 The minimum number of hours before a partition can be reassigned is 0
@@ -933,7 +1022,7 @@ been well separated between:&lt;/p&gt;
 &lt;/ul&gt;
 &lt;h2&gt;More&lt;/h2&gt;
 &lt;p&gt;For more information about the ring, one can read the &lt;a href="http://docs.openstack.org/developer/swift/overview_ring.html"&gt;Swift's
-developer documentation about the Ring&lt;/a&gt;.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Swift"></category><category term="Ring"></category></entry><entry><title>Right VM cost</title><link href="http://www.florentflament.com/blog/right-vm-cost.html" rel="alternate"></link><updated>2014-08-03T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-08-03:blog/right-vm-cost.html</id><summary type="html">&lt;p&gt;With cloud Virtual Machines prices dropping month after month, we may
+developer documentation about the Ring&lt;/a&gt;.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Swift"></category><category term="Ring"></category></entry><entry><title>Right VM cost</title><link href="http://www.florentflament.com/blog/right-vm-cost.html" rel="alternate"></link><published>2014-08-03T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-08-03:blog/right-vm-cost.html</id><summary type="html">&lt;p&gt;With cloud Virtual Machines prices dropping month after month, we may
 be asking if the margins previously done by cloud operators were not
 outrageously high. I actually find surprising that current VM price is
 on average higher than equivalent dedicated server even though
@@ -962,7 +1051,7 @@ ratio of dedicated servers.&lt;/p&gt;
 &lt;p&gt;We can make an estimate of the cost of hardware by performing a
 &lt;a href="http://en.wikipedia.org/wiki/Regression_analysis"&gt;multiple regression analysis&lt;/a&gt; on dedicated server prices.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.ovh.com/fr/serveurs_dedies/enterprise/"&gt;OVH prices&lt;/a&gt; (only considering Intel Xeon CPUs):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;|-------------------------------------------------------------------------------------------|
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;|-------------------------------------------------------------------------------------------|
 |         CPU type        | # threads | RAM (GB) | HDD (TB) | SSD (GB) | Price (€/month HT) |
 |-------------------------------------------------------------------------------------------|
 |                                 OVH Enterprise                                            |
@@ -1012,7 +1101,7 @@ where:&lt;/p&gt;
 &lt;/ul&gt;
 &lt;p&gt;We can estimate ßj coefficients with the following formula:
 ß = (Xt&lt;em&gt;X)-¹&lt;/em&gt;Xt*Y&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python pricing_vm_simple.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python pricing_vm_simple.py
 Constant: 31.3530724158
 Eur / CPU thread: 3.12689639938
 Eur / GB of RAM: 0.639580183605
@@ -1052,67 +1141,67 @@ SSD storage (which is recommended when sharing a disk with many users)
 is costly. Therefore, in the case of huge storage space requirements,
 dedicated servers with big HDDs may be more appropriate.&lt;/p&gt;
 &lt;h2&gt;Annex - Regression Analysis code&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/usr/bin/env python&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
 
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt;
 
 &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;matrix&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1,  8,  64,   4,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12, 128,   4,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 32, 128,   4,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 40, 256,   4,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1,  8,  32,   6,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12,  64,   6,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 16, 128,   6,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 32, 128,   6,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 40, 256,   6,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12,  48,  48,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12,  48,  72,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 24,  64, 144,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 24,  64, 216,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12,  48,  36,  360;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12,  48,  54,  360;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 24,  64, 108, 1080;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 24,  64, 162, 1080&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1,  8,  64,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12, 128,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 32, 128,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 40, 256,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1,  8,  32,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12,  64,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 16, 128,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 32, 128,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 40, 256,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12,  48,  48,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12,  48,  72,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 24,  64, 144,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 24,  64, 216,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12,  48,  36,  360;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12,  48,  54,  360;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 24,  64, 108, 1080;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 24,  64, 162, 1080&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="n"&gt;Y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;matrix&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;  81.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 131.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 202.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 302.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;  81.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 141.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 191.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 302.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 402.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 372.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 522.00;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 822.00;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1272.00;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 372.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 522.00;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 822.00;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1272.00&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;  81.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 131.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 202.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 302.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;  81.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 141.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 191.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 302.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 402.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 372.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 522.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 822.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1272.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 372.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 522.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 822.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1272.00&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-&lt;span class="c"&gt;# Computing model parameters&lt;/span&gt;
+&lt;span class="c1"&gt;# Computing model parameters&lt;/span&gt;
 &lt;span class="n"&gt;B&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;
 
-&lt;span class="c"&gt;# Computing predictions based on models&lt;/span&gt;
+&lt;span class="c1"&gt;# Computing predictions based on models&lt;/span&gt;
 &lt;span class="n"&gt;F&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;
 
-&lt;span class="c"&gt;# Computing R^2&lt;/span&gt;
+&lt;span class="c1"&gt;# Computing R^2&lt;/span&gt;
 &lt;span class="n"&gt;M&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;SStot&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;multiply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="n"&gt;SSres&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;multiply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="n"&gt;Rsq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;SSres&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;SStot&lt;/span&gt;
 
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Constant:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / CPU thread:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / GB of RAM:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / TB of HDD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / GB of SSD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;R^2:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Rsq&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Virtualization"></category><category term="VM"></category><category term="Hardware"></category><category term="Costs"></category></entry><entry><title>Git SSH Docker container</title><link href="http://www.florentflament.com/blog/git-ssh-docker-container.html" rel="alternate"></link><updated>2014-06-28T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-06-28:blog/git-ssh-docker-container.html</id><summary type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Constant:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / CPU thread:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / GB of RAM:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / TB of HDD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / GB of SSD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;R^2:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Rsq&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Virtualization"></category><category term="VM"></category><category term="Hardware"></category><category term="Costs"></category></entry><entry><title>Git SSH Docker container</title><link href="http://www.florentflament.com/blog/git-ssh-docker-container.html" rel="alternate"></link><published>2014-06-28T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-06-28:blog/git-ssh-docker-container.html</id><summary type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
 using git with a remote repository. The implementation I have chosen
 for that consists in running an ssh server, with git, in a Docker
 container. This has the following advantages over other solutions:&lt;/p&gt;
@@ -1124,27 +1213,27 @@ container. This has the following advantages over other solutions:&lt;/p&gt;
 &lt;h2&gt;Dockerfile&lt;/h2&gt;
 &lt;p&gt;The proposed Git SSH Dockerfile is based on the &lt;a href="https://docs.docker.com/examples/running_ssh_service/"&gt;Dockerizing an SSH
 service&lt;/a&gt; example.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;FROM ubuntu:14.04
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM ubuntu:14.04
 
 RUN apt-get -y update
 RUN apt-get -y install openssh-server
 RUN apt-get -y install git
 
-&lt;span class="c"&gt;# Setting openssh&lt;/span&gt;
+&lt;span class="c1"&gt;# Setting openssh&lt;/span&gt;
 RUN mkdir /var/run/sshd
 RUN sed -i &lt;span class="s2"&gt;&amp;quot;s/#PasswordAuthentication yes/PasswordAuthentication no/&amp;quot;&lt;/span&gt; /etc/ssh/sshd_config
 
-&lt;span class="c"&gt;# Adding git user&lt;/span&gt;
+&lt;span class="c1"&gt;# Adding git user&lt;/span&gt;
 RUN adduser --system git
 RUN mkdir -p /home/git/.ssh
 
-&lt;span class="c"&gt;# Clearing and setting authorized ssh keys&lt;/span&gt;
+&lt;span class="c1"&gt;# Clearing and setting authorized ssh keys&lt;/span&gt;
 RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; &amp;gt; /home/git/.ssh/authorized_keys
 RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;First SSH public key&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; /home/git/.ssh/authorized_keys
 RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Second SSH public key&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; /home/git/.ssh/authorized_keys
-&lt;span class="c"&gt;# ...&lt;/span&gt;
+&lt;span class="c1"&gt;# ...&lt;/span&gt;
 
-&lt;span class="c"&gt;# Updating shell to bash&lt;/span&gt;
+&lt;span class="c1"&gt;# Updating shell to bash&lt;/span&gt;
 RUN sed -i s#/home/git:/bin/false#/home/git:/bin/bash# /etc/passwd
 
 EXPOSE 22
@@ -1156,14 +1245,14 @@ CMD &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/sb
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Building the image&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker.io build -t git-ssh_img .
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker.io build -t git-ssh_img .
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Running the image&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo docker.io run -p 1234:22 -d --name git-ssh git-ssh_img
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo docker.io run -p 1234:22 -d --name git-ssh git-ssh_img
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1172,8 +1261,8 @@ CMD &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/sb
 &lt;p&gt;The previous command maps the container's host port 1234 on the
 container's SSH port. Of course, this port can be changed to any
 value. One can then ssh to the container with the following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ssh -p &lt;span class="m"&gt;1234&lt;/span&gt; git@&amp;lt;container_host&amp;gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Git"></category><category term="SSH"></category><category term="Docker"></category></entry><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><updated>2014-05-03T23:34:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-05-03:blog/securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ssh -p &lt;span class="m"&gt;1234&lt;/span&gt; git@&amp;lt;container_host&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Git"></category><category term="SSH"></category><category term="Docker"></category></entry><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><published>2014-05-03T23:34:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-05-03:blog/securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
 the main threats (if possible by using only open source software). For
 instance, losing data because of a hardware failure is just something
 that shouldn't happen anymore, thanks to all the technology available
@@ -1322,7 +1411,7 @@ by different layers:&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Example table&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;+------------------+-------------+--------+-------------+-------------+------------------+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;+------------------+-------------+--------+-------------+-------------+------------------+
 |                  |             |        |             |             |                  |
 | Files            | text / code | Emails | Binary data | Binary data |      Threat      |
 |                  |             |        | important   | throwable   |                  |
@@ -1348,7 +1437,7 @@ by different layers:&lt;/p&gt;
 |                  |                                    |             | Piracy /         |
 |                  |                                    |             | Hardware failure |
 +------------------+------------------------------------+-------------+------------------+
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Data Safety"></category><category term="Data Security"></category></entry><entry><title>Windows Images for OpenStack</title><link href="http://www.florentflament.com/blog/windows-images-for-openstack.html" rel="alternate"></link><updated>2014-03-30T19:15:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-03-30:blog/windows-images-for-openstack.html</id><summary type="html">&lt;p&gt;This note summarizes articles from other places about Microsoft
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Data Safety"></category><category term="Data Security"></category></entry><entry><title>Windows Images for OpenStack</title><link href="http://www.florentflament.com/blog/windows-images-for-openstack.html" rel="alternate"></link><published>2014-03-30T19:15:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-03-30:blog/windows-images-for-openstack.html</id><summary type="html">&lt;p&gt;This note summarizes articles from other places about Microsoft
 Windows images for OpenStack creation, along with some first hand
 experience. The whole process of creating Windows 2008 and Windows
 2012 images fully usable on OpenStack instances is described there.&lt;/p&gt;
@@ -1381,7 +1470,7 @@ details.&lt;/p&gt;
   install our OS). I typically use a 9 GB image for Windows 2008, and
   a 17 GB for Windows 2012 (although I think it should work with a 11
   or 12 GB image). Example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;qemu-img create -f qcow2 Windows-Server-2008-R2.qcow2 9G
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ qemu-img create -f qcow2 Windows-Server-2008-R2.qcow2 9G
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1389,7 +1478,7 @@ details.&lt;/p&gt;
 &lt;li&gt;
 &lt;p&gt;Next step is to launch Windows' installation in a (KVM) virtual
   machine. The following command is an example for that:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;kvm &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ kvm &lt;span class="se"&gt;\&lt;/span&gt;
     -m &lt;span class="m"&gt;2048&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -cdrom &amp;lt;WINDOWS_INSTALLER_ISO&amp;gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Windows-Server-2008-R2.qcow2,if&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
@@ -1408,7 +1497,7 @@ details.&lt;/p&gt;
 &lt;p&gt;The following step consists in connecting to the display of the VM
   launched previously through VNC, in order to manually pursue the
   installation. This can be done with the following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;xvncviewer &amp;lt;IP_OF_HYPERVISOR&amp;gt;:9
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ xvncviewer &amp;lt;IP_OF_HYPERVISOR&amp;gt;:9
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1459,11 +1548,11 @@ downloaded. To to that, we have to follow these steps:&lt;/p&gt;
 &lt;li&gt;
 &lt;p&gt;Mount the qcow2 image on the hypervisor filesystem, then copy the
   installer on Windows' administrator desktop, with something like:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo qemu-nbd -c /dev/nbd2 Windows-Server-2008-R2.qcow2
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo mount /dev/nbd2p2 mnt/
-&lt;span class="nv"&gt;$ &lt;/span&gt;cp &amp;lt;INSTALLER&amp;gt; &amp;lt;ADMINISTRATOR_DESKTOP_ON_WINDOWS&amp;gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo umount mnt/
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo qemu-nbd -d /dev/nbd2
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo qemu-nbd -c /dev/nbd2 Windows-Server-2008-R2.qcow2
+$ sudo mount /dev/nbd2p2 mnt/
+$ cp &amp;lt;INSTALLER&amp;gt; &amp;lt;ADMINISTRATOR_DESKTOP_ON_WINDOWS&amp;gt;
+$ sudo umount mnt/
+$ sudo qemu-nbd -d /dev/nbd2
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1471,7 +1560,7 @@ downloaded. To to that, we have to follow these steps:&lt;/p&gt;
 &lt;li&gt;
 &lt;p&gt;Restart Windows in KVM with the same command that we used to install
   Windows in the first place:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;kvm &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ kvm &lt;span class="se"&gt;\&lt;/span&gt;
     -m &lt;span class="m"&gt;2048&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -cdrom &amp;lt;WINDOWS_INSTALLER_ISO&amp;gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Windows-Server-2008-R2.qcow2,if&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
@@ -1488,7 +1577,7 @@ downloaded. To to that, we have to follow these steps:&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Then connect again with xvncviewer:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;xvncviewer &amp;lt;IP_OF_HYPERVISOR&amp;gt;:9
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ xvncviewer &amp;lt;IP_OF_HYPERVISOR&amp;gt;:9
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1505,7 +1594,7 @@ downloaded. To to that, we have to follow these steps:&lt;/p&gt;
 &lt;p&gt;Once the installation is done, we can clean any temporary files
   created, then shutdown the system. The image is ready to be uploaded
   in OpenStack Glance:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;glance add &lt;span class="nv"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;OPENSTACK_IMAGE_NAME&amp;gt; &lt;span class="nv"&gt;is_public&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ glance add &lt;span class="nv"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;OPENSTACK_IMAGE_NAME&amp;gt; &lt;span class="nv"&gt;is_public&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     &lt;span class="nv"&gt;container_format&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;bare &lt;span class="nv"&gt;disk_format&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;qcow2 &amp;lt; &amp;lt;IMAGE_FILENAME&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -1526,7 +1615,7 @@ tested yet). Cloud-Init base creates an &lt;code&gt;Admin&lt;/code&gt; user, wit
   password must respect Windows password strength constraints (upper
   and lower case characters, as well as numbers). If not it will be
   silently ignored. For instance:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;nova boot --key-name &amp;lt;KEYPAIR_NAME&amp;gt; --image &amp;lt;IMAGE_ID&amp;gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ nova boot --key-name &amp;lt;KEYPAIR_NAME&amp;gt; --image &amp;lt;IMAGE_ID&amp;gt; &lt;span class="se"&gt;\&lt;/span&gt;
     --flavor &amp;lt;FLAVOR_ID&amp;gt; --nic net-id&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;NET_ID&amp;gt; &lt;span class="se"&gt;\&lt;/span&gt;
     --meta &lt;span class="nv"&gt;admin_pass&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;ADMIN_PASSWORD&amp;gt; &amp;lt;VM_NAME&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -1539,7 +1628,7 @@ tested yet). Cloud-Init base creates an &lt;code&gt;Admin&lt;/code&gt; user, wit
   VM. Such password can be retrieved and decrypted with the
   corresponding private ssh key, by using the following command (note
   that the private key is used locally):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;nova get-password &amp;lt;VM_NAME_OR_ID&amp;gt; &amp;lt;SSH_PRIVATE_KEY&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ nova get-password &amp;lt;VM_NAME_OR_ID&amp;gt; &amp;lt;SSH_PRIVATE_KEY&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1547,7 +1636,7 @@ tested yet). Cloud-Init base creates an &lt;code&gt;Admin&lt;/code&gt; user, wit
 &lt;/ul&gt;
 &lt;p&gt;Note that to connect to a Windows VM from Linux, prefer using
 &lt;code&gt;xfreerdp&lt;/code&gt; instead of &lt;code&gt;rdesktop&lt;/code&gt;. The pointer is bogus when connecting
-to a windows 2012 VM using &lt;code&gt;rdesktop&lt;/code&gt;.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Microsft"></category><category term="Windows"></category></entry><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><updated>2014-03-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-03-03:blog/chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
+to a windows 2012 VM using &lt;code&gt;rdesktop&lt;/code&gt;.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Microsft"></category><category term="Windows"></category></entry><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><published>2014-03-03T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-03-03:blog/chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
 a Debian based Linux Operating System called &lt;a href="http://www.raspbian.org/"&gt;Raspbian&lt;/a&gt;. Such
 device would be very convenient to manage one's personal
 infrastructure, composed of some physical and / or virtual machines,
@@ -1568,8 +1657,8 @@ NOOBS menu, install Raspbian (Using NOOBS v1.2.1).&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Install Chef Server binary package:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo apt-get update
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo apt-get install chef-server-api
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo apt-get update
+$ sudo apt-get install chef-server-api
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1587,7 +1676,7 @@ NOOBS menu, install Raspbian (Using NOOBS v1.2.1).&lt;/p&gt;
 &lt;p&gt;Note: Some services won't start, like jetty. &lt;code&gt;chef-server&lt;/code&gt; will also
 be said to have failed, but Chef Server APIs will be working anyway.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Testing:&lt;div class="highlight"&gt;&lt;pre&gt;root@raspberrypi:~# knife configure -i
+&lt;li&gt;Testing:&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@raspberrypi:~# knife configure -i
 WARNING: No knife configuration file found
 Where should I put the config file? [/root/.chef/knife.rb] 
 Please enter the chef server URL: [http://raspberrypi:4000] http://CHEF_SERVER_IP:4000
@@ -1615,7 +1704,7 @@ root@raspberrypi:~#
 when installing chef-server via deb packages&lt;/a&gt;. I got errors when
 launching commands &lt;code&gt;knife client create&lt;/code&gt; or &lt;code&gt;knife client reregister&lt;/code&gt;,
 with following message in &lt;code&gt;rabbitmq&lt;/code&gt; log:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;=ERROR REPORT==== 4-Jun-2012::14:56:01 ===
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;=ERROR REPORT==== 4-Jun-2012::14:56:01 ===
 exception on TCP connection &amp;lt;0.583.0&amp;gt; from 127.0.0.1:34143
 {channel0_error,starting,
     {amqp_error,access_refused,
@@ -1625,10 +1714,10 @@ exception on TCP connection &amp;lt;0.583.0&amp;gt; from 127.0.0.1:34143
 
 
 &lt;p&gt;Fix consists in executing the following commands:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo rabbitmqctl add_vhost /chef
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo rabbitmqctl add_user chef PASSWORD_PER_CONFIGURATION
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo rabbitmqctl set_permissions -p /chef chef &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Chef"></category><category term="Raspberry Pi"></category><category term="Raspbian"></category></entry><entry><title>Data management</title><link href="http://www.florentflament.com/blog/data-management.html" rel="alternate"></link><updated>2014-02-27T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-02-27:blog/data-management.html</id><summary type="html">&lt;p&gt;When using several computers (or devices) from different locations,
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo rabbitmqctl add_vhost /chef
+$ sudo rabbitmqctl add_user chef PASSWORD_PER_CONFIGURATION
+$ sudo rabbitmqctl set_permissions -p /chef chef &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Chef"></category><category term="Raspberry Pi"></category><category term="Raspbian"></category></entry><entry><title>Data management</title><link href="http://www.florentflament.com/blog/data-management.html" rel="alternate"></link><published>2014-02-27T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-02-27:blog/data-management.html</id><summary type="html">&lt;p&gt;When using several computers (or devices) from different locations,
 the question of data management arises. Basically, I wish being able
 to access my data from any computer; I wish my data to be protected,
 accordingly to its privacy and I wish my data to be backed up
@@ -1722,7 +1811,7 @@ into.&lt;/p&gt;
   if the data is stolen, it cannot be read. Backup has to be done
   locally.&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ul&gt;</summary><category term="Data management"></category></entry><entry><title>Customizing OpenStack RBAC policies</title><link href="http://www.florentflament.com/blog/customizing-openstack-rbac-policies.html" rel="alternate"></link><updated>2014-02-09T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-02-09:blog/customizing-openstack-rbac-policies.html</id><summary type="html">&lt;p&gt;OpenStack uses a &lt;a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac"&gt;role based access control&lt;/a&gt; (RBAC) mechanism to
+&lt;/ul&gt;</summary><category term="Data management"></category></entry><entry><title>Customizing OpenStack RBAC policies</title><link href="http://www.florentflament.com/blog/customizing-openstack-rbac-policies.html" rel="alternate"></link><published>2014-02-09T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-02-09:blog/customizing-openstack-rbac-policies.html</id><summary type="html">&lt;p&gt;OpenStack uses a &lt;a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac"&gt;role based access control&lt;/a&gt; (RBAC) mechanism to
 manage accesses to its resources. With the current architecture,
 users' roles granted on each project and domain are stored into
 Keystone, and can be updated through &lt;a href="http://api.openstack.org/api-ref-identity.html#identity-v3"&gt;Keystone's API&lt;/a&gt;. However,
@@ -1750,7 +1839,7 @@ service (Keystone, Nova, Cinder, ...).&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;User roles, which can be checked by using the following syntax:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;role:&amp;lt;requires_role&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;role:&amp;lt;requires_role&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1760,7 +1849,7 @@ service (Keystone, Nova, Cinder, ...).&lt;/p&gt;
   token). The following attributes are available: user_id, domain_id
   or project_id (depending on the scope), and can be checked against
   constants or other attributes:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;project_id:&amp;lt;some_attribute&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;project_id:&amp;lt;some_attribute&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1772,7 +1861,7 @@ service (Keystone, Nova, Cinder, ...).&lt;/p&gt;
   same domain as his creator (note that API call attributes have to be
   on the right side of the expression, while user attributes are on
   the left side):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;domain_id:user.domain_id
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;domain_id:user.domain_id
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1786,7 +1875,7 @@ service (Keystone, Nova, Cinder, ...).&lt;/p&gt;
   user are available to the policy engine, through the &lt;code&gt;target&lt;/code&gt;
   keyword. The following syntax checks that the role of the context is
   the &lt;code&gt;Member&lt;/code&gt; role:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&amp;#39;Member&amp;#39;:target.role.name
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;#39;Member&amp;#39;:target.role.name
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1852,7 +1941,7 @@ to be able to have 2 different levels of administrator roles:&lt;/p&gt;
 &lt;/ul&gt;
 &lt;p&gt;When added to Keystone's ̀&lt;code&gt;policy.json&lt;/code&gt; file, the following rules
 implements the two roles described previously:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&amp;quot;admin_grant_member&amp;quot;: &amp;quot;role:admin and &amp;#39;Member&amp;#39;:%(target.role.name)s&amp;quot;,
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;quot;admin_grant_member&amp;quot;: &amp;quot;role:admin and &amp;#39;Member&amp;#39;:%(target.role.name)s&amp;quot;,
 &amp;quot;identity:create_grant&amp;quot;: &amp;quot;role:super_admin or rule:admin_grant_member&amp;quot;,
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -1880,7 +1969,7 @@ policy.v3cloudsample.json&lt;/a&gt;.&lt;/p&gt;
 the blueprint allowing the policy engine to &lt;a href="https://blueprints.launchpad.net/oslo/+spec/policy-constant-check"&gt;check contextual
 attributes against constant values&lt;/a&gt;. This patch will have to be
 synchronized into the OpenStack projects for them to benefit from this
-feature.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Keystone"></category><category term="Policies"></category></entry><entry><title>Setting Keystone v3 domains</title><link href="http://www.florentflament.com/blog/setting-keystone-v3-domains.html" rel="alternate"></link><updated>2014-01-18T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-01-18:blog/setting-keystone-v3-domains.html</id><summary type="html">&lt;p&gt;The &lt;a href="http://api.openstack.org/api-ref-identity.html#identity-v3"&gt;Openstack Identity v3 API&lt;/a&gt;, provided by Keystone, offers
+feature.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Keystone"></category><category term="Policies"></category></entry><entry><title>Setting Keystone v3 domains</title><link href="http://www.florentflament.com/blog/setting-keystone-v3-domains.html" rel="alternate"></link><published>2014-01-18T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-01-18:blog/setting-keystone-v3-domains.html</id><summary type="html">&lt;p&gt;The &lt;a href="http://api.openstack.org/api-ref-identity.html#identity-v3"&gt;Openstack Identity v3 API&lt;/a&gt;, provided by Keystone, offers
 features that were lacking in the previous version. Among these
 features, it introduces the concept of domains, allowing isolation of
 projects and users. For instance, an administrator allowed to create
@@ -1899,7 +1988,7 @@ the &lt;a href="https://github.com/openstack/keystone/blob/master/etc/policy.jso
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;With the &lt;code&gt;admin&lt;/code&gt; user we can create the &lt;code&gt;admin_domain&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ADMIN_TOKEN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ADMIN_TOKEN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -i &lt;span class="se"&gt;\&lt;/span&gt;
@@ -1953,7 +2042,7 @@ curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;li&gt;
 &lt;p&gt;Then we can create our &lt;code&gt;cloud_admin&lt;/code&gt; user, within the &lt;code&gt;admin_domain&lt;/code&gt;
   domain.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_CLOUD_ADMIN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ID_CLOUD_ADMIN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
@@ -1977,7 +2066,7 @@ curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;li&gt;
 &lt;p&gt;And we grant to our user &lt;code&gt;cloud_admin&lt;/code&gt; the &lt;code&gt;admin&lt;/code&gt; role on domain
   &lt;code&gt;admin_domain&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/roles?name&lt;span class="o"&gt;=&lt;/span&gt;admin &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
@@ -2004,7 +2093,7 @@ curl http://localhost:5000/v3/domains/&lt;span class="si"&gt;${&lt;/span&gt;&lt;
   &lt;code&gt;admin_domain_id&lt;/code&gt; by the ID of the &lt;code&gt;admin_domain&lt;/code&gt; we just
   created. Locate the &lt;code&gt;policy.v3cloudsample.json&lt;/code&gt; file into the &lt;code&gt;etc&lt;/code&gt;
   directory of Keystone's source.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;sed s/admin_domain_id/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/ &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sed s/admin_domain_id/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADMIN_DOMAIN&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/ &lt;span class="se"&gt;\&lt;/span&gt;
     &amp;lt; policy.v3cloudsample.json &lt;span class="se"&gt;\&lt;/span&gt;
     &amp;gt; /etc/keystone/policy.json
 &lt;/pre&gt;&lt;/div&gt;
@@ -2024,7 +2113,7 @@ authenticate with the &lt;code&gt;cloud_admin&lt;/code&gt; user created above.&l
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Getting a token scoped on the &lt;code&gt;admin_domain&lt;/code&gt;, for user &lt;code&gt;cloud_admin&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;CLOUD_ADMIN_TOKEN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;CLOUD_ADMIN_TOKEN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -i &lt;span class="se"&gt;\&lt;/span&gt;
@@ -2059,7 +2148,7 @@ curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Creating domains &lt;code&gt;dom1&lt;/code&gt; and &lt;code&gt;dom2&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$CLOUD_ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
@@ -2094,7 +2183,7 @@ curl http://localhost:5000/v3/domains &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Now we will create a user &lt;code&gt;adm1&lt;/code&gt; in domain &lt;code&gt;dom1&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$CLOUD_ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
@@ -2118,7 +2207,7 @@ curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;li&gt;
 &lt;p&gt;We will also grant the &lt;code&gt;admin&lt;/code&gt; role on domain &lt;code&gt;dom1&lt;/code&gt; to this &lt;code&gt;adm1&lt;/code&gt;
   user.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;curl -X PUT http://localhost:5000/v3/domains/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/users/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/roles/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;curl -X PUT http://localhost:5000/v3/domains/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_DOM1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/users/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ID_ADM1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/roles/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ADMIN_ROLE_ID&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -i &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$CLOUD_ADMIN_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
@@ -2139,7 +2228,7 @@ not being able to access resources of domain &lt;code&gt;dom2&lt;/code&gt;.&lt;/
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Now we authenticate as user &lt;code&gt;adm1&lt;/code&gt; with a scope on &lt;code&gt;dom1&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ADM1_TOKEN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ADM1_TOKEN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -i &lt;span class="se"&gt;\&lt;/span&gt;
@@ -2174,7 +2263,7 @@ curl http://localhost:5000/v3/auth/tokens &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;We create a project &lt;code&gt;prj1&lt;/code&gt; in domain &lt;code&gt;dom1&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_PRJ1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ID_PRJ1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/projects &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADM1_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
@@ -2195,7 +2284,7 @@ curl http://localhost:5000/v3/projects &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;When trying and creating a project in domain &lt;code&gt;dom2&lt;/code&gt;, it fails.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;curl http://localhost:5000/v3/projects &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;curl http://localhost:5000/v3/projects &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADM1_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
@@ -2213,7 +2302,7 @@ curl http://localhost:5000/v3/projects &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Creating a standard user &lt;code&gt;usr1&lt;/code&gt; in domain &lt;code&gt;dom1&lt;/code&gt;, with default project &lt;code&gt;prj1&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;ID_USR1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ID_USR1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADM1_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
@@ -2237,7 +2326,7 @@ curl http://localhost:5000/v3/users &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Granting &lt;code&gt;Member&lt;/code&gt; role to user &lt;code&gt;usr1&lt;/code&gt; on project &lt;code&gt;prj1&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;MEMBER_ROLE_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;MEMBER_ROLE_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 curl http://localhost:5000/v3/roles?name&lt;span class="o"&gt;=&lt;/span&gt;Member &lt;span class="se"&gt;\&lt;/span&gt;
     -s &lt;span class="se"&gt;\&lt;/span&gt;
     -H &lt;span class="s2"&gt;&amp;quot;X-Auth-Token: &lt;/span&gt;&lt;span class="nv"&gt;$ADM1_TOKEN&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
@@ -2259,7 +2348,7 @@ curl http://localhost:5000/v3/projects/&lt;span class="si"&gt;${&lt;/span&gt;&lt
 &lt;/ul&gt;
 &lt;p&gt;The domain administrator &lt;code&gt;adm1&lt;/code&gt; ended up creating a project &lt;code&gt;prj1&lt;/code&gt; and
 a user &lt;code&gt;usr1&lt;/code&gt; member of the project. &lt;code&gt;usr1&lt;/code&gt; can now get a token scoped
-on &lt;code&gt;prj1&lt;/code&gt; and manage resources into this project.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Keystone"></category></entry><entry><title>Openstack volume in-use although VM doesn't exist</title><link href="http://www.florentflament.com/blog/openstack-volume-in-use-although-vm-doesnt-exist.html" rel="alternate"></link><updated>2014-01-04T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-01-04:blog/openstack-volume-in-use-although-vm-doesnt-exist.html</id><summary type="html">&lt;p&gt;A user at &lt;a href="http://www.cloudwatt.com"&gt;Cloudwatt&lt;/a&gt; had an issue about Cinder volumes with
+on &lt;code&gt;prj1&lt;/code&gt; and manage resources into this project.&lt;/p&gt;</summary><category term="OpenStack"></category><category term="Keystone"></category></entry><entry><title>Openstack volume in-use although VM doesn't exist</title><link href="http://www.florentflament.com/blog/openstack-volume-in-use-although-vm-doesnt-exist.html" rel="alternate"></link><published>2014-01-04T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-01-04:blog/openstack-volume-in-use-although-vm-doesnt-exist.html</id><summary type="html">&lt;p&gt;A user at &lt;a href="http://www.cloudwatt.com"&gt;Cloudwatt&lt;/a&gt; had an issue about Cinder volumes with
 status &lt;code&gt;in-use&lt;/code&gt;, attached to VMs that didn't exist anymore. I could
 find similar bugs referenced in launchpad &lt;a href="https://bugs.launchpad.net/cinder/+bug/1201418"&gt;here&lt;/a&gt; and &lt;a href="https://bugs.launchpad.net/nova/+bug/1096197"&gt;there&lt;/a&gt;,
 both with status &lt;code&gt;invalid&lt;/code&gt;... But I didn't succeed in reproducing the
@@ -2277,43 +2366,43 @@ some weird methods for both version of the API.&lt;/p&gt;
 which is neither documented &lt;a href="http://docs.openstack.org/api/openstack-block-storage/2.0/content/Volumes.html"&gt;here&lt;/a&gt; nor &lt;a href="http://api.openstack.org/api-ref-blockstorage.html"&gt;there&lt;/a&gt;. They can be used
 to "set attachment metadata", which according to my opinion has no
 good reason to be performed directly by a user.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;cinderclient.v1.client&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;novaclient.v1_1.client&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Creating manager&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c1"&gt;# Creating manager&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;username&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;password&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;project_name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;auth_url&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;username&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;password&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;project_name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_url&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cinderclient&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;v1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Client&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;novaclient&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;v1_1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Client&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Getting an image and a flavor to launch our VM&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c1"&gt;# Getting an image and a flavor to launch our VM&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;img&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;images&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="p"&gt;()[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;fla&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;flavors&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="p"&gt;()[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Creating our resources (vm and volume)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c1"&gt;# Creating our resources (vm and volume)&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;MyVm&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;img&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fla&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vol&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;display_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;MyVol&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;MyVm&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;img&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fla&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vol&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;display_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;MyVol&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Waiting for VM to be spawned&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c1"&gt;# Waiting for VM to be spawned&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;ACTIVE&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ACTIVE&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;    &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Try an attach the volume using the VolumeManager.attach method&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c1"&gt;# Try an attach the volume using the VolumeManager.attach method&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;attach&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/dev/vdb&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;attach&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/dev/vdb&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Response&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;202&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;attachments&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s"&gt;u&amp;#39;device&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;/dev/vdb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;server_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;volume_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;host_name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Well it looks like it is attached&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;attachments&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;device&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;/dev/vdb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;server_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;volume_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;host_name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c1"&gt;# Well it looks like it is attached&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;os-extended-volumes:volumes_attached&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;os-extended-volumes:volumes_attached&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="p"&gt;[]&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# But actually it isn&amp;#39;t&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c1"&gt;# But actually it isn&amp;#39;t&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -2325,25 +2414,25 @@ instance. This should be done by using the
 &lt;a href="https://github.com/openstack/python-novaclient/blob/master/novaclient/v1_1/volumes.py"&gt;novaclient.v1_1.volumes.VolumeManager.create_server_volume&lt;/a&gt;
 method. It actually allows to "attach a volume to a server", which is
 what we want to do (And yes the method's name is not super clear).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Let&amp;#39;s continue on the example above&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="c"&gt;# First by clearing our volume attachment&amp;#39;s metadata&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="c"&gt;# to recover a consistent state&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c1"&gt;# Let&amp;#39;s continue on the example above&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="c1"&gt;# First by clearing our volume attachment&amp;#39;s metadata&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="c1"&gt;# to recover a consistent state&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt; 
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;detach&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Response&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;202&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;attachments&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;attachments&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="p"&gt;[]&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;os-extended-volumes:volumes_attached&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;os-extended-volumes:volumes_attached&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="p"&gt;[]&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;# Now we can use the VolumeManager.create_server_volume method&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="c"&gt;# to really attach our volume to our vm&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c1"&gt;# Now we can use the VolumeManager.create_server_volume method&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="c1"&gt;# to really attach our volume to our vm&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_server_volume&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/dev/vdb&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_server_volume&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/dev/vdb&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Volume&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;f024883d&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="n"&gt;b35&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4894&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="n"&gt;fbf&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;51498e6&lt;/span&gt;&lt;span class="n"&gt;c3c09&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;attachments&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s"&gt;u&amp;#39;device&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;/dev/vdb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;server_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;volume_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;host_name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;os-extended-volumes:volumes_attached&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s"&gt;u&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vol&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;attachments&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;device&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;/dev/vdb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;server_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;volume_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;host_name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nova&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;servers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;os-extended-volumes:volumes_attached&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;u&amp;#39;f024883d-4b35-4894-9fbf-51498e6c3c09&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -2360,7 +2449,7 @@ entries in the database manually...&lt;/p&gt;
 &lt;p&gt;One way to recover from a "volume attached to non-existent VM"
 inconsistent state, is to manually update entries in the Cinder
 database.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;mysql cinder
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mysql cinder
 Reading table information &lt;span class="k"&gt;for&lt;/span&gt; completion of table and column names
 You can turn off this feature to get a quicker startup with -A
 
@@ -2409,13 +2498,13 @@ mysql&amp;gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volum
 &lt;span class="m"&gt;7&lt;/span&gt; rows in &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0.00 sec&lt;span class="o"&gt;)&lt;/span&gt;
 
 mysql&amp;gt; Bye
-&lt;span class="nv"&gt;$ &lt;/span&gt;cinder list
+$ cinder list
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
 &lt;span class="p"&gt;|&lt;/span&gt;                  ID                  &lt;span class="p"&gt;|&lt;/span&gt;   Status  &lt;span class="p"&gt;|&lt;/span&gt; Name &lt;span class="p"&gt;|&lt;/span&gt; Size &lt;span class="p"&gt;|&lt;/span&gt; Volume Type &lt;span class="p"&gt;|&lt;/span&gt; Bootable &lt;span class="p"&gt;|&lt;/span&gt; Attached to &lt;span class="p"&gt;|&lt;/span&gt;
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
 &lt;span class="p"&gt;|&lt;/span&gt; 57b32eaf-7b71-49bf-a8fd-4115567a6cda &lt;span class="p"&gt;|&lt;/span&gt; available &lt;span class="p"&gt;|&lt;/span&gt; vol1 &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="m"&gt;1&lt;/span&gt;   &lt;span class="p"&gt;|&lt;/span&gt;     None    &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="nb"&gt;false&lt;/span&gt;   &lt;span class="p"&gt;|&lt;/span&gt;             &lt;span class="p"&gt;|&lt;/span&gt;
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="OpenStack"></category><category term="Cinder"></category><category term="bug"></category></entry><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><updated>2013-12-15T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-12-15:blog/znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="OpenStack"></category><category term="Cinder"></category><category term="bug"></category></entry><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><published>2013-12-15T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-12-15:blog/znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
 channels and log conversations while one isn't connected. This note
 desrcibes how to launch ZNC in a &lt;a href="https://www.docker.io/"&gt;Docker&lt;/a&gt; container, so that it be
 launched on any Docker enabled platform. To quick start with Docker,
@@ -2425,7 +2514,7 @@ Linux&lt;/a&gt; (for instance in a VM).&lt;/p&gt;
 &lt;p&gt;Once Docker is installed on the system, we can prepare an image that
 will be used to run ZNC with the following &lt;code&gt;Dockerfile&lt;/code&gt; (Docker
 configuration file):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;FROM ubuntu:precise
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM ubuntu:precise
 MAINTAINER Florent Flament
 
 # Using fr ubuntu mirrors and adding universe repository, to install znc
@@ -2448,22 +2537,22 @@ USER daemon
 &lt;p&gt;Let's assume that the &lt;code&gt;Dockerfile&lt;/code&gt; is stored in the &lt;code&gt;znc-noconf&lt;/code&gt;
 directory. We can build the ZNC ready image with the following
 command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker build -t znc:noconf znc-noconf/
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker build -t znc:noconf znc-noconf/
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;The next step is to configure ZNC. The following command will run the
 configuration wizard in a new container based on the previously
 generated image:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -i -t znc:noconf -d /var/znc -c
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker run -i -t znc:noconf -d /var/znc -c
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;After having answered to all the questions, ZNC will generate its
 configuration files. It will then be ready to run in daemon mode. Now
 we can save a Docker image including ZNC's configuration files.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ CONT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;docker ps -a &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="s2"&gt;&amp;quot;minutes ago&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; head -1 &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $1}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;docker commit &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nv"&gt;CONT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;docker ps -a &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="s2"&gt;&amp;quot;minutes ago&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; head -1 &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $1}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+$ docker commit &lt;span class="se"&gt;\&lt;/span&gt;
 &amp;gt; -run&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;{&amp;quot;Cmd&amp;quot;: [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;quot;, &amp;quot;/var/znc/&amp;quot;], &amp;quot;User&amp;quot;: &amp;quot;daemon&amp;quot;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 &amp;gt; &lt;span class="nv"&gt;$CONT&lt;/span&gt; znc:ready
 &lt;/pre&gt;&lt;/div&gt;
@@ -2473,7 +2562,7 @@ we can save a Docker image including ZNC's configuration files.&lt;/p&gt;
 ZNC in a new container, the following command will map the host's 6697
 TCP port on the container's 6697 port (assuming that ZNC has been
 configured to listen to port 6697).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -d -p 6697:6697 znc:ready
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker run -d -p 6697:6697 znc:ready
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -2482,7 +2571,7 @@ configured to listen to port 6697).&lt;/p&gt;
 &lt;code&gt;znc.conf&lt;/code&gt; configuration file. One has to create a directory (for
 instance &lt;code&gt;myznc/&lt;/code&gt;) containing both: &lt;code&gt;znc.conf&lt;/code&gt; and a &lt;code&gt;Dockerfile&lt;/code&gt;, with
 the following content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;FROM ubuntu:precise
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM ubuntu:precise
 MAINTAINER Florent Flament
 
 # Using fr ubuntu mirrors and adding universe repository, to install znc
@@ -2510,15 +2599,15 @@ CMD [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;
 
 
 &lt;p&gt;Then the ZNC container can be launched right after having built the image:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker build -t znc:myznc myznc/
-&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -d -p 6697:6697 znc:myznc
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker build -t znc:myznc myznc/
+$ docker run -d -p 6697:6697 znc:myznc
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;Update 2014/02/25&lt;/h2&gt;
 &lt;p&gt;Here's an example of ZNC configuration file listening for SSL incoming
 connexions:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;Listener4  = +6697
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Listener4  = +6697
 
 &lt;span class="nt"&gt;&amp;lt;User&lt;/span&gt; &lt;span class="err"&gt;USER1&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
         Pass       = PASSWORDHASHHERE
@@ -2555,7 +2644,7 @@ connexions:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;PASSWORDHASHHERE&lt;/code&gt; can be generated by using &lt;code&gt;znc -s&lt;/code&gt;. IRC clients
 (like xchat) have to be set up by specifying in the "Server Password"
 field a user's credentials &lt;code&gt;&amp;lt;user&amp;gt;:&amp;lt;password&amp;gt;&lt;/code&gt; (i.e
-USER1:PASSORDHASHHERE).&lt;/p&gt;</summary><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><updated>2013-11-30T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-30:blog/ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
+USER1:PASSORDHASHHERE).&lt;/p&gt;</summary><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><published>2013-11-30T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-30:blog/ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
 system is quite forward. The installer asks you a few question about
 your country, keyboard, network, ... . Then it installs all the
 required packages on the system, and makes it bootable.&lt;/p&gt;
@@ -2579,7 +2668,7 @@ configure the system, without the need to ask any question.&lt;/p&gt;
 &lt;p&gt;Here's my generic &lt;a href="http://www.florentflament.com/blog/static/preseed.cfg"&gt;preseed.cfg&lt;/a&gt; file. It is a mix of &lt;a href="http://www.debian.org/releases/squeeze/example-preseed.txt"&gt;Debian's
 example-preseed&lt;/a&gt; file and parameters gathered using Debian's
 suggested method after a manual installation:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;debconf-get-selections --installer &amp;gt; file
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;debconf-get-selections --installer &amp;gt; file
 debconf-get-selections &amp;gt;&amp;gt; file
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -2587,7 +2676,7 @@ debconf-get-selections &amp;gt;&amp;gt; file
 &lt;p&gt;The password for the &lt;code&gt;vmuser&lt;/code&gt; user has to be set, by changing the
 current CRACKMECRACKM encrypted password to a valid one. A valid
 crypted password can be generated with the following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;python -c &lt;span class="s1"&gt;&amp;#39;from crypt import crypt; print crypt(&amp;quot;MYPASSWORD&amp;quot;, &amp;quot;SALT&amp;quot;)&amp;#39;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python -c &lt;span class="s1"&gt;&amp;#39;from crypt import crypt; print crypt(&amp;quot;MYPASSWORD&amp;quot;, &amp;quot;SALT&amp;quot;)&amp;#39;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -2596,19 +2685,19 @@ crypted password can be generated with the following command:&lt;/p&gt;
 &lt;p&gt;Then we need to create an empty disk that will be used to install the
 system. A 5GB disk should be enough for a minimal Ubuntu installation
 (depending on one's requirements).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;qemu-img create vm.qcow2 5G
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;qemu-img create vm.qcow2 5G
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;virt-install&lt;/h2&gt;
 &lt;p&gt;Installing Ubuntu Precise on a VM can now be launched with the
 following unique command (to be customized):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;virt-install &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virt-install &lt;span class="se"&gt;\&lt;/span&gt;
 --name vm &lt;span class="se"&gt;\&lt;/span&gt;
 --ram &lt;span class="m"&gt;128&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 --location http://fr.archive.ubuntu.com/ubuntu/dists/precise-proposed/main/installer-i386/ &lt;span class="se"&gt;\&lt;/span&gt;
 --disk vm.qcow2,bus&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
---graphics vnc,keymap&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;local&lt;/span&gt;,listen&lt;span class="o"&gt;=&lt;/span&gt;0.0.0.0,port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5900&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+--graphics vnc,keymap&lt;span class="o"&gt;=&lt;/span&gt;local,listen&lt;span class="o"&gt;=&lt;/span&gt;0.0.0.0,port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5900&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 --network user,model&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
 --initrd-inject preseed.cfg
 &lt;/pre&gt;&lt;/div&gt;
@@ -2618,7 +2707,7 @@ following unique command (to be customized):&lt;/p&gt;
 of the standard &lt;code&gt;precise&lt;/code&gt;. It addresses a &lt;a href="https://bugs.launchpad.net/ubuntu/+source/net-retriever/+bug/1067934"&gt;bug that makes the
 installation freeze for 10+ minutes&lt;/a&gt; during the components download
 phase.&lt;/p&gt;
-&lt;p&gt;After some 30 minutes the system installation should be completed.&lt;/p&gt;</summary><category term="Ubuntu"></category><category term="KVM"></category><category term="libvirt"></category></entry><entry><title>Ceph and Cinder multi-backend</title><link href="http://www.florentflament.com/blog/ceph-and-cinder-multi-backend.html" rel="alternate"></link><updated>2013-11-17T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-17:blog/ceph-and-cinder-multi-backend.html</id><summary type="html">&lt;p&gt;&lt;a href="http://ceph.com/docs/master/"&gt;Ceph's documentation&lt;/a&gt; is quite extensive. However, when trying and
+&lt;p&gt;After some 30 minutes the system installation should be completed.&lt;/p&gt;</summary><category term="Ubuntu"></category><category term="KVM"></category><category term="libvirt"></category></entry><entry><title>Ceph and Cinder multi-backend</title><link href="http://www.florentflament.com/blog/ceph-and-cinder-multi-backend.html" rel="alternate"></link><published>2013-11-17T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-17:blog/ceph-and-cinder-multi-backend.html</id><summary type="html">&lt;p&gt;&lt;a href="http://ceph.com/docs/master/"&gt;Ceph's documentation&lt;/a&gt; is quite extensive. However, when trying and
 &lt;a href="http://ceph.com/docs/master/rbd/rbd-openstack/"&gt;installing Ceph on a running Openstack platform&lt;/a&gt;, I met two main
 issues: How to deal with a multi-backend setup? And how to deal with
 several nova-compute nodes?  This note will focus on the steps that I
@@ -2629,35 +2718,35 @@ other backends), using &lt;a href="http://ceph.com/docs/master/rados/operations/
 Ceph nodes (Ceph's doc provides extensive &lt;a href="http://ceph.com/docs/master/rados/operations/placement-groups/"&gt;documentation about the
 number of placement groups that should be used&lt;/a&gt;). The following
 command has to be launched on any Ceph node:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;ceph osd pool create volumes 128
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ceph osd pool create volumes 128
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Because of cephx authentication, we have to create a new user with the
 appropriate rights for cinder and nova to be able to access Ceph's
 storage. The following command has to be launched on a Ceph node:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;ceph auth get-or-create client.volumes mon &lt;span class="s1"&gt;&amp;#39;allow r&amp;#39;&lt;/span&gt; osd &lt;span class="s1"&gt;&amp;#39;allow class-read object_prefix rbd_children, allow rwx pool=volumes, allow rx pool=images&amp;#39;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ceph auth get-or-create client.volumes mon &lt;span class="s1"&gt;&amp;#39;allow r&amp;#39;&lt;/span&gt; osd &lt;span class="s1"&gt;&amp;#39;allow class-read object_prefix rbd_children, allow rwx pool=volumes, allow rx pool=images&amp;#39;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;The keyring (token used to identify Ceph users) has to be copied on
 cinder-volume nodes. The keyring file can be created with the
 following command on a Ceph node:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;ceph auth get-or-create client.volumes &amp;gt; ceph.client.images.keyring
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ceph auth get-or-create client.volumes &amp;gt; ceph.client.images.keyring
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;Cinder-volume nodes&lt;/h2&gt;
 &lt;p&gt;The file created above has to be copied on the cinder-volume nodes, in
 the directory &lt;code&gt;/etc/ceph&lt;/code&gt; with the propoer uid and gid:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;chown cinder:cinder /etc/ceph/ceph.client.images.keyring
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;chown cinder:cinder /etc/ceph/ceph.client.images.keyring
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Ceph's configuration file &lt;code&gt;/etc/ceph/ceph.conf&lt;/code&gt; has to be copied at
 the same location.&lt;/p&gt;
 &lt;p&gt;Then we have to install the following packages on these nodes:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;sudo apt-get install python-ceph ceph-common
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install python-ceph ceph-common
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -2665,7 +2754,7 @@ the same location.&lt;/p&gt;
 by &lt;a href="https://wiki.openstack.org/wiki/Cinder-multi-backend"&gt;setting a new backend&lt;/a&gt;. A new backend that we'll call &lt;code&gt;ceph&lt;/code&gt;
 will be added to the &lt;code&gt;enabled_backends&lt;/code&gt; parameter, and the
 corresponding backend section will be created:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;enabled_backends&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;former&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;backend&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;ceph&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;enabled_backends&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;former&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;backend&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;ceph&lt;/span&gt;
 &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;former&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;backend&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ceph&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
@@ -2683,27 +2772,27 @@ will allow nova to mount Ceph block devices. We will update this value
 in a next step.&lt;/p&gt;
 &lt;p&gt;If the &lt;code&gt;scheduler_driver&lt;/code&gt; parameter is not set to FilterScheduler, it
 has to be updated:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;scheduler_driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;scheduler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter_scheduler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;FilterScheduler&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;scheduler_driver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cinder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;scheduler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter_scheduler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;FilterScheduler&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Once the configuration file updated, cinder-volume service has to be
 restarted to load the new configuration:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;sudo service cinder-volume restart
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service cinder-volume restart
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;And a new volume-type has to be added to Cinder, with the following
 command, which has to be called with an adminitrator credentials
 (OS_USERNAME, OS_TENANT_NAME and OS_PASSWORD):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;cinder &lt;span class="nb"&gt;type&lt;/span&gt;-create ceph
-cinder &lt;span class="nb"&gt;type&lt;/span&gt;-key ceph &lt;span class="nb"&gt;set &lt;/span&gt;&lt;span class="nv"&gt;volume_backend_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;ceph
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cinder type-create ceph
+cinder type-key ceph &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="nv"&gt;volume_backend_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;ceph
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;At that point, we should be able to create new Cinder volumes using
 Ceph as a backend, with the following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;cinder create --volume-type ceph --display-name ceph-test 1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cinder create --volume-type ceph --display-name ceph-test 1
 cinder list
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -2713,13 +2802,13 @@ cinder list
 mount Ceph block devices. To do that, we have to dump Ceph's
 authentication token to a file that we'll use on each nova-compute
 node. On a Ceph node:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;ceph auth get-key client.volumes &amp;gt; client.volumes.key
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ceph auth get-key client.volumes &amp;gt; client.volumes.key
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;We will also need a &lt;code&gt;secret.xml&lt;/code&gt; file that will be used on each
 compute node, with the following initial content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;secret&lt;/span&gt; &lt;span class="na"&gt;ephemeral=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;no&amp;#39;&lt;/span&gt; &lt;span class="na"&gt;private=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;no&amp;#39;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;&amp;lt;secret&lt;/span&gt; &lt;span class="na"&gt;ephemeral=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;no&amp;#39;&lt;/span&gt; &lt;span class="na"&gt;private=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;no&amp;#39;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
   &lt;span class="nt"&gt;&amp;lt;usage&lt;/span&gt; &lt;span class="na"&gt;type=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;ceph&amp;#39;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
     &lt;span class="nt"&gt;&amp;lt;name&amp;gt;&lt;/span&gt;client.volumes secret&lt;span class="nt"&gt;&amp;lt;/name&amp;gt;&lt;/span&gt;
   &lt;span class="nt"&gt;&amp;lt;/usage&amp;gt;&lt;/span&gt;
@@ -2731,7 +2820,7 @@ compute node, with the following initial content:&lt;/p&gt;
 &lt;code&gt;secret.xml&lt;/code&gt;) on any nova-compute node. We'll call this node our first
 nova-compute node. On this first node we will define a secret with the
 following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;virsh secret-define --file secret.xml
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virsh secret-define --file secret.xml
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -2739,7 +2828,7 @@ following command:&lt;/p&gt;
 be used multiple times to configure nova-compute, as well as
 cinder-volume. We can then update the secret's value with the
 following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;virsh secret-set-value --secret UUID_OF_SECRET --base64 &lt;span class="k"&gt;$(&lt;/span&gt;cat client.volumes.key&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virsh secret-set-value --secret UUID_OF_SECRET --base64 &lt;span class="k"&gt;$(&lt;/span&gt;cat client.volumes.key&lt;span class="k"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -2747,31 +2836,31 @@ following command:&lt;/p&gt;
 updated on the first nova-compute node (in order to ensure that the
 same UUID_OF_SECRET will be used on each nova-compute node), with the
 following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;virsh secret-dumpxml UUID_OF_SECRET &amp;gt; secret.xml
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virsh secret-dumpxml UUID_OF_SECRET &amp;gt; secret.xml
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Then with the new &lt;code&gt;secret.xml&lt;/code&gt; file and the &lt;code&gt;client.volumes.key&lt;/code&gt;
  file, the previous operation has to be repeated on each nova-compute
  node (except the first one that is already configured):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;virsh secret-define --file secret.xml
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virsh secret-define --file secret.xml
 virsh secret-set-value --secret UUID_OF_SECRET --base64 &lt;span class="k"&gt;$(&lt;/span&gt;cat client.volumes.key&lt;span class="k"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Finally, cinder-volume configuration files &lt;code&gt;/etc/cinder/cinder.conf&lt;/code&gt;
 have to be updated with the proper UUID_OF_SECRET value:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;rbd_secret_uuid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;UUID_OF_SECRET&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;rbd_secret_uuid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;UUID_OF_SECRET&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;And cinder-volume service restarted:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;sudo service cinder-volume restart
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service cinder-volume restart
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;After that point, any VM should be able to mount volumes using Ceph
-backend!&lt;/p&gt;</summary><category term="Ceph"></category><category term="OpenStack"></category><category term="Cinder"></category></entry><entry><title>Macmini2,1 Linux dual boot</title><link href="http://www.florentflament.com/blog/macmini21-linux-dual-boot.html" rel="alternate"></link><updated>2013-11-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-03:blog/macmini21-linux-dual-boot.html</id><summary type="html">&lt;p&gt;While online resources provide documentation about &lt;a href="https://wiki.debian.org/MacMiniIntel"&gt;how to install
+backend!&lt;/p&gt;</summary><category term="Ceph"></category><category term="OpenStack"></category><category term="Cinder"></category></entry><entry><title>Macmini2,1 Linux dual boot</title><link href="http://www.florentflament.com/blog/macmini21-linux-dual-boot.html" rel="alternate"></link><published>2013-11-03T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-03:blog/macmini21-linux-dual-boot.html</id><summary type="html">&lt;p&gt;While online resources provide documentation about &lt;a href="https://wiki.debian.org/MacMiniIntel"&gt;how to install
 Linux on a Mac Mini&lt;/a&gt;, this guide focuses on the Apple Macmini2,1
 and its peculiarities. Please refer to &lt;a href="http://en.wikipedia.org/wiki/Macmini#Specifications"&gt;these tables&lt;/a&gt; to properly
 identify your hardware.&lt;/p&gt;
@@ -2802,7 +2891,7 @@ OS, by resizing the partition. The &lt;code&gt;diskutil&lt;/code&gt; command all
 that. In a shell, we have to launch the following command (where 20G
 means that we want to let 20 Gigabytes to our OS X partition. One may
 split the disk capacity according to its requirements):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo diskutil resizeVolume disk0s2 20G
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo diskutil resizeVolume disk0s2 20G
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -2820,7 +2909,7 @@ mounted as /).&lt;/p&gt;
 &lt;p&gt;Once the Linux installation is finished, reboot and use rEFit
 &lt;code&gt;Partition Tool&lt;/code&gt; to resync GPT / MBR tables. Then boot back to MacOS
 and use its &lt;code&gt;bless&lt;/code&gt; tool to make the new OS bootable:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo bless --device /dev/disk0s4 -setBoot
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo bless --device /dev/disk0s4 -setBoot
 &lt;/pre&gt;&lt;/div&gt;
 
 

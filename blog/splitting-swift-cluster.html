@@ -98,8 +98,6 @@
                                         title="Permalink to Splitting Swift cluster">
                                         Splitting Swift cluster
                                 </a>
-<a href="http://twitter.com/share" class="twitter-share-button"
-   data-count="horizontal" data-via="florentflament_">Tweet</a>
                         </h1>
                 </header>
                 <div class="entry-content">
@@ -190,16 +188,16 @@ the data is removed from the node and the <em>replication</em> mechanism
 takes care of replacing the missing data. Below is an example of what
 concretely happens when manually corrupting an object.</p>
 <p>Let's corrupt data by hand:</p>
-<div class="highlight"><pre>root@swnode0:/srv/node/d1/objects/154808/c3a# cat 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
+<div class="highlight"><pre><span></span>root@swnode0:/srv/node/d1/objects/154808/c3a# cat 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
 blabla
-root@swnode0:/srv/node/d1/objects/154808/c3a# <span class="nb">echo </span>blablb &gt; 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
+root@swnode0:/srv/node/d1/objects/154808/c3a# <span class="nb">echo</span> blablb &gt; 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
 </pre></div>
 
 
 <p>The corrupted object is 'quarantined' by the object-auditor when it
 checks the files integrity. Here's how it appears in the
 <code>/var/log/syslog</code> log file:</p>
-<div class="highlight"><pre>Sep 10 13:56:44 swnode0 object-auditor: Quarantined object /srv/node/d1/objects/154808/c3a/972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data: ETag 9b36b2e89df94bc458d629499d38cf86 and file&#39;s md5 6235440677e53f66877f0c1fec6a89bd do not match
+<div class="highlight"><pre><span></span>Sep 10 13:56:44 swnode0 object-auditor: Quarantined object /srv/node/d1/objects/154808/c3a/972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data: ETag 9b36b2e89df94bc458d629499d38cf86 and file&#39;s md5 6235440677e53f66877f0c1fec6a89bd do not match
 Sep 10 13:56:44 swnode0 object-auditor: ERROR Object /srv/node/d1/objects/154808/c3a/972e359caf9df6fdd3b8e295afd4cc3a failed audit and was quarantined: ETag 9b36b2e89df94bc458d629499d38cf86 and file&#39;s md5 6235440677e53f66877f0c1fec6a89bd do not match
 Sep 10 13:56:44 swnode0 object-auditor: Object audit (ALL) &quot;forever&quot; mode completed: 0.02s. Total quarantined: 1, Total errors: 0, Total files/sec: 46.71, Total bytes/sec: 326.94, Auditing time: 0.02, Rate: 0.98
 </pre></div>
@@ -208,7 +206,7 @@ Sep 10 13:56:44 swnode0 object-auditor: Object audit (ALL) &quot;forever&quot; m
 <p>The quarantined object is then overwritten by the object-replicator of
 a node that has the appropriate replica uncorrupted. Below is an
 extract of the log file on such node:</p>
-<div class="highlight"><pre>Sep 10 13:57:01 swnode1 object-replicator: Starting object replication pass.
+<div class="highlight"><pre><span></span>Sep 10 13:57:01 swnode1 object-replicator: Starting object replication pass.
 Sep 10 13:57:01 swnode1 object-replicator: &lt;f+++++++++ c3a/972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
 Sep 10 13:57:01 swnode1 object-replicator: Successful rsync of /srv/node/d1/objects/154808/c3a at 192.168.100.10::object/d1/objects/154808 (0.182)
 Sep 10 13:57:01 swnode1 object-replicator: 1/1 (100.00%) partitions replicated in 0.21s (4.84/sec, 0s remaining)
@@ -220,7 +218,7 @@ Sep 10 13:57:01 swnode1 object-replicator: Object replication complete. (0.00 mi
 
 <p>The corrupted data has been replaced by the correct data on the
 initial storage node (where the file had been corrupted):</p>
-<div class="highlight"><pre>root@swnode0:/srv/node/d1/objects/154808/c3a# cat 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
+<div class="highlight"><pre><span></span>root@swnode0:/srv/node/d1/objects/154808/c3a# cat 972e359caf9df6fdd3b8e295afd4cc3a/1410353767.57579.data
 blabla
 </pre></div>
 
@@ -234,7 +232,7 @@ that will be used by <code>swift-dispersion-populate</code> to create containers
 and objects.</p>
 <p>Then we have to configure appropriately the <code>swift-dispersion-report</code>
 tool with the <code>/etc/swift/dispersion.conf</code> file:</p>
-<div class="highlight"><pre>[dispersion]
+<div class="highlight"><pre><span></span>[dispersion]
 auth_url = http://SWIFT_PROXY_URL/auth/v1.0
 auth_user = DEDICATED_ACCOUNT_USERNAME
 auth_key = DEDICATED_ACCOUNT_PASSWORD
@@ -243,7 +241,7 @@ auth_key = DEDICATED_ACCOUNT_PASSWORD
 
 <p>Once properly set, we can initiate dispersion monitoring by populating
 our new account with test data:</p>
-<div class="highlight"><pre>cloud@swproxy:~<span class="nv">$ </span>swift-dispersion-populate
+<div class="highlight"><pre><span></span>cloud@swproxy:~$ swift-dispersion-populate
 Created <span class="m">2621</span> containers <span class="k">for</span> dispersion reporting, 4m, <span class="m">0</span> retries
 Created <span class="m">2621</span> objects <span class="k">for</span> dispersion reporting, 2m, <span class="m">0</span> retries
 </pre></div>
@@ -251,7 +249,7 @@ Created <span class="m">2621</span> objects <span class="k">for</span> dispersio
 
 <p>Our objects should have been placed on appropriate devices. We can
 check this:</p>
-<div class="highlight"><pre>cloud@swproxy:~<span class="nv">$ </span>swift-dispersion-report
+<div class="highlight"><pre><span></span>cloud@swproxy:~$ swift-dispersion-report
 Queried <span class="m">2622</span> containers <span class="k">for</span> dispersion reporting, 2m, <span class="m">31</span> retries
 100.00% of container copies found <span class="o">(</span><span class="m">7866</span> of 7866<span class="o">)</span>
 Sample represents 1.00% of the container partition space
@@ -268,7 +266,7 @@ can follow the data redistribution with the
 <code>swift-dispersion-report</code>. The migration is terminated when the number
 of objects copies reach 100%. Here's an example of results obtained on
 a 6 nodes cluster.</p>
-<div class="highlight"><pre>cloud@swproxy:~<span class="nv">$ </span>swift-dispersion-report
+<div class="highlight"><pre><span></span>cloud@swproxy:~$ swift-dispersion-report
 Queried <span class="m">2622</span> containers <span class="k">for</span> dispersion reporting, 3m, <span class="m">29</span> retries
 100.00% of container copies found <span class="o">(</span><span class="m">7866</span> of 7866<span class="o">)</span>
 Sample represents 1.00% of the container partition space
@@ -278,8 +276,8 @@ There were <span class="m">2598</span> partitions missing <span class="m">1</spa
 66.96% of object copies found <span class="o">(</span><span class="m">5265</span> of 7863<span class="o">)</span>
 Sample represents 1.00% of the object partition space
 
-<span class="c"># Then some minutes later</span>
-cloud@swproxy:~<span class="nv">$ </span>swift-dispersion-report
+<span class="c1"># Then some minutes later</span>
+cloud@swproxy:~$ swift-dispersion-report
 Queried <span class="m">2622</span> containers <span class="k">for</span> dispersion reporting, 5m, <span class="m">0</span> retries
 100.00% of container copies found <span class="o">(</span><span class="m">7866</span> of 7866<span class="o">)</span>
 Sample represents 1.00% of the container partition space
@@ -392,7 +390,7 @@ check that everything (network, hardware, ...) is working as
 expected. We can use the <code>swift-add-nodes.py</code> script to easily add
 nodes to our new region with a minimal weight so that only 1 partition
 will be assigned to each device:</p>
-<div class="highlight"><pre><span class="nv">$ </span>python swift-add-nodes.py object.builder object.builder.s1 <span class="m">2</span> <span class="m">6000</span> 127.0.0.1 127.0.0.2 127.0.0.3
+<div class="highlight"><pre><span></span>$ python swift-add-nodes.py object.builder object.builder.s1 <span class="m">2</span> <span class="m">6000</span> 127.0.0.1 127.0.0.2 127.0.0.3
 Adding device: <span class="o">{</span><span class="s1">&#39;weight&#39;</span>: 5.11, <span class="s1">&#39;zone&#39;</span>: 0, <span class="s1">&#39;ip&#39;</span>: <span class="s1">&#39;127.0.0.1&#39;</span>, <span class="s1">&#39;region&#39;</span>: 2, <span class="s1">&#39;device&#39;</span>: <span class="s1">&#39;sdb1&#39;</span>, <span class="s1">&#39;port&#39;</span>: 6000<span class="o">}</span>
 Adding device: <span class="o">{</span><span class="s1">&#39;weight&#39;</span>: 5.11, <span class="s1">&#39;zone&#39;</span>: 0, <span class="s1">&#39;ip&#39;</span>: <span class="s1">&#39;127.0.0.1&#39;</span>, <span class="s1">&#39;region&#39;</span>: 2, <span class="s1">&#39;device&#39;</span>: <span class="s1">&#39;sdc1&#39;</span>, <span class="s1">&#39;port&#39;</span>: 6000<span class="o">}</span>
 Adding device: <span class="o">{</span><span class="s1">&#39;weight&#39;</span>: 5.11, <span class="s1">&#39;zone&#39;</span>: 0, <span class="s1">&#39;ip&#39;</span>: <span class="s1">&#39;127.0.0.1&#39;</span>, <span class="s1">&#39;region&#39;</span>: 2, <span class="s1">&#39;device&#39;</span>: <span class="s1">&#39;sdd1&#39;</span>, <span class="s1">&#39;port&#39;</span>: 6000<span class="o">}</span>
@@ -406,7 +404,7 @@ Adding device: <span class="o">{</span><span class="s1">&#39;weight&#39;</span>:
 Adding device: <span class="o">{</span><span class="s1">&#39;weight&#39;</span>: 5.11, <span class="s1">&#39;zone&#39;</span>: 0, <span class="s1">&#39;ip&#39;</span>: <span class="s1">&#39;127.0.0.3&#39;</span>, <span class="s1">&#39;region&#39;</span>: 2, <span class="s1">&#39;device&#39;</span>: <span class="s1">&#39;sdd1&#39;</span>, <span class="s1">&#39;port&#39;</span>: 6000<span class="o">}</span>
 Adding device: <span class="o">{</span><span class="s1">&#39;weight&#39;</span>: 5.11, <span class="s1">&#39;zone&#39;</span>: 0, <span class="s1">&#39;ip&#39;</span>: <span class="s1">&#39;127.0.0.3&#39;</span>, <span class="s1">&#39;region&#39;</span>: 2, <span class="s1">&#39;device&#39;</span>: <span class="s1">&#39;sde1&#39;</span>, <span class="s1">&#39;port&#39;</span>: 6000<span class="o">}</span>
 
-<span class="nv">$ </span>swift-ring-builder object.builder.s1 rebalance
+$ swift-ring-builder object.builder.s1 rebalance
 Reassigned <span class="m">12</span> <span class="o">(</span>0.00%<span class="o">)</span> partitions. Balance is now 0.18.
 </pre></div>
 
@@ -416,7 +414,7 @@ steps of some percentage (let's say 3%) until one third of total
 cluster data is stored in the new region. Script
 <code>swift-assign-partitions.py</code> allows assigning a chosen ratio of
 partitions to the new region:</p>
-<div class="highlight"><pre><span class="nv">$ </span>python swift-assign-partitions.py object.builder.s2 object.builder.s3 <span class="m">2</span> 0.03
+<div class="highlight"><pre><span></span>$ python swift-assign-partitions.py object.builder.s2 object.builder.s3 <span class="m">2</span> 0.03
 Setting new weight of 10376.28 to device 1342
 Setting new weight of 10376.28 to device 1343
 Setting new weight of 10376.28 to device 1344
@@ -430,7 +428,7 @@ Setting new weight of 10376.28 to device 1351
 Setting new weight of 10376.28 to device 1352
 Setting new weight of 10376.28 to device 1353
 
-<span class="nv">$ </span>swift-ring-builder object.builder.s3 rebalance
+$ swift-ring-builder object.builder.s3 rebalance
 Reassigned <span class="m">25119</span> <span class="o">(</span>9.58%<span class="o">)</span> partitions. Balance is now 0.25.
 </pre></div>
 
@@ -444,20 +442,6 @@ working</a> ?</p>
 OpenStack Swift for Extreme Data Durability</a> at the next OpenStack
 Summit in Paris !</p>
                 </div><!-- /.entry-content -->
-                <div class="comments">
-                <h2>Comments !</h2>
-                        <div id="disqus_thread"></div>
-                        <script type="text/javascript">
-                           var disqus_identifier = "splitting-swift-cluster.html";
-                           (function() {
-                                var dsq = document.createElement('script');
-                                dsq.type = 'text/javascript'; dsq.async = true;
-                                dsq.src = 'http://florentflament.disqus.com/embed.js';
-                                (document.getElementsByTagName('head')[0] ||
-                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
-                          })();
-                        </script>
-                </div>
         </article>
 </section>
         </div><!--/span-->
@@ -465,10 +449,7 @@ Summit in Paris !</p>
                 <div class="span3 well sidebar-nav" id="sidebar">
 <ul class="nav nav-list">
 <li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
-    <li><a href="http://adam.younglogic.com/"><i class="icon-external-link"></i>Adam Young's Web Log</a></li>
     <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
-    <li><a href="http://dev.cloudwatt.com/en/blog/"><i class="icon-external-link"></i>Cloudwatt's Tech Blog</a></li>
-    <li><a href="http://www.jamielennox.net/"><i class="icon-external-link"></i>Jamie Lennox's Blog</a></li>
     <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
 
 <li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
@@ -484,171 +465,7 @@ Summit in Paris !</p>
 </li>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-4">
-    <a href="./tag/raspbian.html">
-        <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/irc.html">
-        <i class="icon-tag icon-large"></i>IRC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ring.html">
-        <i class="icon-tag icon-large"></i>Ring
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/raspberry-pi.html">
-        <i class="icon-tag icon-large"></i>Raspberry Pi
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/operations.html">
-        <i class="icon-tag icon-large"></i>operations
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/printers.html">
-        <i class="icon-tag icon-large"></i>Printers
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
 
-<li class="nav-header">
-<a href="https://twitter.com/florentflament_" class="twitter-follow-button" data-show-count="false">Follow @florentflament_</a>
-</li>
-<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 
 </ul>        </div><!--/.well -->
 
@@ -665,24 +482,6 @@ Summit in Paris !</p>
     </div><!--/.fluid-container-->
 
 
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-	var pageTracker = _gat._getTracker("UA-23791515-4");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<script type="text/javascript">
-    var disqus_shortname = 'florentflament';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
 
     <!-- Le javascript -->
     <!-- Placed at the end of the document so the pages load faster -->

@@ -1,5 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2015-05-09T00:00:00+02:00</updated><entry><title>Inkjet versus laser printer</title><link href="http://www.florentflament.com/blog/inkjet-versus-laser-printer.html" rel="alternate"></link><updated>2015-05-09T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2015-05-09:blog/inkjet-versus-laser-printer.html</id><summary type="html">&lt;p&gt;Contrary to what I found on most websites when googling about
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2016-08-08T00:00:00+02:00</updated><entry><title>Arduino Hello World without IDE</title><link href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html" rel="alternate"></link><published>2016-08-08T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-08-08:blog/arduino-hello-world-without-ide.html</id><summary type="html">&lt;p&gt;There is already a number of resources available about programming the
+Arduino with or without the IDE (I won't discuss here the pros and
+cons of using it). This aims at being a quick memo for those who
+already have some knowledge about C programming, and just want the
+minimal information required to compile C code and upload it to an
+Arduino board. This is basically a compilation of chunks of code
+retrieved here and there a couple of months ago and possibly updated.&lt;/p&gt;
+&lt;h2&gt;Packages to install&lt;/h2&gt;
+&lt;p&gt;To be able to compile and upload C code to an Arduino board, one has
+to install the following packages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;avr-gcc&lt;/code&gt; : Cross Compiling GNU GCC targeted at avr&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;avr-libc&lt;/code&gt; : C library for use with GCC on Atmel AVR microcontrollers&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;avrdude&lt;/code&gt; : Software for programming Atmel AVR microcontroller&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Note the &lt;code&gt;avr-libc&lt;/code&gt; (and to some extend &lt;code&gt;avr-gcc&lt;/code&gt;) install a lot of
+interesting libraries. Corresponding headers can be found in the
+following directory: &lt;code&gt;/usr/avr/include/&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Makefile&lt;/h2&gt;
+&lt;p&gt;The following Makefile summarizes the commands (with parameters)
+needed to compile a C project and upload it to an Arduino board:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;baud&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;115200
+&lt;span class="nv"&gt;avrType&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;atmega328p
+&lt;span class="nv"&gt;avrFreq&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;16000000&lt;/span&gt; &lt;span class="c1"&gt;# 16 Mhz&lt;/span&gt;
+&lt;span class="nv"&gt;programmerDev&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/ttyUSB0
+&lt;span class="nv"&gt;programmerType&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;arduino
+
+&lt;span class="nv"&gt;cflags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-DF_CPU&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;avrFreq&lt;span class="k"&gt;)&lt;/span&gt; -mmcu&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;avrType&lt;span class="k"&gt;)&lt;/span&gt; -Wall -Werror -Wextra -Os
+&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;patsubst %.c,%.o,&lt;span class="k"&gt;$(&lt;/span&gt;wildcard *.c&lt;span class="k"&gt;))&lt;/span&gt;
+
+&lt;span class="nf"&gt;.PHONY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;flash&lt;/span&gt; &lt;span class="n"&gt;clean&lt;/span&gt;
+
+&lt;span class="nf"&gt;all&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;.&lt;span class="n"&gt;hex&lt;/span&gt;
+
+&lt;span class="nf"&gt;%.o&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; %.&lt;span class="n"&gt;c&lt;/span&gt;
+    avr-gcc &lt;span class="k"&gt;$(&lt;/span&gt;cflags&lt;span class="k"&gt;)&lt;/span&gt; -c $&amp;lt; -o &lt;span class="nv"&gt;$@&lt;/span&gt;
+
+&lt;span class="nf"&gt;main.elf&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+    avr-gcc &lt;span class="k"&gt;$(&lt;/span&gt;cflags&lt;span class="k"&gt;)&lt;/span&gt; -o &lt;span class="nv"&gt;$@&lt;/span&gt; $^
+
+&lt;span class="nf"&gt;main.hex&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;.&lt;span class="n"&gt;elf&lt;/span&gt;
+    avr-objcopy -j .text -j .data -O ihex $^ &lt;span class="nv"&gt;$@&lt;/span&gt;
+
+&lt;span class="nf"&gt;flash&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;.&lt;span class="n"&gt;hex&lt;/span&gt;
+    avrdude -p&lt;span class="k"&gt;$(&lt;/span&gt;avrType&lt;span class="k"&gt;)&lt;/span&gt; -c&lt;span class="k"&gt;$(&lt;/span&gt;programmerType&lt;span class="k"&gt;)&lt;/span&gt; -P&lt;span class="k"&gt;$(&lt;/span&gt;programmerDev&lt;span class="k"&gt;)&lt;/span&gt; -b&lt;span class="k"&gt;$(&lt;/span&gt;baud&lt;span class="k"&gt;)&lt;/span&gt; -v -U flash:w:$&amp;lt;
+
+&lt;span class="nf"&gt;clean&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    rm -f main.hex main.elf &lt;span class="k"&gt;$(&lt;/span&gt;objects&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To compile and upload a C project, one has to type the following
+commands (actually the last one is enough, since it will automatically
+build the &lt;code&gt;main.hex&lt;/code&gt; file if required):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  $ make
+  ...
+  $ make flash
+  ...
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Depending on the board being used, one may have to tune the parameters
+at the beginning of the file. For instance, the &lt;code&gt;avrType&lt;/code&gt; must reflect
+the type of AVR microcontroller on the board. The following header
+contains an extensive list of the supported hardware:
+&lt;code&gt;/usr/avr/include/avr/io.h&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Arduino Hello World&lt;/h2&gt;
+&lt;p&gt;The minimal program on an Arduino consists in having a LED blink. I
+found this code somewhere (though I couldn't recover where from..):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;util/delay.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;avr/io.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define LED PORTB5&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;DDRB&lt;/span&gt; &lt;span class="o"&gt;|=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;LED&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="cm"&gt;/*ever*/&lt;/span&gt;&lt;span class="p"&gt;(;;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;|=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;LED&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;_delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;LED&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;_delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's all folks. With the packages installed and the Makefile
+described earlier, one can compile this little C code and upload it to
+an Arduino board and see the little red LED blinking. From this
+starting point, one can easily work on bigger Arduino based projects.&lt;/p&gt;</summary><category term="Arduino"></category></entry><entry><title>Inkjet versus laser printer</title><link href="http://www.florentflament.com/blog/inkjet-versus-laser-printer.html" rel="alternate"></link><published>2015-05-09T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2015-05-09:blog/inkjet-versus-laser-printer.html</id><summary type="html">&lt;p&gt;Contrary to what I found on most websites when googling about
 comparisons between inkjet and laser printers, the cost per page on
 high end inkjet printers is lower than that of laser printers.&lt;/p&gt;
 &lt;p&gt;Moreover, when buying a new printer one has to consider the number of
@@ -498,7 +587,7 @@ page). On the other hand, the printer with the lowest cost per page
 of $1000.&lt;/p&gt;
 &lt;p&gt;In the end, the ideal printer depends on the usage that will be done
 (number of pages printed). Besides, one may consider additional
-features (print speed, duplex printing, ...) when choosing a printer.&lt;/p&gt;</summary><category term="Printers"></category><category term="Costs"></category></entry><entry><title>Right VM cost</title><link href="http://www.florentflament.com/blog/right-vm-cost.html" rel="alternate"></link><updated>2014-08-03T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-08-03:blog/right-vm-cost.html</id><summary type="html">&lt;p&gt;With cloud Virtual Machines prices dropping month after month, we may
+features (print speed, duplex printing, ...) when choosing a printer.&lt;/p&gt;</summary><category term="Printers"></category><category term="Costs"></category></entry><entry><title>Right VM cost</title><link href="http://www.florentflament.com/blog/right-vm-cost.html" rel="alternate"></link><published>2014-08-03T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-08-03:blog/right-vm-cost.html</id><summary type="html">&lt;p&gt;With cloud Virtual Machines prices dropping month after month, we may
 be asking if the margins previously done by cloud operators were not
 outrageously high. I actually find surprising that current VM price is
 on average higher than equivalent dedicated server even though
@@ -527,7 +616,7 @@ ratio of dedicated servers.&lt;/p&gt;
 &lt;p&gt;We can make an estimate of the cost of hardware by performing a
 &lt;a href="http://en.wikipedia.org/wiki/Regression_analysis"&gt;multiple regression analysis&lt;/a&gt; on dedicated server prices.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.ovh.com/fr/serveurs_dedies/enterprise/"&gt;OVH prices&lt;/a&gt; (only considering Intel Xeon CPUs):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;|-------------------------------------------------------------------------------------------|
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;|-------------------------------------------------------------------------------------------|
 |         CPU type        | # threads | RAM (GB) | HDD (TB) | SSD (GB) | Price (€/month HT) |
 |-------------------------------------------------------------------------------------------|
 |                                 OVH Enterprise                                            |
@@ -577,7 +666,7 @@ where:&lt;/p&gt;
 &lt;/ul&gt;
 &lt;p&gt;We can estimate ßj coefficients with the following formula:
 ß = (Xt&lt;em&gt;X)-¹&lt;/em&gt;Xt*Y&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python pricing_vm_simple.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python pricing_vm_simple.py
 Constant: 31.3530724158
 Eur / CPU thread: 3.12689639938
 Eur / GB of RAM: 0.639580183605
@@ -617,67 +706,67 @@ SSD storage (which is recommended when sharing a disk with many users)
 is costly. Therefore, in the case of huge storage space requirements,
 dedicated servers with big HDDs may be more appropriate.&lt;/p&gt;
 &lt;h2&gt;Annex - Regression Analysis code&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/usr/bin/env python&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
 
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt;
 
 &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;matrix&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1,  8,  64,   4,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12, 128,   4,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 32, 128,   4,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 40, 256,   4,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1,  8,  32,   6,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12,  64,   6,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 16, 128,   6,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 32, 128,   6,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 40, 256,   6,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12,  48,  48,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12,  48,  72,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 24,  64, 144,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 24,  64, 216,    0;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12,  48,  36,  360;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 12,  48,  54,  360;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 24,  64, 108, 1080;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1, 24,  64, 162, 1080&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1,  8,  64,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12, 128,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 32, 128,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 40, 256,   4,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1,  8,  32,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12,  64,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 16, 128,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 32, 128,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 40, 256,   6,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12,  48,  48,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12,  48,  72,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 24,  64, 144,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 24,  64, 216,    0;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12,  48,  36,  360;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 12,  48,  54,  360;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 24,  64, 108, 1080;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1, 24,  64, 162, 1080&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="n"&gt;Y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;matrix&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;  81.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 131.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 202.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 302.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;  81.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 141.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 191.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 302.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 402.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 372.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 522.00;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 822.00;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1272.00;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 372.99;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 522.00;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39; 822.00;&amp;#39;&lt;/span&gt;
-&lt;span class="s"&gt;&amp;#39;1272.00&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;  81.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 131.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 202.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 302.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;  81.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 141.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 191.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 302.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 402.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 372.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 522.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 822.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1272.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 372.99;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 522.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39; 822.00;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;1272.00&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-&lt;span class="c"&gt;# Computing model parameters&lt;/span&gt;
+&lt;span class="c1"&gt;# Computing model parameters&lt;/span&gt;
 &lt;span class="n"&gt;B&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;
 
-&lt;span class="c"&gt;# Computing predictions based on models&lt;/span&gt;
+&lt;span class="c1"&gt;# Computing predictions based on models&lt;/span&gt;
 &lt;span class="n"&gt;F&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;
 
-&lt;span class="c"&gt;# Computing R^2&lt;/span&gt;
+&lt;span class="c1"&gt;# Computing R^2&lt;/span&gt;
 &lt;span class="n"&gt;M&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;SStot&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;multiply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="n"&gt;SSres&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;multiply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="n"&gt;Rsq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;SSres&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;SStot&lt;/span&gt;
 
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Constant:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / CPU thread:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / GB of RAM:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / TB of HDD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Eur / GB of SSD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;R^2:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Rsq&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Virtualization"></category><category term="VM"></category><category term="Hardware"></category><category term="Costs"></category></entry><entry><title>Git SSH Docker container</title><link href="http://www.florentflament.com/blog/git-ssh-docker-container.html" rel="alternate"></link><updated>2014-06-28T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-06-28:blog/git-ssh-docker-container.html</id><summary type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Constant:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / CPU thread:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / GB of RAM:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / TB of HDD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / GB of SSD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;R^2:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Rsq&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Virtualization"></category><category term="VM"></category><category term="Hardware"></category><category term="Costs"></category></entry><entry><title>Git SSH Docker container</title><link href="http://www.florentflament.com/blog/git-ssh-docker-container.html" rel="alternate"></link><published>2014-06-28T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-06-28:blog/git-ssh-docker-container.html</id><summary type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
 using git with a remote repository. The implementation I have chosen
 for that consists in running an ssh server, with git, in a Docker
 container. This has the following advantages over other solutions:&lt;/p&gt;
@@ -689,27 +778,27 @@ container. This has the following advantages over other solutions:&lt;/p&gt;
 &lt;h2&gt;Dockerfile&lt;/h2&gt;
 &lt;p&gt;The proposed Git SSH Dockerfile is based on the &lt;a href="https://docs.docker.com/examples/running_ssh_service/"&gt;Dockerizing an SSH
 service&lt;/a&gt; example.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;FROM ubuntu:14.04
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM ubuntu:14.04
 
 RUN apt-get -y update
 RUN apt-get -y install openssh-server
 RUN apt-get -y install git
 
-&lt;span class="c"&gt;# Setting openssh&lt;/span&gt;
+&lt;span class="c1"&gt;# Setting openssh&lt;/span&gt;
 RUN mkdir /var/run/sshd
 RUN sed -i &lt;span class="s2"&gt;&amp;quot;s/#PasswordAuthentication yes/PasswordAuthentication no/&amp;quot;&lt;/span&gt; /etc/ssh/sshd_config
 
-&lt;span class="c"&gt;# Adding git user&lt;/span&gt;
+&lt;span class="c1"&gt;# Adding git user&lt;/span&gt;
 RUN adduser --system git
 RUN mkdir -p /home/git/.ssh
 
-&lt;span class="c"&gt;# Clearing and setting authorized ssh keys&lt;/span&gt;
+&lt;span class="c1"&gt;# Clearing and setting authorized ssh keys&lt;/span&gt;
 RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; &amp;gt; /home/git/.ssh/authorized_keys
 RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;First SSH public key&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; /home/git/.ssh/authorized_keys
 RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Second SSH public key&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; /home/git/.ssh/authorized_keys
-&lt;span class="c"&gt;# ...&lt;/span&gt;
+&lt;span class="c1"&gt;# ...&lt;/span&gt;
 
-&lt;span class="c"&gt;# Updating shell to bash&lt;/span&gt;
+&lt;span class="c1"&gt;# Updating shell to bash&lt;/span&gt;
 RUN sed -i s#/home/git:/bin/false#/home/git:/bin/bash# /etc/passwd
 
 EXPOSE 22
@@ -721,14 +810,14 @@ CMD &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/sb
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Building the image&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker.io build -t git-ssh_img .
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker.io build -t git-ssh_img .
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Running the image&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo docker.io run -p 1234:22 -d --name git-ssh git-ssh_img
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo docker.io run -p 1234:22 -d --name git-ssh git-ssh_img
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -737,8 +826,8 @@ CMD &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/sb
 &lt;p&gt;The previous command maps the container's host port 1234 on the
 container's SSH port. Of course, this port can be changed to any
 value. One can then ssh to the container with the following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ssh -p &lt;span class="m"&gt;1234&lt;/span&gt; git@&amp;lt;container_host&amp;gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Git"></category><category term="SSH"></category><category term="Docker"></category></entry><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><updated>2014-05-03T23:34:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-05-03:blog/securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ssh -p &lt;span class="m"&gt;1234&lt;/span&gt; git@&amp;lt;container_host&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Git"></category><category term="SSH"></category><category term="Docker"></category></entry><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><published>2014-05-03T23:34:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-05-03:blog/securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
 the main threats (if possible by using only open source software). For
 instance, losing data because of a hardware failure is just something
 that shouldn't happen anymore, thanks to all the technology available
@@ -887,7 +976,7 @@ by different layers:&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Example table&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;+------------------+-------------+--------+-------------+-------------+------------------+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;+------------------+-------------+--------+-------------+-------------+------------------+
 |                  |             |        |             |             |                  |
 | Files            | text / code | Emails | Binary data | Binary data |      Threat      |
 |                  |             |        | important   | throwable   |                  |
@@ -913,7 +1002,7 @@ by different layers:&lt;/p&gt;
 |                  |                                    |             | Piracy /         |
 |                  |                                    |             | Hardware failure |
 +------------------+------------------------------------+-------------+------------------+
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Data Safety"></category><category term="Data Security"></category></entry><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><updated>2014-03-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-03-03:blog/chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Data Safety"></category><category term="Data Security"></category></entry><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><published>2014-03-03T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-03-03:blog/chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
 a Debian based Linux Operating System called &lt;a href="http://www.raspbian.org/"&gt;Raspbian&lt;/a&gt;. Such
 device would be very convenient to manage one's personal
 infrastructure, composed of some physical and / or virtual machines,
@@ -934,8 +1023,8 @@ NOOBS menu, install Raspbian (Using NOOBS v1.2.1).&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Install Chef Server binary package:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo apt-get update
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo apt-get install chef-server-api
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo apt-get update
+$ sudo apt-get install chef-server-api
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -953,7 +1042,7 @@ NOOBS menu, install Raspbian (Using NOOBS v1.2.1).&lt;/p&gt;
 &lt;p&gt;Note: Some services won't start, like jetty. &lt;code&gt;chef-server&lt;/code&gt; will also
 be said to have failed, but Chef Server APIs will be working anyway.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Testing:&lt;div class="highlight"&gt;&lt;pre&gt;root@raspberrypi:~# knife configure -i
+&lt;li&gt;Testing:&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@raspberrypi:~# knife configure -i
 WARNING: No knife configuration file found
 Where should I put the config file? [/root/.chef/knife.rb] 
 Please enter the chef server URL: [http://raspberrypi:4000] http://CHEF_SERVER_IP:4000
@@ -981,7 +1070,7 @@ root@raspberrypi:~#
 when installing chef-server via deb packages&lt;/a&gt;. I got errors when
 launching commands &lt;code&gt;knife client create&lt;/code&gt; or &lt;code&gt;knife client reregister&lt;/code&gt;,
 with following message in &lt;code&gt;rabbitmq&lt;/code&gt; log:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;=ERROR REPORT==== 4-Jun-2012::14:56:01 ===
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;=ERROR REPORT==== 4-Jun-2012::14:56:01 ===
 exception on TCP connection &amp;lt;0.583.0&amp;gt; from 127.0.0.1:34143
 {channel0_error,starting,
     {amqp_error,access_refused,
@@ -991,10 +1080,10 @@ exception on TCP connection &amp;lt;0.583.0&amp;gt; from 127.0.0.1:34143
 
 
 &lt;p&gt;Fix consists in executing the following commands:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo rabbitmqctl add_vhost /chef
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo rabbitmqctl add_user chef PASSWORD_PER_CONFIGURATION
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo rabbitmqctl set_permissions -p /chef chef &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Chef"></category><category term="Raspberry Pi"></category><category term="Raspbian"></category></entry><entry><title>Data management</title><link href="http://www.florentflament.com/blog/data-management.html" rel="alternate"></link><updated>2014-02-27T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-02-27:blog/data-management.html</id><summary type="html">&lt;p&gt;When using several computers (or devices) from different locations,
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo rabbitmqctl add_vhost /chef
+$ sudo rabbitmqctl add_user chef PASSWORD_PER_CONFIGURATION
+$ sudo rabbitmqctl set_permissions -p /chef chef &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Chef"></category><category term="Raspberry Pi"></category><category term="Raspbian"></category></entry><entry><title>Data management</title><link href="http://www.florentflament.com/blog/data-management.html" rel="alternate"></link><published>2014-02-27T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-02-27:blog/data-management.html</id><summary type="html">&lt;p&gt;When using several computers (or devices) from different locations,
 the question of data management arises. Basically, I wish being able
 to access my data from any computer; I wish my data to be protected,
 accordingly to its privacy and I wish my data to be backed up
@@ -1088,7 +1177,7 @@ into.&lt;/p&gt;
   if the data is stolen, it cannot be read. Backup has to be done
   locally.&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ul&gt;</summary><category term="Data management"></category></entry><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><updated>2013-12-15T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-12-15:blog/znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
+&lt;/ul&gt;</summary><category term="Data management"></category></entry><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><published>2013-12-15T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-12-15:blog/znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
 channels and log conversations while one isn't connected. This note
 desrcibes how to launch ZNC in a &lt;a href="https://www.docker.io/"&gt;Docker&lt;/a&gt; container, so that it be
 launched on any Docker enabled platform. To quick start with Docker,
@@ -1098,7 +1187,7 @@ Linux&lt;/a&gt; (for instance in a VM).&lt;/p&gt;
 &lt;p&gt;Once Docker is installed on the system, we can prepare an image that
 will be used to run ZNC with the following &lt;code&gt;Dockerfile&lt;/code&gt; (Docker
 configuration file):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;FROM ubuntu:precise
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM ubuntu:precise
 MAINTAINER Florent Flament
 
 # Using fr ubuntu mirrors and adding universe repository, to install znc
@@ -1121,22 +1210,22 @@ USER daemon
 &lt;p&gt;Let's assume that the &lt;code&gt;Dockerfile&lt;/code&gt; is stored in the &lt;code&gt;znc-noconf&lt;/code&gt;
 directory. We can build the ZNC ready image with the following
 command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker build -t znc:noconf znc-noconf/
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker build -t znc:noconf znc-noconf/
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;The next step is to configure ZNC. The following command will run the
 configuration wizard in a new container based on the previously
 generated image:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -i -t znc:noconf -d /var/znc -c
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker run -i -t znc:noconf -d /var/znc -c
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;After having answered to all the questions, ZNC will generate its
 configuration files. It will then be ready to run in daemon mode. Now
 we can save a Docker image including ZNC's configuration files.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ CONT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;docker ps -a &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="s2"&gt;&amp;quot;minutes ago&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; head -1 &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $1}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;docker commit &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nv"&gt;CONT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;docker ps -a &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="s2"&gt;&amp;quot;minutes ago&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; head -1 &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $1}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+$ docker commit &lt;span class="se"&gt;\&lt;/span&gt;
 &amp;gt; -run&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;{&amp;quot;Cmd&amp;quot;: [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;quot;, &amp;quot;/var/znc/&amp;quot;], &amp;quot;User&amp;quot;: &amp;quot;daemon&amp;quot;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 &amp;gt; &lt;span class="nv"&gt;$CONT&lt;/span&gt; znc:ready
 &lt;/pre&gt;&lt;/div&gt;
@@ -1146,7 +1235,7 @@ we can save a Docker image including ZNC's configuration files.&lt;/p&gt;
 ZNC in a new container, the following command will map the host's 6697
 TCP port on the container's 6697 port (assuming that ZNC has been
 configured to listen to port 6697).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -d -p 6697:6697 znc:ready
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker run -d -p 6697:6697 znc:ready
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1155,7 +1244,7 @@ configured to listen to port 6697).&lt;/p&gt;
 &lt;code&gt;znc.conf&lt;/code&gt; configuration file. One has to create a directory (for
 instance &lt;code&gt;myznc/&lt;/code&gt;) containing both: &lt;code&gt;znc.conf&lt;/code&gt; and a &lt;code&gt;Dockerfile&lt;/code&gt;, with
 the following content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;FROM ubuntu:precise
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM ubuntu:precise
 MAINTAINER Florent Flament
 
 # Using fr ubuntu mirrors and adding universe repository, to install znc
@@ -1183,15 +1272,15 @@ CMD [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;
 
 
 &lt;p&gt;Then the ZNC container can be launched right after having built the image:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;docker build -t znc:myznc myznc/
-&lt;span class="nv"&gt;$ &lt;/span&gt;docker run -d -p 6697:6697 znc:myznc
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker build -t znc:myznc myznc/
+$ docker run -d -p 6697:6697 znc:myznc
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;Update 2014/02/25&lt;/h2&gt;
 &lt;p&gt;Here's an example of ZNC configuration file listening for SSL incoming
 connexions:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;Listener4  = +6697
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Listener4  = +6697
 
 &lt;span class="nt"&gt;&amp;lt;User&lt;/span&gt; &lt;span class="err"&gt;USER1&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
         Pass       = PASSWORDHASHHERE
@@ -1228,7 +1317,7 @@ connexions:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;PASSWORDHASHHERE&lt;/code&gt; can be generated by using &lt;code&gt;znc -s&lt;/code&gt;. IRC clients
 (like xchat) have to be set up by specifying in the "Server Password"
 field a user's credentials &lt;code&gt;&amp;lt;user&amp;gt;:&amp;lt;password&amp;gt;&lt;/code&gt; (i.e
-USER1:PASSORDHASHHERE).&lt;/p&gt;</summary><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><updated>2013-11-30T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-30:blog/ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
+USER1:PASSORDHASHHERE).&lt;/p&gt;</summary><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><published>2013-11-30T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-30:blog/ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
 system is quite forward. The installer asks you a few question about
 your country, keyboard, network, ... . Then it installs all the
 required packages on the system, and makes it bootable.&lt;/p&gt;
@@ -1252,7 +1341,7 @@ configure the system, without the need to ask any question.&lt;/p&gt;
 &lt;p&gt;Here's my generic &lt;a href="http://www.florentflament.com/blog/static/preseed.cfg"&gt;preseed.cfg&lt;/a&gt; file. It is a mix of &lt;a href="http://www.debian.org/releases/squeeze/example-preseed.txt"&gt;Debian's
 example-preseed&lt;/a&gt; file and parameters gathered using Debian's
 suggested method after a manual installation:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;debconf-get-selections --installer &amp;gt; file
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;debconf-get-selections --installer &amp;gt; file
 debconf-get-selections &amp;gt;&amp;gt; file
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -1260,7 +1349,7 @@ debconf-get-selections &amp;gt;&amp;gt; file
 &lt;p&gt;The password for the &lt;code&gt;vmuser&lt;/code&gt; user has to be set, by changing the
 current CRACKMECRACKM encrypted password to a valid one. A valid
 crypted password can be generated with the following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;python -c &lt;span class="s1"&gt;&amp;#39;from crypt import crypt; print crypt(&amp;quot;MYPASSWORD&amp;quot;, &amp;quot;SALT&amp;quot;)&amp;#39;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python -c &lt;span class="s1"&gt;&amp;#39;from crypt import crypt; print crypt(&amp;quot;MYPASSWORD&amp;quot;, &amp;quot;SALT&amp;quot;)&amp;#39;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1269,19 +1358,19 @@ crypted password can be generated with the following command:&lt;/p&gt;
 &lt;p&gt;Then we need to create an empty disk that will be used to install the
 system. A 5GB disk should be enough for a minimal Ubuntu installation
 (depending on one's requirements).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;qemu-img create vm.qcow2 5G
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;qemu-img create vm.qcow2 5G
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;virt-install&lt;/h2&gt;
 &lt;p&gt;Installing Ubuntu Precise on a VM can now be launched with the
 following unique command (to be customized):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;virt-install &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virt-install &lt;span class="se"&gt;\&lt;/span&gt;
 --name vm &lt;span class="se"&gt;\&lt;/span&gt;
 --ram &lt;span class="m"&gt;128&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 --location http://fr.archive.ubuntu.com/ubuntu/dists/precise-proposed/main/installer-i386/ &lt;span class="se"&gt;\&lt;/span&gt;
 --disk vm.qcow2,bus&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
---graphics vnc,keymap&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;local&lt;/span&gt;,listen&lt;span class="o"&gt;=&lt;/span&gt;0.0.0.0,port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5900&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+--graphics vnc,keymap&lt;span class="o"&gt;=&lt;/span&gt;local,listen&lt;span class="o"&gt;=&lt;/span&gt;0.0.0.0,port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5900&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 --network user,model&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
 --initrd-inject preseed.cfg
 &lt;/pre&gt;&lt;/div&gt;
@@ -1291,7 +1380,7 @@ following unique command (to be customized):&lt;/p&gt;
 of the standard &lt;code&gt;precise&lt;/code&gt;. It addresses a &lt;a href="https://bugs.launchpad.net/ubuntu/+source/net-retriever/+bug/1067934"&gt;bug that makes the
 installation freeze for 10+ minutes&lt;/a&gt; during the components download
 phase.&lt;/p&gt;
-&lt;p&gt;After some 30 minutes the system installation should be completed.&lt;/p&gt;</summary><category term="Ubuntu"></category><category term="KVM"></category><category term="libvirt"></category></entry><entry><title>Macmini2,1 Linux dual boot</title><link href="http://www.florentflament.com/blog/macmini21-linux-dual-boot.html" rel="alternate"></link><updated>2013-11-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-03:blog/macmini21-linux-dual-boot.html</id><summary type="html">&lt;p&gt;While online resources provide documentation about &lt;a href="https://wiki.debian.org/MacMiniIntel"&gt;how to install
+&lt;p&gt;After some 30 minutes the system installation should be completed.&lt;/p&gt;</summary><category term="Ubuntu"></category><category term="KVM"></category><category term="libvirt"></category></entry><entry><title>Macmini2,1 Linux dual boot</title><link href="http://www.florentflament.com/blog/macmini21-linux-dual-boot.html" rel="alternate"></link><published>2013-11-03T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-03:blog/macmini21-linux-dual-boot.html</id><summary type="html">&lt;p&gt;While online resources provide documentation about &lt;a href="https://wiki.debian.org/MacMiniIntel"&gt;how to install
 Linux on a Mac Mini&lt;/a&gt;, this guide focuses on the Apple Macmini2,1
 and its peculiarities. Please refer to &lt;a href="http://en.wikipedia.org/wiki/Macmini#Specifications"&gt;these tables&lt;/a&gt; to properly
 identify your hardware.&lt;/p&gt;
@@ -1322,7 +1411,7 @@ OS, by resizing the partition. The &lt;code&gt;diskutil&lt;/code&gt; command all
 that. In a shell, we have to launch the following command (where 20G
 means that we want to let 20 Gigabytes to our OS X partition. One may
 split the disk capacity according to its requirements):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo diskutil resizeVolume disk0s2 20G
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo diskutil resizeVolume disk0s2 20G
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1340,7 +1429,7 @@ mounted as /).&lt;/p&gt;
 &lt;p&gt;Once the Linux installation is finished, reboot and use rEFit
 &lt;code&gt;Partition Tool&lt;/code&gt; to resync GPT / MBR tables. Then boot back to MacOS
 and use its &lt;code&gt;bless&lt;/code&gt; tool to make the new OS bootable:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo bless --device /dev/disk0s4 -setBoot
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo bless --device /dev/disk0s4 -setBoot
 &lt;/pre&gt;&lt;/div&gt;
 
 

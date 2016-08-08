@@ -98,8 +98,6 @@
                                         title="Permalink to Setting Keystone v3 domains">
                                         Setting Keystone v3 domains
                                 </a>
-<a href="http://twitter.com/share" class="twitter-share-button"
-   data-count="horizontal" data-via="florentflament_">Tweet</a>
                         </h1>
                 </header>
                 <div class="entry-content">
@@ -138,7 +136,7 @@ the <a href="https://github.com/openstack/keystone/blob/master/etc/policy.json">
 <ul>
 <li>
 <p>With the <code>admin</code> user we can create the <code>admin_domain</code>.</p>
-<div class="highlight"><pre><span class="nv">ADMIN_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+<div class="highlight"><pre><span></span><span class="nv">ADMIN_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
     -s <span class="se">\</span>
     -i <span class="se">\</span>
@@ -192,7 +190,7 @@ curl http://localhost:5000/v3/domains <span class="se">\</span>
 <li>
 <p>Then we can create our <code>cloud_admin</code> user, within the <code>admin_domain</code>
   domain.</p>
-<div class="highlight"><pre><span class="nv">ID_CLOUD_ADMIN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+<div class="highlight"><pre><span></span><span class="nv">ID_CLOUD_ADMIN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/users <span class="se">\</span>
     -s <span class="se">\</span>
     -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
@@ -216,7 +214,7 @@ curl http://localhost:5000/v3/users <span class="se">\</span>
 <li>
 <p>And we grant to our user <code>cloud_admin</code> the <code>admin</code> role on domain
   <code>admin_domain</code>.</p>
-<div class="highlight"><pre><span class="nv">ADMIN_ROLE_ID</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+<div class="highlight"><pre><span></span><span class="nv">ADMIN_ROLE_ID</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/roles?name<span class="o">=</span>admin <span class="se">\</span>
     -s <span class="se">\</span>
     -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
@@ -243,7 +241,7 @@ curl http://localhost:5000/v3/domains/<span class="si">${</span><span class="nv"
   <code>admin_domain_id</code> by the ID of the <code>admin_domain</code> we just
   created. Locate the <code>policy.v3cloudsample.json</code> file into the <code>etc</code>
   directory of Keystone's source.</p>
-<div class="highlight"><pre>sed s/admin_domain_id/<span class="si">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="si">}</span>/ <span class="se">\</span>
+<div class="highlight"><pre><span></span>sed s/admin_domain_id/<span class="si">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="si">}</span>/ <span class="se">\</span>
     &lt; policy.v3cloudsample.json <span class="se">\</span>
     &gt; /etc/keystone/policy.json
 </pre></div>
@@ -263,7 +261,7 @@ authenticate with the <code>cloud_admin</code> user created above.</p>
 <ul>
 <li>
 <p>Getting a token scoped on the <code>admin_domain</code>, for user <code>cloud_admin</code>.</p>
-<div class="highlight"><pre><span class="nv">CLOUD_ADMIN_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+<div class="highlight"><pre><span></span><span class="nv">CLOUD_ADMIN_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
     -s <span class="se">\</span>
     -i <span class="se">\</span>
@@ -298,7 +296,7 @@ curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
 </li>
 <li>
 <p>Creating domains <code>dom1</code> and <code>dom2</code>.</p>
-<div class="highlight"><pre><span class="nv">ID_DOM1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+<div class="highlight"><pre><span></span><span class="nv">ID_DOM1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/domains <span class="se">\</span>
     -s <span class="se">\</span>
     -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$CLOUD_ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
@@ -333,7 +331,7 @@ curl http://localhost:5000/v3/domains <span class="se">\</span>
 </li>
 <li>
 <p>Now we will create a user <code>adm1</code> in domain <code>dom1</code>.</p>
-<div class="highlight"><pre><span class="nv">ID_ADM1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+<div class="highlight"><pre><span></span><span class="nv">ID_ADM1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/users <span class="se">\</span>
     -s <span class="se">\</span>
     -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$CLOUD_ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
@@ -357,7 +355,7 @@ curl http://localhost:5000/v3/users <span class="se">\</span>
 <li>
 <p>We will also grant the <code>admin</code> role on domain <code>dom1</code> to this <code>adm1</code>
   user.</p>
-<div class="highlight"><pre>curl -X PUT http://localhost:5000/v3/domains/<span class="si">${</span><span class="nv">ID_DOM1</span><span class="si">}</span>/users/<span class="si">${</span><span class="nv">ID_ADM1</span><span class="si">}</span>/roles/<span class="si">${</span><span class="nv">ADMIN_ROLE_ID</span><span class="si">}</span> <span class="se">\</span>
+<div class="highlight"><pre><span></span>curl -X PUT http://localhost:5000/v3/domains/<span class="si">${</span><span class="nv">ID_DOM1</span><span class="si">}</span>/users/<span class="si">${</span><span class="nv">ID_ADM1</span><span class="si">}</span>/roles/<span class="si">${</span><span class="nv">ADMIN_ROLE_ID</span><span class="si">}</span> <span class="se">\</span>
     -s <span class="se">\</span>
     -i <span class="se">\</span>
     -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$CLOUD_ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
@@ -378,7 +376,7 @@ not being able to access resources of domain <code>dom2</code>.</p>
 <ul>
 <li>
 <p>Now we authenticate as user <code>adm1</code> with a scope on <code>dom1</code>.</p>
-<div class="highlight"><pre><span class="nv">ADM1_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+<div class="highlight"><pre><span></span><span class="nv">ADM1_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
     -s <span class="se">\</span>
     -i <span class="se">\</span>
@@ -413,7 +411,7 @@ curl http://localhost:5000/v3/auth/tokens <span class="se">\</span>
 </li>
 <li>
 <p>We create a project <code>prj1</code> in domain <code>dom1</code>.</p>
-<div class="highlight"><pre><span class="nv">ID_PRJ1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+<div class="highlight"><pre><span></span><span class="nv">ID_PRJ1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/projects <span class="se">\</span>
     -s <span class="se">\</span>
     -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADM1_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
@@ -434,7 +432,7 @@ curl http://localhost:5000/v3/projects <span class="se">\</span>
 </li>
 <li>
 <p>When trying and creating a project in domain <code>dom2</code>, it fails.</p>
-<div class="highlight"><pre>curl http://localhost:5000/v3/projects <span class="se">\</span>
+<div class="highlight"><pre><span></span>curl http://localhost:5000/v3/projects <span class="se">\</span>
     -s <span class="se">\</span>
     -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADM1_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
@@ -452,7 +450,7 @@ curl http://localhost:5000/v3/projects <span class="se">\</span>
 </li>
 <li>
 <p>Creating a standard user <code>usr1</code> in domain <code>dom1</code>, with default project <code>prj1</code>.</p>
-<div class="highlight"><pre><span class="nv">ID_USR1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+<div class="highlight"><pre><span></span><span class="nv">ID_USR1</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/users <span class="se">\</span>
     -s <span class="se">\</span>
     -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADM1_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
@@ -476,7 +474,7 @@ curl http://localhost:5000/v3/users <span class="se">\</span>
 </li>
 <li>
 <p>Granting <code>Member</code> role to user <code>usr1</code> on project <code>prj1</code>.</p>
-<div class="highlight"><pre><span class="nv">MEMBER_ROLE_ID</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
+<div class="highlight"><pre><span></span><span class="nv">MEMBER_ROLE_ID</span><span class="o">=</span><span class="k">$(</span><span class="se">\</span>
 curl http://localhost:5000/v3/roles?name<span class="o">=</span>Member <span class="se">\</span>
     -s <span class="se">\</span>
     -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADM1_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
@@ -500,20 +498,6 @@ curl http://localhost:5000/v3/projects/<span class="si">${</span><span class="nv
 a user <code>usr1</code> member of the project. <code>usr1</code> can now get a token scoped
 on <code>prj1</code> and manage resources into this project.</p>
                 </div><!-- /.entry-content -->
-                <div class="comments">
-                <h2>Comments !</h2>
-                        <div id="disqus_thread"></div>
-                        <script type="text/javascript">
-                           var disqus_identifier = "setting-keystone-v3-domains.html";
-                           (function() {
-                                var dsq = document.createElement('script');
-                                dsq.type = 'text/javascript'; dsq.async = true;
-                                dsq.src = 'http://florentflament.disqus.com/embed.js';
-                                (document.getElementsByTagName('head')[0] ||
-                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
-                          })();
-                        </script>
-                </div>
         </article>
 </section>
         </div><!--/span-->
@@ -521,10 +505,7 @@ on <code>prj1</code> and manage resources into this project.</p>
                 <div class="span3 well sidebar-nav" id="sidebar">
 <ul class="nav nav-list">
 <li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
-    <li><a href="http://adam.younglogic.com/"><i class="icon-external-link"></i>Adam Young's Web Log</a></li>
     <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
-    <li><a href="http://dev.cloudwatt.com/en/blog/"><i class="icon-external-link"></i>Cloudwatt's Tech Blog</a></li>
-    <li><a href="http://www.jamielennox.net/"><i class="icon-external-link"></i>Jamie Lennox's Blog</a></li>
     <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
 
 <li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
@@ -540,171 +521,7 @@ on <code>prj1</code> and manage resources into this project.</p>
 </li>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-4">
-    <a href="./tag/raspbian.html">
-        <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/irc.html">
-        <i class="icon-tag icon-large"></i>IRC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ring.html">
-        <i class="icon-tag icon-large"></i>Ring
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/raspberry-pi.html">
-        <i class="icon-tag icon-large"></i>Raspberry Pi
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/operations.html">
-        <i class="icon-tag icon-large"></i>operations
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/printers.html">
-        <i class="icon-tag icon-large"></i>Printers
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
 
-<li class="nav-header">
-<a href="https://twitter.com/florentflament_" class="twitter-follow-button" data-show-count="false">Follow @florentflament_</a>
-</li>
-<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 
 </ul>        </div><!--/.well -->
 
@@ -721,24 +538,6 @@ on <code>prj1</code> and manage resources into this project.</p>
     </div><!--/.fluid-container-->
 
 
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-	var pageTracker = _gat._getTracker("UA-23791515-4");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<script type="text/javascript">
-    var disqus_shortname = 'florentflament';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
 
     <!-- Le javascript -->
     <!-- Placed at the end of the document so the pages load faster -->
