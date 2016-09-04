@@ -8,6 +8,9 @@ SITEURL = 'http://www.florentflament.com/blog'
 
 STATIC_PATHS = ['images', 'static']
 
+PLUGIN_PATHS = ["plugins"]
+PLUGINS = ["tag_cloud"]
+
 TIMEZONE = 'Europe/Paris'
 
 DEFAULT_LANG = u'en'
@@ -32,3 +35,10 @@ DEFAULT_PAGINATION = 5
 RELATIVE_URLS = True
 
 THEME = "theme/"
+
+
+# tag_cloud configuration
+TAG_CLOUD_STEPS = 4
+TAG_CLOUD_MAX_ITEMS = 100
+TAG_CLOUD_SORTING = 'alphabetically'
+TAG_CLOUD_BADGE = False
