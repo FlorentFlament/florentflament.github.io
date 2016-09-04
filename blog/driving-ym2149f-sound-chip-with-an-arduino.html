@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Driving YM2149F sound chip with an Arduino</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Florent Flament">
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="./theme/css/bootstrap.min.css" type="text/css" />
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .tag-1 {
+        font-size: 13pt;
+      }
+      .tag-2 {
+        font-size: 10pt;
+      }
+      .tag-2 {
+        font-size: 8pt;
+      }
+      .tag-4 {
+        font-size: 6pt;
+     }
+    </style>
+    <link href="./theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="./theme/css/font-awesome.css" rel="stylesheet">
+
+    <link href="./theme/css/pygments.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="./theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="./theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./theme/images/apple-touch-icon-114x114.png">
+
+    <link href="./" type="application/atom+xml" rel="alternate" title="Florent Flament's Tech Blog ATOM Feed" />
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="./index.html">Florent Flament's Tech Blog </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+                          <li class="divider-vertical"></li>
+                  <li class="active">
+                    <a href="./category/misc.html">
+						<i class="icon-folder-open icon-large"></i>misc
+					</a>
+                  </li>
+                  <li >
+                    <a href="./category/openstack.html">
+						<i class="icon-folder-open icon-large"></i>OpenStack
+					</a>
+                  </li>
+
+                          <ul class="nav pull-right">
+                                <li><a href="./archives.html"><i class="icon-th-list"></i>Archives</a></li>
+                          </ul>
+
+            </ul>
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="span9" id="content">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to Driving YM2149F sound chip with an Arduino">
+                                        Driving YM2149F sound chip with an Arduino
+                                </a>
+<a href="http://twitter.com/share" class="twitter-share-button"
+   data-count="horizontal" data-via="florentflament_">Tweet</a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2016-09-03T00:00:00+02:00">
+        <i class="icon-calendar"></i>Sat 03 September 2016
+</abbr>
+<span class="label">By</span>
+<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
+<span class="label">Category</span>
+<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
+
+
+<span class="label">Tags</span>
+	<a href="./tag/arduino.html"><i class="icon-tag"></i>Arduino</a>
+	<a href="./tag/ym2149.html"><i class="icon-tag"></i>YM2149</a>
+	<a href="./tag/ym2149f.html"><i class="icon-tag"></i>YM2149F</a>
+	<a href="./tag/ay-3-8910.html"><i class="icon-tag"></i>AY-3-8910</a>
+</footer><!-- /.post-info -->                </div>
+                <p>A few months ago, I had the opportunity to get a Yamaha YM2149F
+chip. This chip is basically a clone of <a href="https://en.wikipedia.org/wiki/General_Instrument_AY-3-8910">General Instrument's
+AY-3-8910</a>, "a 3 voices programmable sound generator" widely used
+in the 80's in many arcade games and home computers (including the
+Atari ST and Amstrad CPC).</p>
+<p>The YM2149F chip (and its clones) can be found easily online, on
+auction websites. The challenge is then to be able to drive the chip
+and play some music with it. There are several blog posts out there
+describing circuits to have the chip driven by a PC.</p>
+<p>The blog post <a href="https://electronicfields.wordpress.com/2012/04/09/ym2149-sound-generator-arduino-fast-pin-switching/">YM2149 sound generator, Arduino and fast pin switching,
+from Mr Megahertz</a> has been very inspirational for this work. It
+contains a lot useful information. On the other hand, by programming
+the Arduino without using the provided SDK (as described on the
+<a href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html">Arduino Hello World without IDE</a> blog post), we don't have any
+issue to switch BDIR and BC1 signals simultaneously.</p>
+<h2>The circuit</h2>
+<p>After many experiments, I came out with a simple circuit composed of:</p>
+<ul>
+<li>A Yamaha YM2149F</li>
+<li>An Arduino Uno board (or clone)</li>
+<li>4 resistors (3&times;1K + 1&times;100 Ohms)</li>
+<li>A mini jack female connector</li>
+<li>A breadboard</li>
+<li>A few wires</li>
+</ul>
+<p>Here's a picture of the circuit:</p>
+<p><img src="static/ym2149-arduino-picture.png" alt="YM2149 - Arduino circuit picture"/></p>
+<p>The corresponding schematic follows:</p>
+<p><img src="static/ym2149-arduino-schematic.png" alt="YM2149 - Arduino circuit picture"/></p>
+<p>Note that we don't need to use a dedicated oscillator for the
+YM2149F. We can generate the required 2MHz clock with the Atmega328P
+on the Arduino board.</p>
+<h2>The output stage</h2>
+<p>I made a lot of experiments on the output stage. The 4 resistors
+between the 3 YM2149F outputs and the line output is a good
+compromise. This forms a <a href="https://en.wikipedia.org/wiki/Electronic_mixer">passive mixer</a>, which significantly
+improves the quality of the sound compared to the 1 resistor stage
+that can be found in most YM2149 circuits available online. The lower
+the value of RL, the less distortion we have on the output, but the
+lower the signal strength. I found that 100 ohms is a good
+compromise. In that case, the load perceived from an output of the
+YM2149F fluctuates between 1.1 and 1.6 kOhms, depending on the values
+of the other channels (if my computations as correct). And according
+to the <a href="http://www.ym2149.com/ym2149.pdf">YM2149 datasheet</a> page 9, the expected load for a YM2149
+output is 1kOhms. The distortion comes from the fact that the
+equivalent resistance seen from a YM2149F output channel is dependent
+on the other channels. The sound may be further improved by using an
+active mixer, including an operational amplifier (To be tested some
+day).</p>
+<h2>Testing the circuit</h2>
+<p>The <a href="https://github.com/FlorentFlament/ym2149-test">code to drive the YM2149F from the Arduino</a> is available on
+GitHub. One can compile and upload the code to the Arduino by
+following the instructions of the <a href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html">Arduino Hello World without IDE</a>
+post. The code will have the YM2149F play continuously the C major
+gamut. This code can be freely reused, especially the <code>ym2149</code>
+library, which allows to drive the YM2149F chip.</p>
+<p>Note that in order to have the ym2149-test binary work on a circuit,
+one has to follow the connections described on the schematic above.</p>
+<h2>What next</h2>
+<p>I will soon publish the Arduino code together with some PC side code
+to have <a href="http://leonard.oxg.free.fr/ymformat.html">YM files</a> streamed to the YM2149F chip.</p>
+                </div><!-- /.entry-content -->
+                <div class="comments">
+                <h2>Comments !</h2>
+                        <div id="disqus_thread"></div>
+                        <script type="text/javascript">
+                           var disqus_identifier = "driving-ym2149f-sound-chip-with-an-arduino.html";
+                           (function() {
+                                var dsq = document.createElement('script');
+                                dsq.type = 'text/javascript'; dsq.async = true;
+                                dsq.src = 'http://florentflament.disqus.com/embed.js';
+                                (document.getElementsByTagName('head')[0] ||
+                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
+                          })();
+                        </script>
+                </div>
+        </article>
+</section>
+        </div><!--/span-->
+
+                <div class="span3 well sidebar-nav" id="sidebar">
+<ul class="nav nav-list">
+<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
+    <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
+    <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
+
+<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
+<li>
+<a href="./category/misc.html">
+    <i class="icon-folder-open icon-large"></i>misc
+</a>
+</li>
+<li>
+<a href="./category/openstack.html">
+    <i class="icon-folder-open icon-large"></i>OpenStack
+</a>
+</li>
+
+<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
+
+<li class="nav-header">
+<a href="https://twitter.com/florentflament_" class="twitter-follow-button" data-show-count="false">Follow @florentflament_</a>
+</li>
+<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+
+</ul>        </div><!--/.well -->
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <address id="about">
+        </address><!-- /#about -->
+        <p>Powered by <a href="http://blog.getpelican.com/">Pelican<i class="icon-external-link"></i></a></p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+	var pageTracker = _gat._getTracker("UA-23791515-4");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<script type="text/javascript">
+    var disqus_shortname = 'florentflament';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+
+    <!-- Le javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./theme/js/jquery-1.7.2.min.js"></script>
+    <script src="./theme/js/bootstrap.min.js"></script>
+  </body>
+</html>
