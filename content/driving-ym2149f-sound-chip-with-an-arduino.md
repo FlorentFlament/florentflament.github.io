@@ -80,8 +80,9 @@ one has to follow the connections described on the schematic above.
 What next
 ---------
 
-I will soon publish the Arduino code together with some PC side code
-to have [YM files][7] streamed to the YM2149F chip.
+The next blog post describes how to have [YM files streamed to the
+YM2149F chip][7]. Besides, a video of my [YM2149F chip playing some
+tune][8] is available online.
 
 
 [1]: https://en.wikipedia.org/wiki/General_Instrument_AY-3-8910
@@ -90,4 +91,5 @@ to have [YM files][7] streamed to the YM2149F chip.
 [4]: http://www.ym2149.com/ym2149.pdf
 [5]: https://en.wikipedia.org/wiki/Electronic_mixer
 [6]: https://github.com/FlorentFlament/ym2149-test
-[7]: http://leonard.oxg.free.fr/ymformat.html
+[7]: http://www.florentflament.com/blog/streaming-music-to-ym2149f.html
+[8]: https://www.youtube.com/watch?v=MTRJdDbY048
