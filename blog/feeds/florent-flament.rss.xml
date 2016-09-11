@@ -1,5 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Florent Flament's Tech Blog</title><link>http://www.florentflament.com/blog/</link><description></description><atom:link href="http://www.florentflament.com/blog/feeds/florent-flament.rss.xml" rel="self"></atom:link><lastBuildDate>Sat, 03 Sep 2016 00:00:00 +0200</lastBuildDate><item><title>Driving YM2149F sound chip with an Arduino</title><link>http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html</link><description>&lt;p&gt;A few months ago, I had the opportunity to get a Yamaha YM2149F
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Florent Flament's Tech Blog</title><link>http://www.florentflament.com/blog/</link><description></description><atom:link href="http://www.florentflament.com/blog/feeds/florent-flament.rss.xml" rel="self"></atom:link><lastBuildDate>Sat, 10 Sep 2016 00:00:00 +0200</lastBuildDate><item><title>Streaming music to YM2149F</title><link>http://www.florentflament.com/blog/streaming-music-to-ym2149f.html</link><description>&lt;p&gt;To follow-up on my previous blog post about &lt;a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html"&gt;driving a YM2149F chip
+with an Arduino&lt;/a&gt;, I wrote an Arduino firmware that can be used
+together with a PC side Python script to send music to the
+YM2149F. All the code is available in the &lt;a href="https://github.com/FlorentFlament/ym2149-streamer"&gt;ym2149-streamer
+repository&lt;/a&gt; on GitHub.&lt;/p&gt;
+&lt;h2&gt;Arduino Firmware&lt;/h2&gt;
+&lt;p&gt;The first piece of code is the firmware. This is the code that runs in
+the Arduino and drives the YM2149 chip. Most of the code is in the
+&lt;code&gt;ym2149&lt;/code&gt; library, which exports functions such as &lt;code&gt;send_data(char
+addr, char data)&lt;/code&gt; to write in the YM2149 registers, while complying
+with the signals timings specified in the &lt;a href="http://www.ym2149.com/ym2149.pdf"&gt;YM2149 datasheet&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Basically, the firmware continuously reads the Arduino serial
+line. Each time it has received 16 bytes, the firmware uses them to
+set the 16 YM2149 registers (To be more precise only the first 14
+registers are used, the 2 last registers are useless to play music).&lt;/p&gt;
+&lt;p&gt;Note that this code is specific to the circuit, and depends on how the
+Arduino is wired to the YM2149. It has been written for (and tested
+with) the circuit described in the blog post about &lt;a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html"&gt;driving the YM2149
+from an Arduino&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To flash the Arduino with the firmware:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;clone the &lt;a href="https://github.com/FlorentFlament/ym2149-streamer"&gt;ym2149-streamer repository&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;and launch &lt;code&gt;make flash&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A couple of libraries need to be installed in order for the firmware
+to compile and be uploaded to the Arduino. To setup your environment,
+one can follow the instruction of the &lt;a href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html"&gt;Arduino Hello World without
+IDE&lt;/a&gt; blog post.&lt;/p&gt;
+&lt;h2&gt;Playing music from a computer&lt;/h2&gt;
+&lt;p&gt;What remains to be done, is sending to the Arduino, the values of the
+registers to be set in the YM2149. Here we can build on the &lt;a href="http://leonard.oxg.free.fr/ymformat.html"&gt;YM file
+format created by Arnaud Carré&lt;/a&gt;. The file format is quite straight
+forward. It contains a header providing all the required information
+about the tune, then a snapshot of the YM2149's 16 registers at
+regular intervals (usually 50 times per second). To play the tune, we
+have to send back the content of the YM2149 registers (sometimes
+referred as the samples) at the appropriate frequency.&lt;/p&gt;
+&lt;p&gt;I wrote a small Python script, available in the &lt;a href="https://github.com/FlorentFlament/ym2149-streamer"&gt;ym2149-streamer
+repository&lt;/a&gt;, that parses a YM file and sends it to the Arduino
+board. The syntax is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python streamer.py &amp;lt;output_device&amp;gt; &amp;lt;ym_filepath&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that &lt;code&gt;streamer.py&lt;/code&gt; may work with other circuits driving a
+YM2149. The only thing required is that the circuit be able to receive
+a stream of YM2149's registers snapshots and send it to the chip each
+time it receives a sample.&lt;/p&gt;
+&lt;p&gt;To illustrate this work, I published a video of the &lt;a href="https://www.youtube.com/watch?v=MTRJdDbY048"&gt;YM2149F playing
+Lemmings&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;A &lt;a href="http://pacidemo.planet-d.net/html.html"&gt;large YM tunes archive&lt;/a&gt; allows playing old school musics on the
+YM2149 chip. Note that the files in the zip archives are compressed
+with &lt;code&gt;lha&lt;/code&gt; (which can be installed through the Fedora &lt;code&gt;lha&lt;/code&gt;
+package). Therefore, one has to uncompress the &lt;code&gt;ym&lt;/code&gt; files before
+playing them with &lt;code&gt;streamer.py&lt;/code&gt;. I may try to handle the decompression
+directly in the script some day.&lt;/p&gt;
+&lt;p&gt;Besides, another &lt;a href="http://sndh.atari.org/"&gt;large archive of Atari ST music&lt;/a&gt; is around there,
+with a more dynamic community. Though the tunes are in the &lt;code&gt;sndh&lt;/code&gt;
+format, which is harder to interpret and stream to a YM2149 chip. A
+nice thing would be to find a way to have these &lt;code&gt;sndh&lt;/code&gt; files played on
+the sound chip!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Florent Flament</dc:creator><pubDate>Sat, 10 Sep 2016 00:00:00 +0200</pubDate><guid>tag:www.florentflament.com,2016-09-10:blog/streaming-music-to-ym2149f.html</guid><category>Arduino</category><category>YM2149</category><category>YM2149F</category><category>AY-3-8910</category></item><item><title>Driving YM2149F sound chip with an Arduino</title><link>http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html</link><description>&lt;p&gt;A few months ago, I had the opportunity to get a Yamaha YM2149F
 chip. This chip is basically a clone of &lt;a href="https://en.wikipedia.org/wiki/General_Instrument_AY-3-8910"&gt;General Instrument's
 AY-3-8910&lt;/a&gt;, "a 3 voices programmable sound generator" widely used
 in the 80's in many arcade games and home computers (including the
