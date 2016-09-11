@@ -118,8 +118,9 @@ library, which allows to drive the YM2149F chip.&lt;/p&gt;
 &lt;p&gt;Note that in order to have the ym2149-test binary work on a circuit,
 one has to follow the connections described on the schematic above.&lt;/p&gt;
 &lt;h2&gt;What next&lt;/h2&gt;
-&lt;p&gt;I will soon publish the Arduino code together with some PC side code
-to have &lt;a href="http://leonard.oxg.free.fr/ymformat.html"&gt;YM files&lt;/a&gt; streamed to the YM2149F chip.&lt;/p&gt;</summary><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Arduino Hello World without IDE</title><link href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html" rel="alternate"></link><published>2016-08-08T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-08-08:blog/arduino-hello-world-without-ide.html</id><summary type="html">&lt;p&gt;There is already a number of resources available about programming the
+&lt;p&gt;The next blog post describes how to have &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;YM files streamed to the
+YM2149F chip&lt;/a&gt;. Besides, a video of my &lt;a href="https://www.youtube.com/watch?v=MTRJdDbY048"&gt;YM2149F chip playing some
+tune&lt;/a&gt; is available online.&lt;/p&gt;</summary><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Arduino Hello World without IDE</title><link href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html" rel="alternate"></link><published>2016-08-08T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-08-08:blog/arduino-hello-world-without-ide.html</id><summary type="html">&lt;p&gt;There is already a number of resources available about programming the
 Arduino with or without the IDE (I won't discuss here the pros and
 cons of using it). This aims at being a quick memo for those who
 already have some knowledge about C programming, and just want the
