@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Customizing OpenStack RBAC policies</title>
+    <title>Playing SNDH on YM2149</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
@@ -64,12 +64,12 @@
           <div class="nav-collapse">
             <ul class="nav">
                           <li class="divider-vertical"></li>
-                  <li >
+                  <li class="active">
                     <a href="./category/misc.html">
 						<i class="icon-folder-open icon-large"></i>misc
 					</a>
                   </li>
-                  <li class="active">
+                  <li >
                     <a href="./category/openstack.html">
 						<i class="icon-folder-open icon-large"></i>OpenStack
 					</a>
@@ -95,8 +95,8 @@
                         <h1>
                                 <a href=""
                                         rel="bookmark"
-                                        title="Permalink to Customizing OpenStack RBAC policies">
-                                        Customizing OpenStack RBAC policies
+                                        title="Permalink to Playing SNDH on YM2149">
+                                        Playing SNDH on YM2149
                                 </a>
 <a href="http://twitter.com/share" class="twitter-share-button"
    data-count="horizontal" data-via="florentflament_">Tweet</a>
@@ -106,185 +106,144 @@
                 <div class="well">
 <footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2014-02-09T00:00:00+01:00">
-        <i class="icon-calendar"></i>Sun 09 February 2014
+<abbr class="published" title="2016-10-15T00:00:00+02:00">
+        <i class="icon-calendar"></i>Sat 15 October 2016
 </abbr>
 <span class="label">By</span>
 <a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
 <span class="label">Category</span>
-<a href="./category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
+<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
 
 
 <span class="label">Tags</span>
-	<a href="./tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
-	<a href="./tag/keystone.html"><i class="icon-tag"></i>Keystone</a>
-	<a href="./tag/policies.html"><i class="icon-tag"></i>Policies</a>
+	<a href="./tag/arduino.html"><i class="icon-tag"></i>Arduino</a>
+	<a href="./tag/atmega.html"><i class="icon-tag"></i>ATmega</a>
+	<a href="./tag/ym2149.html"><i class="icon-tag"></i>YM2149</a>
+	<a href="./tag/ym2149f.html"><i class="icon-tag"></i>YM2149F</a>
+	<a href="./tag/ay-3-8910.html"><i class="icon-tag"></i>AY-3-8910</a>
+	<a href="./tag/sndh.html"><i class="icon-tag"></i>SNDH</a>
 </footer><!-- /.post-info -->                </div>
-                <p>OpenStack uses a <a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac">role based access control</a> (RBAC) mechanism to
-manage accesses to its resources. With the current architecture,
-users' roles granted on each project and domain are stored into
-Keystone, and can be updated through <a href="http://api.openstack.org/api-ref-identity.html#identity-v3">Keystone's API</a>. However,
-policy enforcement (actually allowing or not the access to resources
-according to a user's roles) is performed independently in each
-service, based on the rules defined in each <code>policy.json</code> file.</p>
-<p>In a default OpenStack setup (like Devstack), two roles are created:</p>
+                <p>This is the sequel of the <a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html">Streaming music to YM2149</a> post. After
+playing YM chip tunes on the YM2149, I wanted to take profit from the
+<a href="http://sndh.atari.org/">super large database of SNDH files available online</a>, by being
+able to play these tunes on my YM2149. This has been possible with the
+help of <a href="https://sourceforge.net/projects/sc68/">the SC68 emulator</a>. <code>sc68</code> can interpret <code>sndh</code> files and
+generate a dump of the samples to be played on the chip. While most
+<code>sndh</code> files can be played by using the <a href="https://github.com/FlorentFlament/ym2149-sndh">ym2149-sndh firmware and
+scripts</a> available on GitHub, there are still a number of files
+that can't be played yet. This will be further discussed in the
+limitations section. A video of the <a href="https://www.youtube.com/watch?v=JjofS8wdNEY">ATmega playing a Relix tune on
+the YM2149</a> is available.</p>
+<h2>New hardware design</h2>
+<p>The previous circuit design described in <a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html">Driving YM2149F sound chip
+with an Arduino</a> would work for playing SNDH files. But I couldn't
+resist adding LEDs blinking in rhythm with the music played on the
+chip, hence this new design ; ). Since I am now using 2 timers to
+generate the 3 PWM signals used to light the LEDs + 1 timer to
+synchronize the samples, I added a 4 MHz oscillator feeding the YM2149
+to generate its output (I used 1 of the 3 timers available on the
+ATmega to generate a 2 MHz clock in my former design). Besides, I
+replaced the Uno with a Nano, which fits on the bread board.</p>
+<p>Hence this new schematic:</p>
+<p><img src="static/ym2149-schematic-v2.png" alt="YM2149 schematic V2"/></p>
+<p>And the much nicer circuit there:</p>
+<p><img src="static/ym2149-pic-v2.png" alt="YM2149 driven by Arduino Nano V2"/></p>
+<h2>Samples format</h2>
+<p>Though I am super happy with my brand new circuit, the biggest change
+is in the firmware running on the AVR. It contains more logic, because
+it bufferizes samples coming from the UART, and sends them to the
+YM2149 at the good timing.</p>
+<p>The current implementation is based on the following mechanism. A tune
+is sent to the YM2149/ATmega board as a stream of samples, where each
+sample has the following format:</p>
 <ul>
 <li>
-<p>The <code>Member</code> role, which when granted to a user on a project, allows
-  him to manage resources (instances, volumes, ...) in this project.</p>
+<p>2 bytes timestamp: This timestamp determines when the sample will be
+  sent to the YM2149. The value corresponds to a number of YM clock
+  cycles modulo 2^16. We can afford using a 2 bytes timestamp, because
+  what really matters is the timestamp difference between 2 successive
+  samples. This means that 2 samples can be theoretically spaced by 1
+  to 65536 YM clock cycles @2 MHz; so the maximum interval between 2
+  samples is 32 ms, corresponding to a minimum frequency of 31 Hz. This
+  is ok because most SNDH tunes refresh some registers at least at
+  50 Hz, and we can add empty samples if we really need.</p>
 </li>
 <li>
-<p>The <code>admin</code> role, which when granted to a user on any project,
-  offers to this user a total control over the whole OpenStack
-  platform. Although this is the current behavior, it has been <a href="https://bugs.launchpad.net/keystone/+bug/968696">marked
-  as a bug</a>.</p>
+<p>2 bytes per register to update (from 0 to 16 registers, though only
+  the 14 first registers are meaningful to play sound on the chip): 1
+  byte address, identifying the register to update; 1 byte value,
+  corresponding to the value that has to be stored at the address
+  specified right before</p>
+</li>
+<li>
+<p>1 'end of sample' byte (0xff): This byte indicates the end of a
+  sample.</p>
 </li>
 </ul>
-<p>However, the OpenStack policy engine allows operators to specify fine
-grained set of rules to control access to resources of each OpenStack
-service (Keystone, Nova, Cinder, ...).</p>
-<h2>Attributes available to build custom policies</h2>
-<p>Four types of attributes can be used to set policy rules:</p>
+<p>As a result, the smallest 'useful' sample is 5 bytes long for 1
+register update; a 2 registers update sample is 7 bytes long; and the
+longest sample is 31 bytes long (3 + 2*14, not considering registers
+15 &amp; 16).</p>
+<h2>Limitations</h2>
+<p>The bottleneck to play sndh tunes to the YM2149 chip is the speed at
+which we can update the chip's registers. New tunes use so called
+'digital' sounds, that may have intervals as small as 90 clock cycles
+(i.e 22 KHz).</p>
+<p>We have 2 limitations:</p>
 <ul>
 <li>
-<p>User roles, which can be checked by using the following syntax:</p>
-<div class="highlight"><pre><span></span>role:&lt;requires_role&gt;
-</pre></div>
-
-
+<p>The speed at which the AVR can get a sample from the UART and update
+  the YM2149 registers. Let's consider a 1 register sample of 5 bytes
+  length. With this implementation, the AVR needs around 150 AVR clock
+  cycles (@16 MHz) to transfer 1 byte from the UART to the buffer,
+  hence 750 clock cycles for 5 bytes. Then it needs some additional
+  300 clock cycles (rough estimate) to update the YM register from the
+  data stored in the buffer. Therefore, we need a total of 1050 clock
+  cycles @16 MHz per sample, corresponding to 131 clock cycles at 2
+  MHz, or 15 KHz max for digital sounds.</p>
 </li>
 <li>
-<p>Other user related attributes (stored into or obtained through the
-  token). The following attributes are available: user_id, domain_id
-  or project_id (depending on the scope), and can be checked against
-  constants or other attributes:</p>
-<div class="highlight"><pre><span></span>project_id:&lt;some_attribute&gt;
-</pre></div>
-
-
-</li>
-<li>
-<p>API call attributes are any data sent along with the API call. They
-  can be checked against constants or user attributes. For instance,
-  the following statement checks that a user being created is in the
-  same domain as his creator (note that API call attributes have to be
-  on the right side of the expression, while user attributes are on
-  the left side):</p>
-<div class="highlight"><pre><span></span>domain_id:user.domain_id
-</pre></div>
-
-
-</li>
-<li>
-<p>The fourth category of attributes are what I'd call contextual
-  attributes. These are the attributes of objects referenced (or
-  targeted) by an API call; i.e. any object whose id appear somewhere
-  in the API call. For instance, when granting a new role on a project
-  to a user, all attributes related to the role, the project and the
-  user are available to the policy engine, through the <code>target</code>
-  keyword. The following syntax checks that the role of the context is
-  the <code>Member</code> role:</p>
-<div class="highlight"><pre><span></span>&#39;Member&#39;:target.role.name
-</pre></div>
-
-
+<p>The UART speed. The ATmega328p together with the CH340 USB to serial
+  chip can transfer data at a 1 Mbps rate without error (There is a 2x
+  speed mode in the ATmega, but I incurred a significant amount of
+  errors on the data transferred at that speed). With 10 bits per
+  byte, the theoretical transfer rate is 100 KBytes/sec. In practice,
+  the maximum speed depends on the size of data blocks sent (processes
+  context switching on the OS is very expensive when doing I/Os with
+  small blocks). I reached around 60 KBytes/sec using a 1500 buffer in
+  the AVR. Considering 5 bytes per sample, we can stream samples at a
+  maximum speed of 12 KHz.</p>
 </li>
 </ul>
-<p>Depending on the type of API calls, some of the following attributes
-will be available, according to the objects impacted by the action:</p>
+<p>With this implementation and its corresponding limitations, we can
+play digital sounds at up to 12 KHz. This can be improved by many ways:</p>
 <ul>
 <li>
-<p>domain:</p>
-<ul>
-<li>target.domain.enabled</li>
-<li>target.domain.id</li>
-<li>target.domain.name</li>
-</ul>
+<p>by optimizing/redesign the code running on the AVR to reduce the
+  number of cycles needed per sample</p>
 </li>
 <li>
-<p>group:</p>
-<ul>
-<li>target.group.description</li>
-<li>target.group.domain_id</li>
-<li>target.group.id</li>
-<li>target.group.name</li>
-</ul>
+<p>by reworking the samples format to reduce the average number bytes
+  per sample, especially for small samples</p>
 </li>
 <li>
-<p>project:</p>
-<ul>
-<li>target.project.description</li>
-<li>target.project.domain_id</li>
-<li>target.project.enabled</li>
-<li>target.project.id</li>
-<li>target.project.name</li>
-</ul>
-</li>
-<li>
-<p>role:</p>
-<ul>
-<li>target.role.id</li>
-<li>target.role.name</li>
-</ul>
-</li>
-<li>
-<p>user:</p>
-<ul>
-<li>target.user.default_project_id</li>
-<li>target.user.description</li>
-<li>target.user.domain_id</li>
-<li>target.user.enabled</li>
-<li>target.user.id</li>
-<li>target.user.name</li>
-</ul>
+<p>by using a faster CPU, more RAM (bigger buffer), and possibly faster
+  communication channel</p>
 </li>
 </ul>
-<h2>Example: admin and super_admin</h2>
-<p>The following example is taken from a User Story that we were
-considering at <a href="http://www.cloudwatt.com">CloudWatt</a>. As a cloud service provider, we wanted
-to be able to have 2 different levels of administrator roles:</p>
-<ul>
-<li>An <code>admin</code> role, which allows its users to grant the <code>Member</code> role
-  to any other user.</li>
-<li>While the <code>super_admin</code> role allows granting any role.</li>
-</ul>
-<p>When added to Keystone's ̀<code>policy.json</code> file, the following rules
-implements the two roles described previously:</p>
-<div class="highlight"><pre><span></span>&quot;admin_grant_member&quot;: &quot;role:admin and &#39;Member&#39;:%(target.role.name)s&quot;,
-&quot;identity:create_grant&quot;: &quot;role:super_admin or rule:admin_grant_member&quot;,
-</pre></div>
-
-
-<p>The first rule describes a new rule called <code>admin_grant_member</code>, which
-checks that the user authenticated by the token has the <code>admin</code> role
-(on its scope), and that the role in the context (the role the admin
-is trying to grant) is the <code>Member</code> role (we used the <code>name</code>
-attribute, but could use the role's id instead).</p>
-<p>The second rule is checked whenever an API call is made to grant a
-role to a user (action <code>identity:create_grant</code>). This rule tells the
-policy engine that in order for a user to be allowed to grant a role
-to another user, the user authenticated by the token must either have
-the <code>super_admin</code> role, or satisfy the <code>admin_grant_member</code> rule.</p>
-<p>Put together these two rules actually meet the use case. Any user with
-the <code>admin</code> role will only be able to grant the <code>Member</code> role to other
-users, while users with the <code>super_admin</code> role will be able to grant
-any role.</p>
-<h2>Notes</h2>
-<p>One of the most powerful rules that the OpenStack policy engine
-allows, are those limiting a user's actions to his own domain or
-project. These kind of rules are widely used in <a href="https://github.com/openstack/keystone/blob/master/etc/policy.v3cloudsample.json">Keystone's
-policy.v3cloudsample.json</a>.</p>
-<p>Also note, that a recent patch merged into oslo-incubator implements
-the blueprint allowing the policy engine to <a href="https://blueprints.launchpad.net/oslo/+spec/policy-constant-check">check contextual
-attributes against constant values</a>. This patch will have to be
-synchronized into the OpenStack projects for them to benefit from this
-feature.</p>
+<p>A first compromise would be to write a PC side code to downsample
+tunes with a too high sample rate (i.e playing at 12 KHz sounds
+normally played at 22 KHz). This would lower the sound quality of the
+tunes downsampled, but would allow us to play them on this
+YM2149/ATmega implementation.</p>
+<p>The schematic and <a href="https://github.com/FlorentFlament/ym2149-sndh">source code to play sndh files on the YM2149</a> is
+available on GitHub.</p>
                 </div><!-- /.entry-content -->
                 <div class="comments">
                 <h2>Comments !</h2>
                         <div id="disqus_thread"></div>
                         <script type="text/javascript">
-                           var disqus_identifier = "customizing-openstack-rbac-policies.html";
+                           var disqus_identifier = "playing-sndh-on-ym2149.html";
                            (function() {
                                 var dsq = document.createElement('script');
                                 dsq.type = 'text/javascript'; dsq.async = true;
