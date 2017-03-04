@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Florent Flament's Tech Blog</title>
+    <title>A couple of statistics about Linux kernel documentation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
@@ -64,7 +64,7 @@
           <div class="nav-collapse">
             <ul class="nav">
                           <li class="divider-vertical"></li>
-                  <li >
+                  <li class="active">
                     <a href="./category/misc.html">
 						<i class="icon-folder-open icon-large"></i>misc
 					</a>
@@ -89,12 +89,25 @@
     <div class="container-fluid">
       <div class="row">
         <div class="span9" id="content">
-        <div class="article">
-                <h1><a href="./securing-data.html">Securing Data</a></h1>
-                <div class="well small"><footer class="post-info">
+<section id="content">
+        <article>
+                <header>
+                        <h1>
+                                <a href=""
+                                        rel="bookmark"
+                                        title="Permalink to A couple of statistics about Linux kernel documentation">
+                                        A couple of statistics about Linux kernel documentation
+                                </a>
+<a href="http://twitter.com/share" class="twitter-share-button"
+   data-count="horizontal" data-via="florentflament_">Tweet</a>
+                        </h1>
+                </header>
+                <div class="entry-content">
+                <div class="well">
+<footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2014-05-03T23:34:00+02:00">
-        <i class="icon-calendar"></i>Sat 03 May 2014
+<abbr class="published" title="2017-03-04T00:00:00+01:00">
+        <i class="icon-calendar"></i>Sat 04 March 2017
 </abbr>
 <span class="label">By</span>
 <a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
@@ -103,140 +116,81 @@
 
 
 <span class="label">Tags</span>
-	<a href="./tag/data-safety.html"><i class="icon-tag"></i>Data Safety</a>
-	<a href="./tag/data-security.html"><i class="icon-tag"></i>Data Security</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p>As a data geek, I've been wondering how I could protect my data from
-the main threats (if possible by using only open source software). For
-instance, losing data because of a hardware failure is just something
-that shouldn't happen anymore, thanks to all the technology available
-today ...</p>
-                        <a class="btn primary xsmall" href="./securing-data.html">more ...</a>
+	<a href="./tag/linux.html"><i class="icon-tag"></i>Linux</a>
+	<a href="./tag/kernel.html"><i class="icon-tag"></i>Kernel</a>
+	<a href="./tag/documentation.html"><i class="icon-tag"></i>Documentation</a>
+</footer><!-- /.post-info -->                </div>
+                <p>There is a whole lot of files in the <code>Documentation</code> directory of the
+<a href="https://github.com/torvalds/linux">Linux kernel source</a>. Is it possible for a single person to read
+the whole documentation ? Let's have a look at what's inside it.</p>
+<div class="highlight"><pre><span></span>$ <span class="nb">pwd</span>
+/home/florent/src/linux/linux-4.10/Documentation
+
+$ find . -type f <span class="p">|</span> wc -l
+5118
+</pre></div>
+
+
+<p>There are 5118 files in the Documentation directory</p>
+<div class="highlight"><pre><span></span>$ wc  <span class="k">$(</span>find . -type f<span class="k">)</span> <span class="p">|</span> tail -1
+  <span class="m">661911</span>  <span class="m">3175886</span> <span class="m">24210712</span> total
+</pre></div>
+
+
+<p>These files account for roughly 3.200.000 words spread among 660.000
+lines. With a <a href="https://en.wikipedia.org/wiki/Word_count">typical novel's size</a> of 70.000 words, the Linux
+documentation is equivalent to roughly 46 such novels. So the answer
+is yes, it is possible to read the whole Linux documentation (though
+it may take some time).</p>
+<div class="highlight"><pre><span></span>$ find . -type f <span class="p">|</span> awk -F. <span class="o">{</span><span class="s1">&#39;print $3&#39;</span><span class="o">}</span> <span class="p">|</span> sort <span class="p">|</span> uniq -c <span class="p">|</span> sort -n <span class="p">|</span> tail -5
+     <span class="m">24</span> tmpl
+     <span class="m">30</span> svg
+     <span class="m">650</span> rst
+     703
+     <span class="m">3565</span> txt
+</pre></div>
+
+
+<p>Just to have an idea of the most common files' extensions. Mostly
+<code>.txt</code> files, plus some extensionless and <code>.rst</code> files.</p>
+<p>Let's consider the 3 main topics as documented in the <a href="https://raw.githubusercontent.com/torvalds/linux/master/Documentation/index.rst"><code>index.rst</code>
+file</a>:</p>
+<div class="highlight"><pre><span></span>$ wc admin-guide/* <span class="p">|</span> tail -1
+ <span class="m">14131</span>  <span class="m">73455</span> <span class="m">517546</span> total
+</pre></div>
+
+
+<p>73.000 words (1 novel) for the 'User-oriented documentation'.</p>
+<div class="highlight"><pre><span></span>$ wc process/* dev-tools/* doc-guide/* <span class="p">|</span> tail -1
+ <span class="m">11899</span>  <span class="m">72020</span> <span class="m">487333</span> total
+</pre></div>
+
+
+<p>72.000 words (1 novel) for the 'Introduction to kernel development'.</p>
+<div class="highlight"><pre><span></span>$ wc <span class="k">$(</span>find driver-api/ core-api/ media/ gpu/ security/ sound/ crypto/ -type f<span class="k">)</span> <span class="p">|</span> tail -1
+ <span class="m">132770</span>  <span class="m">516405</span> <span class="m">4740930</span> total
+</pre></div>
+
+
+<p>520.000 word (Roughly <a href="https://electricliterature.com/infographic-word-counts-of-famous-books-161f025a6b09">equilvalent to reading 'The Lord of the
+Rings'</a>) for the 'Kernel API documentation'.</p>
+                </div><!-- /.entry-content -->
+                <div class="comments">
+                <h2>Comments !</h2>
+                        <div id="disqus_thread"></div>
+                        <script type="text/javascript">
+                           var disqus_identifier = "a-couple-of-statistics-about-linux-kernel-documentation.html";
+                           (function() {
+                                var dsq = document.createElement('script');
+                                dsq.type = 'text/javascript'; dsq.async = true;
+                                dsq.src = 'http://florentflament.disqus.com/embed.js';
+                                (document.getElementsByTagName('head')[0] ||
+                                 document.getElementsByTagName('body')[0]).appendChild(dsq);
+                          })();
+                        </script>
                 </div>
-        </div>
-        <hr />
-        <div class="article">
-                <h1><a href="./windows-images-for-openstack.html">Windows Images for OpenStack</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2014-03-30T19:15:00+02:00">
-        <i class="icon-calendar"></i>Sun 30 March 2014
-</abbr>
-<span class="label">By</span>
-<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="./category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
-
-
-<span class="label">Tags</span>
-	<a href="./tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
-	<a href="./tag/microsft.html"><i class="icon-tag"></i>Microsft</a>
-	<a href="./tag/windows.html"><i class="icon-tag"></i>Windows</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p>This note summarizes articles from other places about Microsoft
-Windows images for OpenStack creation, along with some first hand
-experience. The whole process of creating Windows 2008 and Windows
-2012 images fully usable on OpenStack instances is described there.</p>
-<h1>Prerequisite</h1>
-<p>To achieve the creation of a qcow2 Windows image for ...</p>
-                        <a class="btn primary xsmall" href="./windows-images-for-openstack.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-        <div class="article">
-                <h1><a href="./chef-server-on-raspberry-pi.html">Chef Server on Raspberry Pi</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2014-03-03T00:00:00+01:00">
-        <i class="icon-calendar"></i>Mon 03 March 2014
-</abbr>
-<span class="label">By</span>
-<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
-
-
-<span class="label">Tags</span>
-	<a href="./tag/chef.html"><i class="icon-tag"></i>Chef</a>
-	<a href="./tag/raspberry-pi.html"><i class="icon-tag"></i>Raspberry Pi</a>
-	<a href="./tag/raspbian.html"><i class="icon-tag"></i>Raspbian</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p><a href="http://www.raspberrypi.org/">Raspberry Pi</a> devices are cheap, quiet, and powerful enough to run
-a Debian based Linux Operating System called <a href="http://www.raspbian.org/">Raspbian</a>. Such
-device would be very convenient to manage one's personal
-infrastructure, composed of some physical and / or virtual machines,
-by running Chef Server.</p>
-<p>While, the official Chef website mostly documents ...</p>
-                        <a class="btn primary xsmall" href="./chef-server-on-raspberry-pi.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-        <div class="article">
-                <h1><a href="./data-management.html">Data management</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2014-02-27T00:00:00+01:00">
-        <i class="icon-calendar"></i>Thu 27 February 2014
-</abbr>
-<span class="label">By</span>
-<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
-
-
-<span class="label">Tags</span>
-	<a href="./tag/data-management.html"><i class="icon-tag"></i>Data management</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p>When using several computers (or devices) from different locations,
-the question of data management arises. Basically, I wish being able
-to access my data from any computer; I wish my data to be protected,
-accordingly to its privacy and I wish my data to be backed up
-appropriately.</p>
-<p>With the ...</p>
-                        <a class="btn primary xsmall" href="./data-management.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-        <div class="article">
-                <h1><a href="./customizing-openstack-rbac-policies.html">Customizing OpenStack RBAC policies</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2014-02-09T00:00:00+01:00">
-        <i class="icon-calendar"></i>Sun 09 February 2014
-</abbr>
-<span class="label">By</span>
-<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="./category/openstack.html"><i class="icon-folder-open"></i>OpenStack</a>.
-
-
-<span class="label">Tags</span>
-	<a href="./tag/openstack.html"><i class="icon-tag"></i>OpenStack</a>
-	<a href="./tag/keystone.html"><i class="icon-tag"></i>Keystone</a>
-	<a href="./tag/policies.html"><i class="icon-tag"></i>Policies</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p>OpenStack uses a <a href="http://docs.openstack.org/developer/keystone/configuration.html#keystone-api-protection-with-role-based-access-control-rbac">role based access control</a> (RBAC) mechanism to
-manage accesses to its resources. With the current architecture,
-users' roles granted on each project and domain are stored into
-Keystone, and can be updated through <a href="http://api.openstack.org/api-ref-identity.html#identity-v3">Keystone's API</a>. However,
-policy enforcement (actually allowing or not the access to resources ...</p>
-                        <a class="btn primary xsmall" href="./customizing-openstack-rbac-policies.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-
-        <div class="pagination">
-        <ul>
-                        <li class="prev"><a href="./index2.html">&larr; Previous</a></li>
-                        <li class=""><a href="./index.html">1</a></li>
-                        <li class=""><a href="./index2.html">2</a></li>
-                        <li class="active"><a href="./index3.html">3</a></li>
-                        <li class=""><a href="./index4.html">4</a></li>
-                        <li class=""><a href="./index5.html">5</a></li>
-                        <li class="next"><a href="./index4.html">Next &rarr;</a></li>
-        </ul>
-        </div>
-
+        </article>
+</section>
         </div><!--/span-->
 
                 <div class="span3 well sidebar-nav" id="sidebar">

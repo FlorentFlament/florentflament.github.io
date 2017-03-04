@@ -1,5 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/florent-flament.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2016-10-15T00:00:00+02:00</updated><entry><title>Playing SNDH on YM2149</title><link href="http://www.florentflament.com/blog/playing-sndh-on-ym2149.html" rel="alternate"></link><published>2016-10-15T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-10-15:blog/playing-sndh-on-ym2149.html</id><summary type="html">&lt;p&gt;This is the sequel of the &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;Streaming music to YM2149&lt;/a&gt; post. After
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/florent-flament.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2017-03-04T00:00:00+01:00</updated><entry><title>A couple of statistics about Linux kernel documentation</title><link href="http://www.florentflament.com/blog/a-couple-of-statistics-about-linux-kernel-documentation.html" rel="alternate"></link><published>2017-03-04T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2017-03-04:blog/a-couple-of-statistics-about-linux-kernel-documentation.html</id><summary type="html">&lt;p&gt;There is a whole lot of files in the &lt;code&gt;Documentation&lt;/code&gt; directory of the
+&lt;a href="https://github.com/torvalds/linux"&gt;Linux kernel source&lt;/a&gt;. Is it possible for a single person to read
+the whole documentation ? Let's have a look at what's inside it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;pwd&lt;/span&gt;
+/home/florent/src/linux/linux-4.10/Documentation
+
+$ find . -type f &lt;span class="p"&gt;|&lt;/span&gt; wc -l
+5118
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;There are 5118 files in the Documentation directory&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ wc  &lt;span class="k"&gt;$(&lt;/span&gt;find . -type f&lt;span class="k"&gt;)&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; tail -1
+  &lt;span class="m"&gt;661911&lt;/span&gt;  &lt;span class="m"&gt;3175886&lt;/span&gt; &lt;span class="m"&gt;24210712&lt;/span&gt; total
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;These files account for roughly 3.200.000 words spread among 660.000
+lines. With a &lt;a href="https://en.wikipedia.org/wiki/Word_count"&gt;typical novel's size&lt;/a&gt; of 70.000 words, the Linux
+documentation is equivalent to roughly 46 such novels. So the answer
+is yes, it is possible to read the whole Linux documentation (though
+it may take some time).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ find . -type f &lt;span class="p"&gt;|&lt;/span&gt; awk -F. &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;print $3&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sort &lt;span class="p"&gt;|&lt;/span&gt; uniq -c &lt;span class="p"&gt;|&lt;/span&gt; sort -n &lt;span class="p"&gt;|&lt;/span&gt; tail -5
+     &lt;span class="m"&gt;24&lt;/span&gt; tmpl
+     &lt;span class="m"&gt;30&lt;/span&gt; svg
+     &lt;span class="m"&gt;650&lt;/span&gt; rst
+     703
+     &lt;span class="m"&gt;3565&lt;/span&gt; txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Just to have an idea of the most common files' extensions. Mostly
+&lt;code&gt;.txt&lt;/code&gt; files, plus some extensionless and &lt;code&gt;.rst&lt;/code&gt; files.&lt;/p&gt;
+&lt;p&gt;Let's consider the 3 main topics as documented in the &lt;a href="https://raw.githubusercontent.com/torvalds/linux/master/Documentation/index.rst"&gt;&lt;code&gt;index.rst&lt;/code&gt;
+file&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ wc admin-guide/* &lt;span class="p"&gt;|&lt;/span&gt; tail -1
+ &lt;span class="m"&gt;14131&lt;/span&gt;  &lt;span class="m"&gt;73455&lt;/span&gt; &lt;span class="m"&gt;517546&lt;/span&gt; total
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;73.000 words (1 novel) for the 'User-oriented documentation'.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ wc process/* dev-tools/* doc-guide/* &lt;span class="p"&gt;|&lt;/span&gt; tail -1
+ &lt;span class="m"&gt;11899&lt;/span&gt;  &lt;span class="m"&gt;72020&lt;/span&gt; &lt;span class="m"&gt;487333&lt;/span&gt; total
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;72.000 words (1 novel) for the 'Introduction to kernel development'.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ wc &lt;span class="k"&gt;$(&lt;/span&gt;find driver-api/ core-api/ media/ gpu/ security/ sound/ crypto/ -type f&lt;span class="k"&gt;)&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; tail -1
+ &lt;span class="m"&gt;132770&lt;/span&gt;  &lt;span class="m"&gt;516405&lt;/span&gt; &lt;span class="m"&gt;4740930&lt;/span&gt; total
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;520.000 word (Roughly &lt;a href="https://electricliterature.com/infographic-word-counts-of-famous-books-161f025a6b09"&gt;equilvalent to reading 'The Lord of the
+Rings'&lt;/a&gt;) for the 'Kernel API documentation'.&lt;/p&gt;</summary><category term="Linux"></category><category term="Kernel"></category><category term="Documentation"></category></entry><entry><title>Playing SNDH on YM2149</title><link href="http://www.florentflament.com/blog/playing-sndh-on-ym2149.html" rel="alternate"></link><published>2016-10-15T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-10-15:blog/playing-sndh-on-ym2149.html</id><summary type="html">&lt;p&gt;This is the sequel of the &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;Streaming music to YM2149&lt;/a&gt; post. After
 playing YM chip tunes on the YM2149, I wanted to take profit from the
 &lt;a href="http://sndh.atari.org/"&gt;super large database of SNDH files available online&lt;/a&gt;, by being
 able to play these tunes on my YM2149. This has been possible with the
