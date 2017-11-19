@@ -1,12 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2017-03-04T00:00:00+01:00</updated><entry><title>A couple of statistics about Linux kernel documentation</title><link href="http://www.florentflament.com/blog/a-couple-of-statistics-about-linux-kernel-documentation.html" rel="alternate"></link><published>2017-03-04T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2017-03-04:blog/a-couple-of-statistics-about-linux-kernel-documentation.html</id><summary type="html">&lt;p&gt;There is a whole lot of files in the &lt;code&gt;Documentation&lt;/code&gt; directory of the
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog - misc</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2017-11-19T00:00:00+01:00</updated><entry><title>Installing a Vanilla Linux Kernel on Fedora</title><link href="http://www.florentflament.com/blog/installing-a-vanilla-linux-kernel-on-fedora.html" rel="alternate"></link><published>2017-11-19T00:00:00+01:00</published><updated>2017-11-19T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2017-11-19:/blog/installing-a-vanilla-linux-kernel-on-fedora.html</id><summary type="html">&lt;p&gt;Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
+knows how to do it..)&lt;/p&gt;
+&lt;p&gt;One can start by cloning Torvalds' Linux repository to fetch the
+latest master (or we could fetch the latest stable release) :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git clone https://github.com/torvalds/linux.git
+$ &lt;span class="nb"&gt;cd&lt;/span&gt; linux
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I like …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
+knows how to do it..)&lt;/p&gt;
+&lt;p&gt;One can start by cloning Torvalds' Linux repository to fetch the
+latest master (or we could fetch the latest stable release) :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git clone https://github.com/torvalds/linux.git
+$ &lt;span class="nb"&gt;cd&lt;/span&gt; linux
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I like setting &lt;code&gt;EXTRAVERSION&lt;/code&gt; in the &lt;code&gt;Makefile&lt;/code&gt; to be able to identify
+which kernel I am testing. That can be done by opening the &lt;code&gt;Makefile&lt;/code&gt;
+with one's favorite editor or replacing the &lt;code&gt;EXTRAVERSION&lt;/code&gt; line with
+&lt;code&gt;sed&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sed -i &lt;span class="s2"&gt;&amp;quot;s/^EXTRAVERSION = .*&lt;/span&gt;$&lt;span class="s2"&gt;/EXTRAVERSION = name_of_my_version/&amp;quot;&lt;/span&gt; Makefile
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now we need to generate the &lt;code&gt;.config&lt;/code&gt; Linux kernel configuration
+file. We can start from the default one:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ make defconfig
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For computers using (U)EFI, one may need to update the &lt;code&gt;.config&lt;/code&gt; file
+to support &lt;code&gt;EFI handover&lt;/code&gt;. This is done by setting &lt;code&gt;EFI stub support&lt;/code&gt;
+when configuring the kernel (for instance with &lt;code&gt;make menuconfig&lt;/code&gt;).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Processor type and features  ---&amp;gt;
+    [*] EFI runtime service support
+    [*]   EFI stub support
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Sources: &lt;a href="https://stackoverflow.com/questions/40344484/cant-load-self-compiled-linux-kernel#40344635"&gt;stackoverflow&lt;/a&gt; and &lt;a href="https://wiki.gentoo.org/wiki/EFI_stub_kernel#Configuration"&gt;gentoo linux wiki&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Without that option activated, I ended up having the following error
+message when trying to boot my new kernel:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;kernel&lt;/span&gt; &lt;span class="n"&gt;doesn&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="n"&gt;support&lt;/span&gt; &lt;span class="n"&gt;EFI&lt;/span&gt; &lt;span class="n"&gt;handover&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At that point, we can do any dirty hack we want to test on the kernel
+; )&lt;/p&gt;
+&lt;p&gt;Then we can build the kernel as simply as that:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ make
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We can even make RPMs to install the new kernel on any RPM based
+machine:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ make binrpm-pkg
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The packages are available in the &lt;code&gt;~/rpmbuild/RPMS/x86_64&lt;/code&gt; directory:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ls ~/rpmbuild/RPMS/x86_64/
+kernel-4.14.0efistub+-3.x86_64.rpm  kernel-headers-4.14.0efistub+-3.x86_64.rpm
+$
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The newly built kernel can be installed with the standard rpm install
+command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; ~/rpmbuild/RPMS/x86_64/
+$ rpm -i kernel-4.14.0efistub+-3.x86_64.rpm
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's it, when rebooting, the new kernel is available in the grub
+menu (together with the previously installed kernels) .&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ dmesg &lt;span class="p"&gt;|&lt;/span&gt; head -3
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.000000&lt;span class="o"&gt;]&lt;/span&gt; microcode: microcode updated early to revision 0x1c, &lt;span class="nv"&gt;date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2015&lt;/span&gt;-02-26
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.000000&lt;span class="o"&gt;]&lt;/span&gt; Linux version &lt;span class="m"&gt;4&lt;/span&gt;.14.0efistub+ &lt;span class="o"&gt;(&lt;/span&gt;florent@amn&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;gcc version &lt;span class="m"&gt;7&lt;/span&gt;.2.1 &lt;span class="m"&gt;20170915&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;Red Hat &lt;span class="m"&gt;7&lt;/span&gt;.2.1-2&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;GCC&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="c1"&gt;#3 SMP Sun Nov 19 22:52:23 CET 2017&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.000000&lt;span class="o"&gt;]&lt;/span&gt; Command line: &lt;span class="nv"&gt;BOOT_IMAGE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/vmlinuz-4.14.0efistub+ &lt;span class="nv"&gt;root&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/mapper/fedora-root ro rd.lvm.lv&lt;span class="o"&gt;=&lt;/span&gt;fedora/root rd.lvm.lv&lt;span class="o"&gt;=&lt;/span&gt;fedora/swap rhgb quiet &lt;span class="nv"&gt;LANG&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;en_US.UTF-8
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Tested with Linux 4.14.0 hash ed30b147e1f6e396e70a52dbb6c7d66befedd786&lt;/p&gt;</content><category term="Linux"></category><category term="Kernel"></category></entry><entry><title>A couple of statistics about Linux kernel documentation</title><link href="http://www.florentflament.com/blog/a-couple-of-statistics-about-linux-kernel-documentation.html" rel="alternate"></link><published>2017-03-04T00:00:00+01:00</published><updated>2017-03-04T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2017-03-04:/blog/a-couple-of-statistics-about-linux-kernel-documentation.html</id><summary type="html">&lt;p&gt;There is a whole lot of files in the &lt;code&gt;Documentation&lt;/code&gt; directory of the
 &lt;a href="https://github.com/torvalds/linux"&gt;Linux kernel source&lt;/a&gt;. Is it possible for a single person to read
 the whole documentation ? Let's have a look at what's inside it.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;pwd&lt;/span&gt;
 /home/florent/src/linux/linux-4.10/Documentation
 
 $ find . -type f &lt;span class="p"&gt;|&lt;/span&gt; wc -l
-5118
+&lt;span class="m"&gt;5118 …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;There is a whole lot of files in the &lt;code&gt;Documentation&lt;/code&gt; directory of the
+&lt;a href="https://github.com/torvalds/linux"&gt;Linux kernel source&lt;/a&gt;. Is it possible for a single person to read
+the whole documentation ? Let's have a look at what's inside it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;pwd&lt;/span&gt;
+/home/florent/src/linux/linux-4.10/Documentation
+
+$ find . -type f &lt;span class="p"&gt;|&lt;/span&gt; wc -l
+&lt;span class="m"&gt;5118&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -25,7 +116,7 @@ it may take some time).&lt;/p&gt;
      &lt;span class="m"&gt;24&lt;/span&gt; tmpl
      &lt;span class="m"&gt;30&lt;/span&gt; svg
      &lt;span class="m"&gt;650&lt;/span&gt; rst
-     703
+     &lt;span class="m"&gt;703&lt;/span&gt;
      &lt;span class="m"&gt;3565&lt;/span&gt; txt
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -52,7 +143,10 @@ file&lt;/a&gt;:&lt;/p&gt;
 
 
 &lt;p&gt;520.000 word (Roughly &lt;a href="https://electricliterature.com/infographic-word-counts-of-famous-books-161f025a6b09"&gt;equilvalent to reading 'The Lord of the
-Rings'&lt;/a&gt;) for the 'Kernel API documentation'.&lt;/p&gt;</summary><category term="Linux"></category><category term="Kernel"></category><category term="Documentation"></category></entry><entry><title>Playing SNDH on YM2149</title><link href="http://www.florentflament.com/blog/playing-sndh-on-ym2149.html" rel="alternate"></link><published>2016-10-15T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-10-15:blog/playing-sndh-on-ym2149.html</id><summary type="html">&lt;p&gt;This is the sequel of the &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;Streaming music to YM2149&lt;/a&gt; post. After
+Rings'&lt;/a&gt;) for the 'Kernel API documentation'.&lt;/p&gt;</content><category term="Linux"></category><category term="Kernel"></category><category term="Documentation"></category></entry><entry><title>Playing SNDH on YM2149</title><link href="http://www.florentflament.com/blog/playing-sndh-on-ym2149.html" rel="alternate"></link><published>2016-10-15T00:00:00+02:00</published><updated>2016-10-15T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-10-15:/blog/playing-sndh-on-ym2149.html</id><summary type="html">&lt;p&gt;This is the sequel of the &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;Streaming music to YM2149&lt;/a&gt; post. After
+playing YM chip tunes on the YM2149, I wanted to take profit from the
+&lt;a href="http://sndh.atari.org/"&gt;super large database of SNDH files available online&lt;/a&gt;, by being
+able to play these tunes on my YM2149. This has been possible with the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is the sequel of the &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;Streaming music to YM2149&lt;/a&gt; post. After
 playing YM chip tunes on the YM2149, I wanted to take profit from the
 &lt;a href="http://sndh.atari.org/"&gt;super large database of SNDH files available online&lt;/a&gt;, by being
 able to play these tunes on my YM2149. This has been possible with the
@@ -166,7 +260,12 @@ normally played at 22 KHz). This would lower the sound quality of the
 tunes downsampled, but would allow us to play them on this
 YM2149/ATmega implementation.&lt;/p&gt;
 &lt;p&gt;The schematic and &lt;a href="https://github.com/FlorentFlament/ym2149-sndh"&gt;source code to play sndh files on the YM2149&lt;/a&gt; is
-available on GitHub.&lt;/p&gt;</summary><category term="Arduino"></category><category term="ATmega"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category><category term="SNDH"></category></entry><entry><title>Streaming music to YM2149F</title><link href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html" rel="alternate"></link><published>2016-09-10T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-09-10:blog/streaming-music-to-ym2149f.html</id><summary type="html">&lt;p&gt;To follow-up on my previous blog post about &lt;a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html"&gt;driving a YM2149F chip
+available on GitHub.&lt;/p&gt;</content><category term="Arduino"></category><category term="ATmega"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category><category term="SNDH"></category></entry><entry><title>Streaming music to YM2149F</title><link href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html" rel="alternate"></link><published>2016-09-10T00:00:00+02:00</published><updated>2016-09-10T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-09-10:/blog/streaming-music-to-ym2149f.html</id><summary type="html">&lt;p&gt;To follow-up on my previous blog post about &lt;a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html"&gt;driving a YM2149F chip
+with an Arduino&lt;/a&gt;, I wrote an Arduino firmware that can be used
+together with a PC side Python script to send music to the
+YM2149F. All the code is available in the &lt;a href="https://github.com/FlorentFlament/ym2149-streamer"&gt;ym2149-streamer
+repository&lt;/a&gt; on GitHub.&lt;/p&gt;
+&lt;h2&gt;Arduino Firmware …&lt;/h2&gt;</summary><content type="html">&lt;p&gt;To follow-up on my previous blog post about &lt;a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html"&gt;driving a YM2149F chip
 with an Arduino&lt;/a&gt;, I wrote an Arduino firmware that can be used
 together with a PC side Python script to send music to the
 YM2149F. All the code is available in the &lt;a href="https://github.com/FlorentFlament/ym2149-streamer"&gt;ym2149-streamer
@@ -226,7 +325,12 @@ directly in the script some day.&lt;/p&gt;
 with a more dynamic community. Though the tunes are in the &lt;code&gt;sndh&lt;/code&gt;
 format, which is harder to interpret and stream to a YM2149 chip. A
 nice thing would be to find a way to have these &lt;code&gt;sndh&lt;/code&gt; files played on
-the sound chip!&lt;/p&gt;</summary><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Driving YM2149F sound chip with an Arduino</title><link href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html" rel="alternate"></link><published>2016-09-03T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-09-03:blog/driving-ym2149f-sound-chip-with-an-arduino.html</id><summary type="html">&lt;p&gt;A few months ago, I had the opportunity to get a Yamaha YM2149F
+the sound chip!&lt;/p&gt;</content><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Driving YM2149F sound chip with an Arduino</title><link href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html" rel="alternate"></link><published>2016-09-03T00:00:00+02:00</published><updated>2016-09-03T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-09-03:/blog/driving-ym2149f-sound-chip-with-an-arduino.html</id><summary type="html">&lt;p&gt;A few months ago, I had the opportunity to get a Yamaha YM2149F
+chip. This chip is basically a clone of &lt;a href="https://en.wikipedia.org/wiki/General_Instrument_AY-3-8910"&gt;General Instrument's
+AY-3-8910&lt;/a&gt;, "a 3 voices programmable sound generator" widely used
+in the 80's in many arcade games and home computers (including the
+Atari ST and Amstrad CPC).&lt;/p&gt;
+&lt;p&gt;The …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A few months ago, I had the opportunity to get a Yamaha YM2149F
 chip. This chip is basically a clone of &lt;a href="https://en.wikipedia.org/wiki/General_Instrument_AY-3-8910"&gt;General Instrument's
 AY-3-8910&lt;/a&gt;, "a 3 voices programmable sound generator" widely used
 in the 80's in many arcade games and home computers (including the
@@ -287,7 +391,11 @@ one has to follow the connections described on the schematic above.&lt;/p&gt;
 &lt;h2&gt;What next&lt;/h2&gt;
 &lt;p&gt;The next blog post describes how to have &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;YM files streamed to the
 YM2149F chip&lt;/a&gt;. Besides, a video of my &lt;a href="https://www.youtube.com/watch?v=MTRJdDbY048"&gt;YM2149F chip playing some
-tune&lt;/a&gt; is available online.&lt;/p&gt;</summary><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Arduino Hello World without IDE</title><link href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html" rel="alternate"></link><published>2016-08-08T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-08-08:blog/arduino-hello-world-without-ide.html</id><summary type="html">&lt;p&gt;There is already a number of resources available about programming the
+tune&lt;/a&gt; is available online.&lt;/p&gt;</content><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Arduino Hello World without IDE</title><link href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html" rel="alternate"></link><published>2016-08-08T00:00:00+02:00</published><updated>2016-08-08T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-08-08:/blog/arduino-hello-world-without-ide.html</id><summary type="html">&lt;p&gt;There is already a number of resources available about programming the
+Arduino with or without the IDE (I won't discuss here the pros and
+cons of using it). This aims at being a quick memo for those who
+already have some knowledge about C programming, and just want the
+minimal …&lt;/p&gt;</summary><content type="html">&lt;p&gt;There is already a number of resources available about programming the
 Arduino with or without the IDE (I won't discuss here the pros and
 cons of using it). This aims at being a quick memo for those who
 already have some knowledge about C programming, and just want the
@@ -308,7 +416,7 @@ following directory: &lt;code&gt;/usr/avr/include/&lt;/code&gt;.&lt;/p&gt;
 &lt;h2&gt;Makefile&lt;/h2&gt;
 &lt;p&gt;The following Makefile summarizes the commands (with parameters)
 needed to compile a C project and upload it to an Arduino board:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;baud&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;115200
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;baud&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;115200&lt;/span&gt;
 &lt;span class="nv"&gt;avrType&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;atmega328p
 &lt;span class="nv"&gt;avrFreq&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;16000000&lt;/span&gt; &lt;span class="c1"&gt;# 16 Mhz&lt;/span&gt;
 &lt;span class="nv"&gt;programmerDev&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/ttyUSB0
@@ -376,7 +484,11 @@ found this code somewhere (though I couldn't recover where from..):&lt;/p&gt;
 &lt;p&gt;That's all folks. With the packages installed and the Makefile
 described earlier, one can compile this little C code and upload it to
 an Arduino board and see the little red LED blinking. From this
-starting point, one can easily work on bigger Arduino based projects.&lt;/p&gt;</summary><category term="Arduino"></category></entry><entry><title>Inkjet versus laser printer</title><link href="http://www.florentflament.com/blog/inkjet-versus-laser-printer.html" rel="alternate"></link><published>2015-05-09T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2015-05-09:blog/inkjet-versus-laser-printer.html</id><summary type="html">&lt;p&gt;Contrary to what I found on most websites when googling about
+starting point, one can easily work on bigger Arduino based projects.&lt;/p&gt;</content><category term="Arduino"></category></entry><entry><title>Inkjet versus laser printer</title><link href="http://www.florentflament.com/blog/inkjet-versus-laser-printer.html" rel="alternate"></link><published>2015-05-09T00:00:00+02:00</published><updated>2015-05-09T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2015-05-09:/blog/inkjet-versus-laser-printer.html</id><summary type="html">&lt;p&gt;Contrary to what I found on most websites when googling about
+comparisons between inkjet and laser printers, the cost per page on
+high end inkjet printers is lower than that of laser printers.&lt;/p&gt;
+&lt;p&gt;Moreover, when buying a new printer one has to consider the number of
+pages that will be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Contrary to what I found on most websites when googling about
 comparisons between inkjet and laser printers, the cost per page on
 high end inkjet printers is lower than that of laser printers.&lt;/p&gt;
 &lt;p&gt;Moreover, when buying a new printer one has to consider the number of
@@ -875,7 +987,12 @@ page). On the other hand, the printer with the lowest cost per page
 of $1000.&lt;/p&gt;
 &lt;p&gt;In the end, the ideal printer depends on the usage that will be done
 (number of pages printed). Besides, one may consider additional
-features (print speed, duplex printing, ...) when choosing a printer.&lt;/p&gt;</summary><category term="Printers"></category><category term="Costs"></category></entry><entry><title>Right VM cost</title><link href="http://www.florentflament.com/blog/right-vm-cost.html" rel="alternate"></link><published>2014-08-03T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-08-03:blog/right-vm-cost.html</id><summary type="html">&lt;p&gt;With cloud Virtual Machines prices dropping month after month, we may
+features (print speed, duplex printing, ...) when choosing a printer.&lt;/p&gt;</content><category term="Printers"></category><category term="Costs"></category></entry><entry><title>Right VM cost</title><link href="http://www.florentflament.com/blog/right-vm-cost.html" rel="alternate"></link><published>2014-08-03T00:00:00+02:00</published><updated>2014-08-03T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-08-03:/blog/right-vm-cost.html</id><summary type="html">&lt;p&gt;With cloud Virtual Machines prices dropping month after month, we may
+be asking if the margins previously done by cloud operators were not
+outrageously high. I actually find surprising that current VM price is
+on average higher than equivalent dedicated server even though
+virtualization allows sharing more hardware.&lt;/p&gt;
+&lt;h2&gt;Comparing dedicated …&lt;/h2&gt;</summary><content type="html">&lt;p&gt;With cloud Virtual Machines prices dropping month after month, we may
 be asking if the margins previously done by cloud operators were not
 outrageously high. I actually find surprising that current VM price is
 on average higher than equivalent dedicated server even though
@@ -955,12 +1072,12 @@ where:&lt;/p&gt;
 &lt;p&gt;We can estimate ßj coefficients with the following formula:
 ß = (Xt&lt;em&gt;X)-¹&lt;/em&gt;Xt*Y&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python pricing_vm_simple.py
-Constant: 31.3530724158
-Eur / CPU thread: 3.12689639938
-Eur / GB of RAM: 0.639580183605
-Eur / TB of HDD: 5.18992626031
-Eur / GB of SSD: 0.197627042107
-R^2: 0.982339781679
+Constant: &lt;span class="m"&gt;31&lt;/span&gt;.3530724158
+Eur / CPU thread: &lt;span class="m"&gt;3&lt;/span&gt;.12689639938
+Eur / GB of RAM: &lt;span class="m"&gt;0&lt;/span&gt;.639580183605
+Eur / TB of HDD: &lt;span class="m"&gt;5&lt;/span&gt;.18992626031
+Eur / GB of SSD: &lt;span class="m"&gt;0&lt;/span&gt;.197627042107
+R^2: &lt;span class="m"&gt;0&lt;/span&gt;.982339781679
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1054,7 +1171,13 @@ dedicated servers with big HDDs may be more appropriate.&lt;/p&gt;
 &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / TB of HDD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / GB of SSD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;R^2:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Rsq&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Virtualization"></category><category term="VM"></category><category term="Hardware"></category><category term="Costs"></category></entry><entry><title>Git SSH Docker container</title><link href="http://www.florentflament.com/blog/git-ssh-docker-container.html" rel="alternate"></link><published>2014-06-28T00:00:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-06-28:blog/git-ssh-docker-container.html</id><summary type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Virtualization"></category><category term="VM"></category><category term="Hardware"></category><category term="Costs"></category></entry><entry><title>Git SSH Docker container</title><link href="http://www.florentflament.com/blog/git-ssh-docker-container.html" rel="alternate"></link><published>2014-06-28T00:00:00+02:00</published><updated>2014-06-28T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-06-28:/blog/git-ssh-docker-container.html</id><summary type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
+using git with a remote repository. The implementation I have chosen
+for that consists in running an ssh server, with git, in a Docker
+container. This has the following advantages over other solutions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;100% reproducible;&lt;/li&gt;
+&lt;li&gt;Limits access …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
 using git with a remote repository. The implementation I have chosen
 for that consists in running an ssh server, with git, in a Docker
 container. This has the following advantages over other solutions:&lt;/p&gt;
@@ -1089,7 +1212,7 @@ RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Sec
 &lt;span class="c1"&gt;# Updating shell to bash&lt;/span&gt;
 RUN sed -i s#/home/git:/bin/false#/home/git:/bin/bash# /etc/passwd
 
-EXPOSE 22
+EXPOSE &lt;span class="m"&gt;22&lt;/span&gt;
 CMD &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/sbin/sshd&amp;quot;&lt;/span&gt;, &lt;span class="s2"&gt;&amp;quot;-D&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -1105,7 +1228,7 @@ CMD &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/sb
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Running the image&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo docker.io run -p 1234:22 -d --name git-ssh git-ssh_img
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo docker.io run -p &lt;span class="m"&gt;1234&lt;/span&gt;:22 -d --name git-ssh git-ssh_img
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1115,7 +1238,11 @@ CMD &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/sb
 container's SSH port. Of course, this port can be changed to any
 value. One can then ssh to the container with the following command:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ssh -p &lt;span class="m"&gt;1234&lt;/span&gt; git@&amp;lt;container_host&amp;gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Git"></category><category term="SSH"></category><category term="Docker"></category></entry><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><published>2014-05-03T23:34:00+02:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-05-03:blog/securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Git"></category><category term="SSH"></category><category term="Docker"></category></entry><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><published>2014-05-03T23:34:00+02:00</published><updated>2014-05-03T23:34:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-05-03:/blog/securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
+the main threats (if possible by using only open source software). For
+instance, losing data because of a hardware failure is just something
+that shouldn't happen anymore, thanks to all the technology available
+today. One could …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
 the main threats (if possible by using only open source software). For
 instance, losing data because of a hardware failure is just something
 that shouldn't happen anymore, thanks to all the technology available
@@ -1290,7 +1417,12 @@ by different layers:&lt;/p&gt;
 |                  |                                    |             | Piracy /         |
 |                  |                                    |             | Hardware failure |
 +------------------+------------------------------------+-------------+------------------+
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Data Safety"></category><category term="Data Security"></category></entry><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><published>2014-03-03T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-03-03:blog/chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Data Safety"></category><category term="Data Security"></category></entry><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><published>2014-03-03T00:00:00+01:00</published><updated>2014-03-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-03-03:/blog/chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
+a Debian based Linux Operating System called &lt;a href="http://www.raspbian.org/"&gt;Raspbian&lt;/a&gt;. Such
+device would be very convenient to manage one's personal
+infrastructure, composed of some physical and / or virtual machines,
+by running Chef Server.&lt;/p&gt;
+&lt;p&gt;While, the official Chef website mostly documents &lt;a href="http://www.getchef.com/chef/install/#tab2"&gt;the …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
 a Debian based Linux Operating System called &lt;a href="http://www.raspbian.org/"&gt;Raspbian&lt;/a&gt;. Such
 device would be very convenient to manage one's personal
 infrastructure, composed of some physical and / or virtual machines,
@@ -1371,7 +1503,12 @@ exception on TCP connection &amp;lt;0.583.0&amp;gt; from 127.0.0.1:34143
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo rabbitmqctl add_vhost /chef
 $ sudo rabbitmqctl add_user chef PASSWORD_PER_CONFIGURATION
 $ sudo rabbitmqctl set_permissions -p /chef chef &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Chef"></category><category term="Raspberry Pi"></category><category term="Raspbian"></category></entry><entry><title>Data management</title><link href="http://www.florentflament.com/blog/data-management.html" rel="alternate"></link><published>2014-02-27T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-02-27:blog/data-management.html</id><summary type="html">&lt;p&gt;When using several computers (or devices) from different locations,
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Chef"></category><category term="Raspberry Pi"></category><category term="Raspbian"></category></entry><entry><title>Data management</title><link href="http://www.florentflament.com/blog/data-management.html" rel="alternate"></link><published>2014-02-27T00:00:00+01:00</published><updated>2014-02-27T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-02-27:/blog/data-management.html</id><summary type="html">&lt;p&gt;When using several computers (or devices) from different locations,
+the question of data management arises. Basically, I wish being able
+to access my data from any computer; I wish my data to be protected,
+accordingly to its privacy and I wish my data to be backed up
+appropriately.&lt;/p&gt;
+&lt;p&gt;With the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When using several computers (or devices) from different locations,
 the question of data management arises. Basically, I wish being able
 to access my data from any computer; I wish my data to be protected,
 accordingly to its privacy and I wish my data to be backed up
@@ -1465,7 +1602,11 @@ into.&lt;/p&gt;
   if the data is stolen, it cannot be read. Backup has to be done
   locally.&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ul&gt;</summary><category term="Data management"></category></entry><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><published>2013-12-15T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-12-15:blog/znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
+&lt;/ul&gt;</content><category term="Data management"></category></entry><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><published>2013-12-15T00:00:00+01:00</published><updated>2013-12-15T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-12-15:/blog/znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
+channels and log conversations while one isn't connected. This note
+desrcibes how to launch ZNC in a &lt;a href="https://www.docker.io/"&gt;Docker&lt;/a&gt; container, so that it be
+launched on any Docker enabled platform. To quick start with Docker,
+one can follow the steps …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
 channels and log conversations while one isn't connected. This note
 desrcibes how to launch ZNC in a &lt;a href="https://www.docker.io/"&gt;Docker&lt;/a&gt; container, so that it be
 launched on any Docker enabled platform. To quick start with Docker,
@@ -1523,7 +1664,7 @@ $ docker commit &lt;span class="se"&gt;\&lt;/span&gt;
 ZNC in a new container, the following command will map the host's 6697
 TCP port on the container's 6697 port (assuming that ZNC has been
 configured to listen to port 6697).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker run -d -p 6697:6697 znc:ready
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker run -d -p &lt;span class="m"&gt;6697&lt;/span&gt;:6697 znc:ready
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1561,7 +1702,7 @@ CMD [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;
 
 &lt;p&gt;Then the ZNC container can be launched right after having built the image:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker build -t znc:myznc myznc/
-$ docker run -d -p 6697:6697 znc:myznc
+$ docker run -d -p &lt;span class="m"&gt;6697&lt;/span&gt;:6697 znc:myznc
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1605,7 +1746,11 @@ connexions:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;PASSWORDHASHHERE&lt;/code&gt; can be generated by using &lt;code&gt;znc -s&lt;/code&gt;. IRC clients
 (like xchat) have to be set up by specifying in the "Server Password"
 field a user's credentials &lt;code&gt;&amp;lt;user&amp;gt;:&amp;lt;password&amp;gt;&lt;/code&gt; (i.e
-USER1:PASSORDHASHHERE).&lt;/p&gt;</summary><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><published>2013-11-30T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-30:blog/ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
+USER1:PASSORDHASHHERE).&lt;/p&gt;</content><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><published>2013-11-30T00:00:00+01:00</published><updated>2013-11-30T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-30:/blog/ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
+system is quite forward. The installer asks you a few question about
+your country, keyboard, network, ... . Then it installs all the
+required packages on the system, and makes it bootable.&lt;/p&gt;
+&lt;p&gt;However, when playing with VMs (Virtual Machines), you …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
 system is quite forward. The installer asks you a few question about
 your country, keyboard, network, ... . Then it installs all the
 required packages on the system, and makes it bootable.&lt;/p&gt;
@@ -1658,7 +1803,7 @@ following unique command (to be customized):&lt;/p&gt;
 --ram &lt;span class="m"&gt;128&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 --location http://fr.archive.ubuntu.com/ubuntu/dists/precise-proposed/main/installer-i386/ &lt;span class="se"&gt;\&lt;/span&gt;
 --disk vm.qcow2,bus&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
---graphics vnc,keymap&lt;span class="o"&gt;=&lt;/span&gt;local,listen&lt;span class="o"&gt;=&lt;/span&gt;0.0.0.0,port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5900&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+--graphics vnc,keymap&lt;span class="o"&gt;=&lt;/span&gt;local,listen&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;.0.0.0,port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5900&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 --network user,model&lt;span class="o"&gt;=&lt;/span&gt;virtio &lt;span class="se"&gt;\&lt;/span&gt;
 --initrd-inject preseed.cfg
 &lt;/pre&gt;&lt;/div&gt;
@@ -1668,7 +1813,13 @@ following unique command (to be customized):&lt;/p&gt;
 of the standard &lt;code&gt;precise&lt;/code&gt;. It addresses a &lt;a href="https://bugs.launchpad.net/ubuntu/+source/net-retriever/+bug/1067934"&gt;bug that makes the
 installation freeze for 10+ minutes&lt;/a&gt; during the components download
 phase.&lt;/p&gt;
-&lt;p&gt;After some 30 minutes the system installation should be completed.&lt;/p&gt;</summary><category term="Ubuntu"></category><category term="KVM"></category><category term="libvirt"></category></entry><entry><title>Macmini2,1 Linux dual boot</title><link href="http://www.florentflament.com/blog/macmini21-linux-dual-boot.html" rel="alternate"></link><published>2013-11-03T00:00:00+01:00</published><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-03:blog/macmini21-linux-dual-boot.html</id><summary type="html">&lt;p&gt;While online resources provide documentation about &lt;a href="https://wiki.debian.org/MacMiniIntel"&gt;how to install
+&lt;p&gt;After some 30 minutes the system installation should be completed.&lt;/p&gt;</content><category term="Ubuntu"></category><category term="KVM"></category><category term="libvirt"></category></entry><entry><title>Macmini2,1 Linux dual boot</title><link href="http://www.florentflament.com/blog/macmini21-linux-dual-boot.html" rel="alternate"></link><published>2013-11-03T00:00:00+01:00</published><updated>2013-11-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-03:/blog/macmini21-linux-dual-boot.html</id><summary type="html">&lt;p&gt;While online resources provide documentation about &lt;a href="https://wiki.debian.org/MacMiniIntel"&gt;how to install
+Linux on a Mac Mini&lt;/a&gt;, this guide focuses on the Apple Macmini2,1
+and its peculiarities. Please refer to &lt;a href="http://en.wikipedia.org/wiki/Macmini#Specifications"&gt;these tables&lt;/a&gt; to properly
+identify your hardware.&lt;/p&gt;
+&lt;h2&gt;About Macmini2,1&lt;/h2&gt;
+&lt;p&gt;Apple provides &lt;a href="http://support.apple.com/kb/HT1237"&gt;firmware updates&lt;/a&gt; for most of its hardware. Most
+Mac Minis …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While online resources provide documentation about &lt;a href="https://wiki.debian.org/MacMiniIntel"&gt;how to install
 Linux on a Mac Mini&lt;/a&gt;, this guide focuses on the Apple Macmini2,1
 and its peculiarities. Please refer to &lt;a href="http://en.wikipedia.org/wiki/Macmini#Specifications"&gt;these tables&lt;/a&gt; to properly
 identify your hardware.&lt;/p&gt;
@@ -1727,4 +1878,4 @@ rEFit menu timeout can be set with the &lt;code&gt;timeout&lt;/code&gt; option. 
 &lt;code&gt;default_selection&lt;/code&gt; (at the end of the file) allows us to choose the
 default OS to boot.&lt;/p&gt;
 &lt;p&gt;That's it ! Restart, rEFit allows us to choose between booting Mac OS
-X and Linux.&lt;/p&gt;</summary><category term="Apple"></category><category term="Linux"></category></entry></feed>
+X and Linux.&lt;/p&gt;</content><category term="Apple"></category><category term="Linux"></category></entry></feed>

@@ -168,7 +168,7 @@ good reason to be performed directly by a user.</p>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">vol</span><span class="p">,</span> <span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;/dev/vdb&quot;</span><span class="p">)</span>
 <span class="p">(</span><span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">202</span><span class="p">]</span><span class="o">&gt;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;attachments&quot;</span><span class="p">]</span>
-<span class="p">[{</span><span class="s1">u&#39;device&#39;</span><span class="p">:</span> <span class="s1">u&#39;/dev/vdb&#39;</span><span class="p">,</span> <span class="s1">u&#39;server_id&#39;</span><span class="p">:</span> <span class="s1">u&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">,</span> <span class="s1">u&#39;volume_id&#39;</span><span class="p">:</span> <span class="s1">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">,</span> <span class="s1">u&#39;host_name&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s1">u&#39;id&#39;</span><span class="p">:</span> <span class="s1">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
+<span class="p">[{</span><span class="sa">u</span><span class="s1">&#39;device&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;/dev/vdb&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;server_id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;volume_id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;host_name&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="c1"># Well it looks like it is attached</span>
 <span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">vm</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">)</span>
@@ -202,9 +202,9 @@ what we want to do (And yes the method's name is not super clear).</p>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">create_server_volume</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;/dev/vdb&quot;</span><span class="p">)</span>
 <span class="o">&lt;</span><span class="n">Volume</span><span class="p">:</span> <span class="n">f024883d</span><span class="o">-</span><span class="mi">4</span><span class="n">b35</span><span class="o">-</span><span class="mi">4894</span><span class="o">-</span><span class="mi">9</span><span class="n">fbf</span><span class="o">-</span><span class="mf">51498e6</span><span class="n">c3c09</span><span class="o">&gt;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;attachments&quot;</span><span class="p">]</span>
-<span class="p">[{</span><span class="s1">u&#39;device&#39;</span><span class="p">:</span> <span class="s1">u&#39;/dev/vdb&#39;</span><span class="p">,</span> <span class="s1">u&#39;server_id&#39;</span><span class="p">:</span> <span class="s1">u&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">,</span> <span class="s1">u&#39;volume_id&#39;</span><span class="p">:</span> <span class="s1">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">,</span> <span class="s1">u&#39;host_name&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s1">u&#39;id&#39;</span><span class="p">:</span> <span class="s1">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
+<span class="p">[{</span><span class="sa">u</span><span class="s1">&#39;device&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;/dev/vdb&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;server_id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;volume_id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;host_name&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
-<span class="p">[{</span><span class="s1">u&#39;id&#39;</span><span class="p">:</span> <span class="s1">u&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
+<span class="p">[{</span><span class="sa">u</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
 <span class="o">&gt;&gt;&gt;</span>
 </pre></div>
 
@@ -226,10 +226,10 @@ Reading table information <span class="k">for</span> completion of table and col
 You can turn off this feature to get a quicker startup with -A
 
 Welcome to the MySQL monitor.  Commands end with <span class="p">;</span> or <span class="se">\g</span>.
-Your MySQL connection id is 1900
-Server version: 5.5.34-0ubuntu0.12.04.1-log <span class="o">(</span>Ubuntu<span class="o">)</span>
+Your MySQL connection id is <span class="m">1900</span>
+Server version: <span class="m">5</span>.5.34-0ubuntu0.12.04.1-log <span class="o">(</span>Ubuntu<span class="o">)</span>
 
-Copyright <span class="o">(</span>c<span class="o">)</span> 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+Copyright <span class="o">(</span>c<span class="o">)</span> <span class="m">2000</span>, <span class="m">2013</span>, Oracle and/or its affiliates. All rights reserved.
 
 Oracle is a registered trademark of Oracle Corporation and/or its
 affiliates. Other names may be trademarks of their respective
@@ -249,11 +249,11 @@ mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<s
 <span class="p">|</span> a34ca08a-2e6b-4820-b472-91aa27b47261 <span class="p">|</span> deleted <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL                                 <span class="p">|</span>
 <span class="p">|</span> d827daa5-c8d7-427b-a53c-8be918a1a6fb <span class="p">|</span> deleted <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL                                 <span class="p">|</span>
 +--------------------------------------+---------+---------------+------------+--------------------------------------+
-<span class="m">7</span> rows in <span class="nb">set</span> <span class="o">(</span>0.00 sec<span class="o">)</span>
+<span class="m">7</span> rows in <span class="nb">set</span> <span class="o">(</span><span class="m">0</span>.00 sec<span class="o">)</span>
 
 mysql&gt; UPDATE volumes SET <span class="nv">status</span><span class="o">=</span><span class="s2">&quot;available&quot;</span>, <span class="nv">attach_status</span><span class="o">=</span><span class="s2">&quot;detached&quot;</span>, <span class="nv">mountpoint</span><span class="o">=</span>NULL, <span class="nv">instance_uuid</span><span class="o">=</span>NULL WHERE <span class="nv">id</span><span class="o">=</span><span class="s2">&quot;57b32eaf-7b71-49bf-a8fd-4115567a6cda&quot;</span><span class="p">;</span>
-Query OK, <span class="m">1</span> row affected <span class="o">(</span>0.00 sec<span class="o">)</span>
-Rows matched: <span class="m">1</span>  Changed: <span class="m">1</span>  Warnings: 0
+Query OK, <span class="m">1</span> row affected <span class="o">(</span><span class="m">0</span>.00 sec<span class="o">)</span>
+Rows matched: <span class="m">1</span>  Changed: <span class="m">1</span>  Warnings: <span class="m">0</span>
 
 mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<span class="p">;</span>
 +--------------------------------------+-----------+---------------+------------+---------------+
@@ -267,7 +267,7 @@ mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<s
 <span class="p">|</span> a34ca08a-2e6b-4820-b472-91aa27b47261 <span class="p">|</span> deleted   <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL          <span class="p">|</span>
 <span class="p">|</span> d827daa5-c8d7-427b-a53c-8be918a1a6fb <span class="p">|</span> deleted   <span class="p">|</span> detached      <span class="p">|</span> NULL       <span class="p">|</span> NULL          <span class="p">|</span>
 +--------------------------------------+-----------+---------------+------------+---------------+
-<span class="m">7</span> rows in <span class="nb">set</span> <span class="o">(</span>0.00 sec<span class="o">)</span>
+<span class="m">7</span> rows in <span class="nb">set</span> <span class="o">(</span><span class="m">0</span>.00 sec<span class="o">)</span>
 
 mysql&gt; Bye
 $ cinder list
@@ -400,7 +400,7 @@ $ cinder list
         <i class="icon-tag icon-large"></i>KVM
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/kernel.html">
         <i class="icon-tag icon-large"></i>Kernel
     </a>

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>A couple of statistics about Linux kernel documentation</title>
+    <title>Installing a Vanilla Linux Kernel on Fedora</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
@@ -95,8 +95,8 @@
                         <h1>
                                 <a href=""
                                         rel="bookmark"
-                                        title="Permalink to A couple of statistics about Linux kernel documentation">
-                                        A couple of statistics about Linux kernel documentation
+                                        title="Permalink to Installing a Vanilla Linux Kernel on Fedora">
+                                        Installing a Vanilla Linux Kernel on Fedora
                                 </a>
 <a href="http://twitter.com/share" class="twitter-share-button"
    data-count="horizontal" data-via="florentflament_">Tweet</a>
@@ -106,8 +106,8 @@
                 <div class="well">
 <footer class="post-info">
 <span class="label">Date</span>
-<abbr class="published" title="2017-03-04T00:00:00+01:00">
-        <i class="icon-calendar"></i>Sat 04 March 2017
+<abbr class="published" title="2017-11-19T00:00:00+01:00">
+        <i class="icon-calendar"></i>Sun 19 November 2017
 </abbr>
 <span class="label">By</span>
 <a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
@@ -118,68 +118,89 @@
 <span class="label">Tags</span>
 	<a href="./tag/linux.html"><i class="icon-tag"></i>Linux</a>
 	<a href="./tag/kernel.html"><i class="icon-tag"></i>Kernel</a>
-	<a href="./tag/documentation.html"><i class="icon-tag"></i>Documentation</a>
 </footer><!-- /.post-info -->                </div>
-                <p>There is a whole lot of files in the <code>Documentation</code> directory of the
-<a href="https://github.com/torvalds/linux">Linux kernel source</a>. Is it possible for a single person to read
-the whole documentation ? Let's have a look at what's inside it.</p>
-<div class="highlight"><pre><span></span>$ <span class="nb">pwd</span>
-/home/florent/src/linux/linux-4.10/Documentation
-
-$ find . -type f <span class="p">|</span> wc -l
-<span class="m">5118</span>
+                <p>Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
+knows how to do it..)</p>
+<p>One can start by cloning Torvalds' Linux repository to fetch the
+latest master (or we could fetch the latest stable release) :</p>
+<div class="highlight"><pre><span></span>$ git clone https://github.com/torvalds/linux.git
+$ <span class="nb">cd</span> linux
 </pre></div>
 
 
-<p>There are 5118 files in the Documentation directory</p>
-<div class="highlight"><pre><span></span>$ wc  <span class="k">$(</span>find . -type f<span class="k">)</span> <span class="p">|</span> tail -1
-  <span class="m">661911</span>  <span class="m">3175886</span> <span class="m">24210712</span> total
+<p>I like setting <code>EXTRAVERSION</code> in the <code>Makefile</code> to be able to identify
+which kernel I am testing. That can be done by opening the <code>Makefile</code>
+with one's favorite editor or replacing the <code>EXTRAVERSION</code> line with
+<code>sed</code>:</p>
+<div class="highlight"><pre><span></span>$ sed -i <span class="s2">&quot;s/^EXTRAVERSION = .*</span>$<span class="s2">/EXTRAVERSION = name_of_my_version/&quot;</span> Makefile
 </pre></div>
 
 
-<p>These files account for roughly 3.200.000 words spread among 660.000
-lines. With a <a href="https://en.wikipedia.org/wiki/Word_count">typical novel's size</a> of 70.000 words, the Linux
-documentation is equivalent to roughly 46 such novels. So the answer
-is yes, it is possible to read the whole Linux documentation (though
-it may take some time).</p>
-<div class="highlight"><pre><span></span>$ find . -type f <span class="p">|</span> awk -F. <span class="o">{</span><span class="s1">&#39;print $3&#39;</span><span class="o">}</span> <span class="p">|</span> sort <span class="p">|</span> uniq -c <span class="p">|</span> sort -n <span class="p">|</span> tail -5
-     <span class="m">24</span> tmpl
-     <span class="m">30</span> svg
-     <span class="m">650</span> rst
-     <span class="m">703</span>
-     <span class="m">3565</span> txt
+<p>Now we need to generate the <code>.config</code> Linux kernel configuration
+file. We can start from the default one:</p>
+<div class="highlight"><pre><span></span>$ make defconfig
 </pre></div>
 
 
-<p>Just to have an idea of the most common files' extensions. Mostly
-<code>.txt</code> files, plus some extensionless and <code>.rst</code> files.</p>
-<p>Let's consider the 3 main topics as documented in the <a href="https://raw.githubusercontent.com/torvalds/linux/master/Documentation/index.rst"><code>index.rst</code>
-file</a>:</p>
-<div class="highlight"><pre><span></span>$ wc admin-guide/* <span class="p">|</span> tail -1
- <span class="m">14131</span>  <span class="m">73455</span> <span class="m">517546</span> total
+<p>For computers using (U)EFI, one may need to update the <code>.config</code> file
+to support <code>EFI handover</code>. This is done by setting <code>EFI stub support</code>
+when configuring the kernel (for instance with <code>make menuconfig</code>).</p>
+<div class="highlight"><pre><span></span>Processor type and features  ---&gt;
+    [*] EFI runtime service support
+    [*]   EFI stub support
 </pre></div>
 
 
-<p>73.000 words (1 novel) for the 'User-oriented documentation'.</p>
-<div class="highlight"><pre><span></span>$ wc process/* dev-tools/* doc-guide/* <span class="p">|</span> tail -1
- <span class="m">11899</span>  <span class="m">72020</span> <span class="m">487333</span> total
+<p>Sources: <a href="https://stackoverflow.com/questions/40344484/cant-load-self-compiled-linux-kernel#40344635">stackoverflow</a> and <a href="https://wiki.gentoo.org/wiki/EFI_stub_kernel#Configuration">gentoo linux wiki</a>.</p>
+<p>Without that option activated, I ended up having the following error
+message when trying to boot my new kernel:</p>
+<div class="highlight"><pre><span></span><span class="n">error</span><span class="o">:</span> <span class="n">kernel</span> <span class="n">doesn</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">support</span> <span class="n">EFI</span> <span class="n">handover</span>
 </pre></div>
 
 
-<p>72.000 words (1 novel) for the 'Introduction to kernel development'.</p>
-<div class="highlight"><pre><span></span>$ wc <span class="k">$(</span>find driver-api/ core-api/ media/ gpu/ security/ sound/ crypto/ -type f<span class="k">)</span> <span class="p">|</span> tail -1
- <span class="m">132770</span>  <span class="m">516405</span> <span class="m">4740930</span> total
+<p>At that point, we can do any dirty hack we want to test on the kernel
+; )</p>
+<p>Then we can build the kernel as simply as that:</p>
+<div class="highlight"><pre><span></span>$ make
 </pre></div>
 
 
-<p>520.000 word (Roughly <a href="https://electricliterature.com/infographic-word-counts-of-famous-books-161f025a6b09">equilvalent to reading 'The Lord of the
-Rings'</a>) for the 'Kernel API documentation'.</p>
+<p>We can even make RPMs to install the new kernel on any RPM based
+machine:</p>
+<div class="highlight"><pre><span></span>$ make binrpm-pkg
+</pre></div>
+
+
+<p>The packages are available in the <code>~/rpmbuild/RPMS/x86_64</code> directory:</p>
+<div class="highlight"><pre><span></span>$ ls ~/rpmbuild/RPMS/x86_64/
+kernel-4.14.0efistub+-3.x86_64.rpm  kernel-headers-4.14.0efistub+-3.x86_64.rpm
+$
+</pre></div>
+
+
+<p>The newly built kernel can be installed with the standard rpm install
+command:</p>
+<div class="highlight"><pre><span></span>$ <span class="nb">cd</span> ~/rpmbuild/RPMS/x86_64/
+$ rpm -i kernel-4.14.0efistub+-3.x86_64.rpm
+</pre></div>
+
+
+<p>That's it, when rebooting, the new kernel is available in the grub
+menu (together with the previously installed kernels) .</p>
+<div class="highlight"><pre><span></span>$ dmesg <span class="p">|</span> head -3
+<span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> microcode: microcode updated early to revision 0x1c, <span class="nv">date</span> <span class="o">=</span> <span class="m">2015</span>-02-26
+<span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Linux version <span class="m">4</span>.14.0efistub+ <span class="o">(</span>florent@amn<span class="o">)</span> <span class="o">(</span>gcc version <span class="m">7</span>.2.1 <span class="m">20170915</span> <span class="o">(</span>Red Hat <span class="m">7</span>.2.1-2<span class="o">)</span> <span class="o">(</span>GCC<span class="o">))</span> <span class="c1">#3 SMP Sun Nov 19 22:52:23 CET 2017</span>
+<span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Command line: <span class="nv">BOOT_IMAGE</span><span class="o">=</span>/vmlinuz-4.14.0efistub+ <span class="nv">root</span><span class="o">=</span>/dev/mapper/fedora-root ro rd.lvm.lv<span class="o">=</span>fedora/root rd.lvm.lv<span class="o">=</span>fedora/swap rhgb quiet <span class="nv">LANG</span><span class="o">=</span>en_US.UTF-8
+</pre></div>
+
+
+<p>Tested with Linux 4.14.0 hash ed30b147e1f6e396e70a52dbb6c7d66befedd786</p>
                 </div><!-- /.entry-content -->
                 <div class="comments">
                 <h2>Comments !</h2>
                         <div id="disqus_thread"></div>
                         <script type="text/javascript">
-                           var disqus_identifier = "a-couple-of-statistics-about-linux-kernel-documentation.html";
+                           var disqus_identifier = "installing-a-vanilla-linux-kernel-on-fedora.html";
                            (function() {
                                 var dsq = document.createElement('script');
                                 dsq.type = 'text/javascript'; dsq.async = true;

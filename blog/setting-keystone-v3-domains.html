@@ -220,7 +220,7 @@ curl http://localhost:5000/v3/users <span class="se">\</span>
 curl http://localhost:5000/v3/roles?name<span class="o">=</span>admin <span class="se">\</span>
     -s <span class="se">\</span>
     -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADMIN_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-<span class="p">|</span> jq .roles<span class="o">[</span>0<span class="o">]</span>.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+<span class="p">|</span> jq .roles<span class="o">[</span><span class="m">0</span><span class="o">]</span>.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
 
 curl -X PUT http://localhost:5000/v3/domains/<span class="si">${</span><span class="nv">ID_ADMIN_DOMAIN</span><span class="si">}</span>/users/<span class="si">${</span><span class="nv">ID_CLOUD_ADMIN</span><span class="si">}</span>/roles/<span class="si">${</span><span class="nv">ADMIN_ROLE_ID</span><span class="si">}</span> <span class="se">\</span>
     -s <span class="se">\</span>
@@ -480,7 +480,7 @@ curl http://localhost:5000/v3/users <span class="se">\</span>
 curl http://localhost:5000/v3/roles?name<span class="o">=</span>Member <span class="se">\</span>
     -s <span class="se">\</span>
     -H <span class="s2">&quot;X-Auth-Token: </span><span class="nv">$ADM1_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-<span class="p">|</span> jq .roles<span class="o">[</span>0<span class="o">]</span>.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
+<span class="p">|</span> jq .roles<span class="o">[</span><span class="m">0</span><span class="o">]</span>.id <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="k">)</span>
 
 curl -X PUT http://localhost:5000/v3/projects/<span class="si">${</span><span class="nv">ID_PRJ1</span><span class="si">}</span>/users/<span class="si">${</span><span class="nv">ID_USR1</span><span class="si">}</span>/roles/<span class="si">${</span><span class="nv">MEMBER_ROLE_ID</span><span class="si">}</span> <span class="se">\</span>
     -s <span class="se">\</span>
@@ -622,7 +622,7 @@ on <code>prj1</code> and manage resources into this project.</p>
         <i class="icon-tag icon-large"></i>KVM
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/kernel.html">
         <i class="icon-tag icon-large"></i>Kernel
     </a>

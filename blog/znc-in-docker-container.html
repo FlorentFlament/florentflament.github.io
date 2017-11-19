@@ -178,7 +178,7 @@ $ docker commit <span class="se">\</span>
 ZNC in a new container, the following command will map the host's 6697
 TCP port on the container's 6697 port (assuming that ZNC has been
 configured to listen to port 6697).</p>
-<div class="highlight"><pre><span></span>$ docker run -d -p 6697:6697 znc:ready
+<div class="highlight"><pre><span></span>$ docker run -d -p <span class="m">6697</span>:6697 znc:ready
 </pre></div>
 
 
@@ -216,7 +216,7 @@ CMD [&quot;/usr/bin/znc&quot;, &quot;-f&quot;, &quot;-d&quot;, &quot;/var/znc/&q
 
 <p>Then the ZNC container can be launched right after having built the image:</p>
 <div class="highlight"><pre><span></span>$ docker build -t znc:myznc myznc/
-$ docker run -d -p 6697:6697 znc:myznc
+$ docker run -d -p <span class="m">6697</span>:6697 znc:myznc
 </pre></div>
 
 
@@ -384,7 +384,7 @@ USER1:PASSORDHASHHERE).</p>
         <i class="icon-tag icon-large"></i>KVM
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/kernel.html">
         <i class="icon-tag icon-large"></i>Kernel
     </a>

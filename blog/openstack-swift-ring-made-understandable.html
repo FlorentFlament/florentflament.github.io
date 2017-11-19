@@ -192,14 +192,14 @@ partition number 2, we select the line of index 1 and column of index
 <p>The devices table is very similar to what we can obtain by using the
 <code>swift-ring-builder</code> with only the builder file as argument:</p>
 <div class="highlight"><pre><span></span>$ swift-ring-builder mybuilder 
-mybuilder, build version 4
-<span class="m">8</span> partitions, 3.000000 replicas, <span class="m">1</span> regions, <span class="m">1</span> zones, <span class="m">4</span> devices, 0.00 balance
-The minimum number of hours before a partition can be reassigned is 0
+mybuilder, build version <span class="m">4</span>
+<span class="m">8</span> partitions, <span class="m">3</span>.000000 replicas, <span class="m">1</span> regions, <span class="m">1</span> zones, <span class="m">4</span> devices, <span class="m">0</span>.00 balance
+The minimum number of hours before a partition can be reassigned is <span class="m">0</span>
 Devices:    id  region  zone      ip address  port  replication ip  replication port      name weight partitions balance meta
-             <span class="m">0</span>       <span class="m">1</span>     <span class="m">1</span>    192.168.0.10  <span class="m">6000</span>    192.168.0.10              <span class="m">6000</span>      sdb1 100.00          <span class="m">6</span>    0.00 
-             <span class="m">1</span>       <span class="m">1</span>     <span class="m">1</span>    192.168.0.10  <span class="m">6000</span>    192.168.0.10              <span class="m">6000</span>      sdc1 100.00          <span class="m">6</span>    0.00 
-             <span class="m">2</span>       <span class="m">1</span>     <span class="m">1</span>    192.168.0.11  <span class="m">6000</span>    192.168.0.11              <span class="m">6000</span>      sdb1 100.00          <span class="m">6</span>    0.00 
-             <span class="m">3</span>       <span class="m">1</span>     <span class="m">1</span>    192.168.0.11  <span class="m">6000</span>    192.168.0.11              <span class="m">6000</span>      sdc1 100.00          <span class="m">6</span>    0.00
+             <span class="m">0</span>       <span class="m">1</span>     <span class="m">1</span>    <span class="m">192</span>.168.0.10  <span class="m">6000</span>    <span class="m">192</span>.168.0.10              <span class="m">6000</span>      sdb1 <span class="m">100</span>.00          <span class="m">6</span>    <span class="m">0</span>.00 
+             <span class="m">1</span>       <span class="m">1</span>     <span class="m">1</span>    <span class="m">192</span>.168.0.10  <span class="m">6000</span>    <span class="m">192</span>.168.0.10              <span class="m">6000</span>      sdc1 <span class="m">100</span>.00          <span class="m">6</span>    <span class="m">0</span>.00 
+             <span class="m">2</span>       <span class="m">1</span>     <span class="m">1</span>    <span class="m">192</span>.168.0.11  <span class="m">6000</span>    <span class="m">192</span>.168.0.11              <span class="m">6000</span>      sdb1 <span class="m">100</span>.00          <span class="m">6</span>    <span class="m">0</span>.00 
+             <span class="m">3</span>       <span class="m">1</span>     <span class="m">1</span>    <span class="m">192</span>.168.0.11  <span class="m">6000</span>    <span class="m">192</span>.168.0.11              <span class="m">6000</span>      sdc1 <span class="m">100</span>.00          <span class="m">6</span>    <span class="m">0</span>.00
 </pre></div>
 
 
@@ -357,7 +357,7 @@ developer documentation about the Ring</a>.</p>
         <i class="icon-tag icon-large"></i>KVM
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/kernel.html">
         <i class="icon-tag icon-large"></i>Kernel
     </a>

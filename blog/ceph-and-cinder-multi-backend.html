@@ -131,7 +131,7 @@ other backends), using <a href="http://ceph.com/docs/master/rados/operations/aut
 Ceph nodes (Ceph's doc provides extensive <a href="http://ceph.com/docs/master/rados/operations/placement-groups/">documentation about the
 number of placement groups that should be used</a>). The following
 command has to be launched on any Ceph node:</p>
-<div class="highlight"><pre><span></span>ceph osd pool create volumes 128
+<div class="highlight"><pre><span></span>ceph osd pool create volumes <span class="m">128</span>
 </pre></div>
 
 
@@ -205,7 +205,7 @@ cinder type-key ceph <span class="nb">set</span> <span class="nv">volume_backend
 
 <p>At that point, we should be able to create new Cinder volumes using
 Ceph as a backend, with the following command:</p>
-<div class="highlight"><pre><span></span>cinder create --volume-type ceph --display-name ceph-test 1
+<div class="highlight"><pre><span></span>cinder create --volume-type ceph --display-name ceph-test <span class="m">1</span>
 cinder list
 </pre></div>
 
@@ -397,7 +397,7 @@ backend!</p>
         <i class="icon-tag icon-large"></i>KVM
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/kernel.html">
         <i class="icon-tag icon-large"></i>Kernel
     </a>

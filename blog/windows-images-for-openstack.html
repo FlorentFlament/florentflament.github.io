@@ -165,7 +165,7 @@ details.</p>
     -m <span class="m">2048</span> <span class="se">\</span>
     -cdrom &lt;WINDOWS_INSTALLER_ISO&gt; <span class="se">\</span>
     -drive <span class="nv">file</span><span class="o">=</span>Windows-Server-2008-R2.qcow2,if<span class="o">=</span>virtio <span class="se">\</span>
-    -drive <span class="nv">file</span><span class="o">=</span>&lt;VIRTIO_DRIVERS_ISO&gt;,index<span class="o">=</span>3,media<span class="o">=</span>cdrom <span class="se">\</span>
+    -drive <span class="nv">file</span><span class="o">=</span>&lt;VIRTIO_DRIVERS_ISO&gt;,index<span class="o">=</span><span class="m">3</span>,media<span class="o">=</span>cdrom <span class="se">\</span>
     -net nic,model<span class="o">=</span>virtio <span class="se">\</span>
     -net user <span class="se">\</span>
     -nographic <span class="se">\</span>
@@ -247,7 +247,7 @@ $ sudo qemu-nbd -d /dev/nbd2
     -m <span class="m">2048</span> <span class="se">\</span>
     -cdrom &lt;WINDOWS_INSTALLER_ISO&gt; <span class="se">\</span>
     -drive <span class="nv">file</span><span class="o">=</span>Windows-Server-2008-R2.qcow2,if<span class="o">=</span>virtio <span class="se">\</span>
-    -drive <span class="nv">file</span><span class="o">=</span>&lt;VIRTIO_DRIVERS_ISO&gt;,index<span class="o">=</span>3,media<span class="o">=</span>cdrom <span class="se">\</span>
+    -drive <span class="nv">file</span><span class="o">=</span>&lt;VIRTIO_DRIVERS_ISO&gt;,index<span class="o">=</span><span class="m">3</span>,media<span class="o">=</span>cdrom <span class="se">\</span>
     -net nic,model<span class="o">=</span>virtio <span class="se">\</span>
     -net user <span class="se">\</span>
     -nographic <span class="se">\</span>
@@ -443,7 +443,7 @@ to a windows 2012 VM using <code>rdesktop</code>.</p>
         <i class="icon-tag icon-large"></i>KVM
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/kernel.html">
         <i class="icon-tag icon-large"></i>Kernel
     </a>

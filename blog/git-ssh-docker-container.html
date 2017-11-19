@@ -155,7 +155,7 @@ RUN <span class="nb">echo</span> <span class="s1">&#39;Second SSH public key&#39
 <span class="c1"># Updating shell to bash</span>
 RUN sed -i s#/home/git:/bin/false#/home/git:/bin/bash# /etc/passwd
 
-EXPOSE 22
+EXPOSE <span class="m">22</span>
 CMD <span class="o">[</span><span class="s2">&quot;/usr/sbin/sshd&quot;</span>, <span class="s2">&quot;-D&quot;</span><span class="o">]</span>
 </pre></div>
 
@@ -171,7 +171,7 @@ CMD <span class="o">[</span><span class="s2">&quot;/usr/sbin/sshd&quot;</span>, 
 </li>
 <li>
 <p>Running the image</p>
-<div class="highlight"><pre><span></span>$ sudo docker.io run -p 1234:22 -d --name git-ssh git-ssh_img
+<div class="highlight"><pre><span></span>$ sudo docker.io run -p <span class="m">1234</span>:22 -d --name git-ssh git-ssh_img
 </pre></div>
 
 
@@ -305,7 +305,7 @@ value. One can then ssh to the container with the following command:</p>
         <i class="icon-tag icon-large"></i>KVM
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/kernel.html">
         <i class="icon-tag icon-large"></i>Kernel
     </a>
