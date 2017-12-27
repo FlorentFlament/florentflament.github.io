@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Florent Flament's Tech Blog - Florent Flament</title><link>http://www.florentflament.com/blog/</link><description></description><lastBuildDate>Sun, 19 Nov 2017 00:00:00 +0100</lastBuildDate><item><title>Installing a Vanilla Linux Kernel on Fedora</title><link>http://www.florentflament.com/blog/installing-a-vanilla-linux-kernel-on-fedora.html</link><description>&lt;p&gt;Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
+<rss version="2.0"><channel><title>Florent Flament's Tech Blog - Florent Flament</title><link>http://www.florentflament.com/blog/</link><description></description><lastBuildDate>Sun, 19 Nov 2017 00:00:00 +0100</lastBuildDate><item><title>Installing a Vanilla Linux Kernel on Fedora</title><link>http://www.florentflament.com/blog/installing-a-vanilla-linux-kernel-on-fedora.html</link><description>&lt;p&gt;Updated on 2017-12-28&lt;/p&gt;
+&lt;p&gt;Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
 knows how to do it..)&lt;/p&gt;
+&lt;h2&gt;Configuring &amp;amp; Building Linux&lt;/h2&gt;
 &lt;p&gt;One can start by cloning Torvalds' Linux repository to fetch the
 latest master (or we could fetch the latest stable release) :&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git clone https://github.com/torvalds/linux.git
-$ &lt;span class="nb"&gt;cd&lt;/span&gt; linux
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;I like …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Florent Flament</dc:creator><pubDate>Sun, 19 Nov 2017 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:www.florentflament.com,2017-11-19:/blog/installing-a-vanilla-linux-kernel-on-fedora.html</guid><category>Linux</category><category>Kernel</category></item><item><title>A couple of statistics about Linux kernel documentation</title><link>http://www.florentflament.com/blog/a-couple-of-statistics-about-linux-kernel-documentation.html</link><description>&lt;p&gt;There is a whole lot of files in the &lt;code&gt;Documentation&lt;/code&gt; directory of the
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git clone https://github.com/torvalds …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Florent Flament</dc:creator><pubDate>Sun, 19 Nov 2017 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:www.florentflament.com,2017-11-19:/blog/installing-a-vanilla-linux-kernel-on-fedora.html</guid><category>Linux</category><category>Kernel</category></item><item><title>A couple of statistics about Linux kernel documentation</title><link>http://www.florentflament.com/blog/a-couple-of-statistics-about-linux-kernel-documentation.html</link><description>&lt;p&gt;There is a whole lot of files in the &lt;code&gt;Documentation&lt;/code&gt; directory of the
 &lt;a href="https://github.com/torvalds/linux"&gt;Linux kernel source&lt;/a&gt;. Is it possible for a single person to read
 the whole documentation ? Let's have a look at what's inside it.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;pwd&lt;/span&gt;

@@ -119,12 +119,14 @@
 	<a href="./tag/linux.html"><i class="icon-tag"></i>Linux</a>
 	<a href="./tag/kernel.html"><i class="icon-tag"></i>Kernel</a>
 </footer><!-- /.post-info -->                </div>
-                <p>Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
+                <p>Updated on 2017-12-28</p>
+<p>Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
 knows how to do it..)</p>
+<h2>Configuring &amp; Building Linux</h2>
 <p>One can start by cloning Torvalds' Linux repository to fetch the
 latest master (or we could fetch the latest stable release) :</p>
 <div class="highlight"><pre><span></span>$ git clone https://github.com/torvalds/linux.git
-$ <span class="nb">cd</span> linux
+$ cd linux
 </pre></div>
 
 
@@ -132,7 +134,7 @@ $ <span class="nb">cd</span> linux
 which kernel I am testing. That can be done by opening the <code>Makefile</code>
 with one's favorite editor or replacing the <code>EXTRAVERSION</code> line with
 <code>sed</code>:</p>
-<div class="highlight"><pre><span></span>$ sed -i <span class="s2">&quot;s/^EXTRAVERSION = .*</span>$<span class="s2">/EXTRAVERSION = name_of_my_version/&quot;</span> Makefile
+<div class="highlight"><pre><span></span>$ sed -i &quot;s/^EXTRAVERSION = .*$/EXTRAVERSION = name_of_my_version/&quot; Makefile
 </pre></div>
 
 
@@ -142,6 +144,12 @@ file. We can start from the default one:</p>
 </pre></div>
 
 
+<p>Or we can reuse configuration files from the local installation with:</p>
+<div class="highlight"><pre><span></span>$ make olddefconfig
+</pre></div>
+
+
+<p>Note that <code>make help</code> provides the list of possible <code>make</code> commands.</p>
 <p>For computers using (U)EFI, one may need to update the <code>.config</code> file
 to support <code>EFI handover</code>. This is done by setting <code>EFI stub support</code>
 when configuring the kernel (for instance with <code>make menuconfig</code>).</p>
@@ -154,17 +162,37 @@ when configuring the kernel (for instance with <code>make menuconfig</code>).</p
 <p>Sources: <a href="https://stackoverflow.com/questions/40344484/cant-load-self-compiled-linux-kernel#40344635">stackoverflow</a> and <a href="https://wiki.gentoo.org/wiki/EFI_stub_kernel#Configuration">gentoo linux wiki</a>.</p>
 <p>Without that option activated, I ended up having the following error
 message when trying to boot my new kernel:</p>
-<div class="highlight"><pre><span></span><span class="n">error</span><span class="o">:</span> <span class="n">kernel</span> <span class="n">doesn</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">support</span> <span class="n">EFI</span> <span class="n">handover</span>
+<div class="highlight"><pre><span></span>error: kernel doesn&#39;t support EFI handover
 </pre></div>
 
 
-<p>At that point, we can do any dirty hack we want to test on the kernel
-; )</p>
+<p>This option isn't required when building a kernel for a virtual
+machine.</p>
+<p>In order to compile the kernel, (at least) the following dependencies
+are required:</p>
+<ul>
+<li>git</li>
+<li>gcc</li>
+<li>ncurses-devel</li>
+<li>elfutils-libelf-devel</li>
+<li>openssl-devel</li>
+<li>perl-interpreter</li>
+<li>rpm-build (if building rpm packages)</li>
+</ul>
 <p>Then we can build the kernel as simply as that:</p>
 <div class="highlight"><pre><span></span>$ make
 </pre></div>
 
 
+<p>The straight forward approach to install the Kernel, if it has been
+built on the target machine is:</p>
+<div class="highlight"><pre><span></span>$ sudo make install
+$ sudo make modules_install
+</pre></div>
+
+
+<p>We can now reboot on the newly built Kernel.</p>
+<h2>Building RPM package</h2>
 <p>We can even make RPMs to install the new kernel on any RPM based
 machine:</p>
 <div class="highlight"><pre><span></span>$ make binrpm-pkg
@@ -180,17 +208,17 @@ $
 
 <p>The newly built kernel can be installed with the standard rpm install
 command:</p>
-<div class="highlight"><pre><span></span>$ <span class="nb">cd</span> ~/rpmbuild/RPMS/x86_64/
-$ rpm -i kernel-4.14.0efistub+-3.x86_64.rpm
+<div class="highlight"><pre><span></span>$ cd ~/rpmbuild/RPMS/x86_64/
+$ sudo rpm -i kernel-4.14.0efistub+-3.x86_64.rpm
 </pre></div>
 
 
 <p>That's it, when rebooting, the new kernel is available in the grub
 menu (together with the previously installed kernels) .</p>
-<div class="highlight"><pre><span></span>$ dmesg <span class="p">|</span> head -3
-<span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> microcode: microcode updated early to revision 0x1c, <span class="nv">date</span> <span class="o">=</span> <span class="m">2015</span>-02-26
-<span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Linux version <span class="m">4</span>.14.0efistub+ <span class="o">(</span>florent@amn<span class="o">)</span> <span class="o">(</span>gcc version <span class="m">7</span>.2.1 <span class="m">20170915</span> <span class="o">(</span>Red Hat <span class="m">7</span>.2.1-2<span class="o">)</span> <span class="o">(</span>GCC<span class="o">))</span> <span class="c1">#3 SMP Sun Nov 19 22:52:23 CET 2017</span>
-<span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Command line: <span class="nv">BOOT_IMAGE</span><span class="o">=</span>/vmlinuz-4.14.0efistub+ <span class="nv">root</span><span class="o">=</span>/dev/mapper/fedora-root ro rd.lvm.lv<span class="o">=</span>fedora/root rd.lvm.lv<span class="o">=</span>fedora/swap rhgb quiet <span class="nv">LANG</span><span class="o">=</span>en_US.UTF-8
+<div class="highlight"><pre><span></span>$ dmesg | head -3
+[    0.000000] microcode: microcode updated early to revision 0x1c, date = 2015-02-26
+[    0.000000] Linux version 4.14.0efistub+ (florent@amn) (gcc version 7.2.1 20170915 (Red Hat 7.2.1-2) (GCC)) #3 SMP Sun Nov 19 22:52:23 CET 2017
+[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-4.14.0efistub+ root=/dev/mapper/fedora-root ro rd.lvm.lv=fedora/root rd.lvm.lv=fedora/swap rhgb quiet LANG=en_US.UTF-8
 </pre></div>
 
 
