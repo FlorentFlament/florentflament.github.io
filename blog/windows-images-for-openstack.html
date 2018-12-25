@@ -107,7 +107,7 @@
 <footer class="post-info">
 <span class="label">Date</span>
 <abbr class="published" title="2014-03-30T19:15:00+02:00">
-        <i class="icon-calendar"></i>Sun 30 March 2014
+        <i class="icon-calendar"></i>dim. 30 mars 2014
 </abbr>
 <span class="label">By</span>
 <a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
@@ -163,9 +163,9 @@ details.</p>
   machine. The following command is an example for that:</p>
 <div class="highlight"><pre><span></span>$ kvm <span class="se">\</span>
     -m <span class="m">2048</span> <span class="se">\</span>
-    -cdrom &lt;WINDOWS_INSTALLER_ISO&gt; <span class="se">\</span>
+    -cdrom <span class="p">&amp;</span>lt<span class="p">;</span>WINDOWS_INSTALLER_ISO<span class="p">&amp;</span>gt<span class="p">;</span> <span class="se">\</span>
     -drive <span class="nv">file</span><span class="o">=</span>Windows-Server-2008-R2.qcow2,if<span class="o">=</span>virtio <span class="se">\</span>
-    -drive <span class="nv">file</span><span class="o">=</span>&lt;VIRTIO_DRIVERS_ISO&gt;,index<span class="o">=</span><span class="m">3</span>,media<span class="o">=</span>cdrom <span class="se">\</span>
+    -drive <span class="nv">file</span><span class="o">=</span><span class="p">&amp;</span>lt<span class="p">;</span>VIRTIO_DRIVERS_ISO<span class="p">&amp;</span>gt<span class="p">;</span>,index<span class="o">=</span><span class="m">3</span>,media<span class="o">=</span>cdrom <span class="se">\</span>
     -net nic,model<span class="o">=</span>virtio <span class="se">\</span>
     -net user <span class="se">\</span>
     -nographic <span class="se">\</span>
@@ -180,7 +180,7 @@ details.</p>
 <p>The following step consists in connecting to the display of the VM
   launched previously through VNC, in order to manually pursue the
   installation. This can be done with the following command:</p>
-<div class="highlight"><pre><span></span>$ xvncviewer &lt;IP_OF_HYPERVISOR&gt;:9
+<div class="highlight"><pre><span></span>$ xvncviewer <span class="p">&amp;</span>lt<span class="p">;</span>IP_OF_HYPERVISOR<span class="p">&amp;</span>gt<span class="p">;</span>:9
 </pre></div>
 
 
@@ -233,7 +233,7 @@ downloaded. To to that, we have to follow these steps:</p>
   installer on Windows' administrator desktop, with something like:</p>
 <div class="highlight"><pre><span></span>$ sudo qemu-nbd -c /dev/nbd2 Windows-Server-2008-R2.qcow2
 $ sudo mount /dev/nbd2p2 mnt/
-$ cp &lt;INSTALLER&gt; &lt;ADMINISTRATOR_DESKTOP_ON_WINDOWS&gt;
+$ cp <span class="p">&amp;</span>lt<span class="p">;</span>INSTALLER<span class="p">&amp;</span>gt<span class="p">;</span> <span class="p">&amp;</span>lt<span class="p">;</span>ADMINISTRATOR_DESKTOP_ON_WINDOWS<span class="p">&amp;</span>gt<span class="p">;</span>
 $ sudo umount mnt/
 $ sudo qemu-nbd -d /dev/nbd2
 </pre></div>
@@ -245,9 +245,9 @@ $ sudo qemu-nbd -d /dev/nbd2
   Windows in the first place:</p>
 <div class="highlight"><pre><span></span>$ kvm <span class="se">\</span>
     -m <span class="m">2048</span> <span class="se">\</span>
-    -cdrom &lt;WINDOWS_INSTALLER_ISO&gt; <span class="se">\</span>
+    -cdrom <span class="p">&amp;</span>lt<span class="p">;</span>WINDOWS_INSTALLER_ISO<span class="p">&amp;</span>gt<span class="p">;</span> <span class="se">\</span>
     -drive <span class="nv">file</span><span class="o">=</span>Windows-Server-2008-R2.qcow2,if<span class="o">=</span>virtio <span class="se">\</span>
-    -drive <span class="nv">file</span><span class="o">=</span>&lt;VIRTIO_DRIVERS_ISO&gt;,index<span class="o">=</span><span class="m">3</span>,media<span class="o">=</span>cdrom <span class="se">\</span>
+    -drive <span class="nv">file</span><span class="o">=</span><span class="p">&amp;</span>lt<span class="p">;</span>VIRTIO_DRIVERS_ISO<span class="p">&amp;</span>gt<span class="p">;</span>,index<span class="o">=</span><span class="m">3</span>,media<span class="o">=</span>cdrom <span class="se">\</span>
     -net nic,model<span class="o">=</span>virtio <span class="se">\</span>
     -net user <span class="se">\</span>
     -nographic <span class="se">\</span>
@@ -260,7 +260,7 @@ $ sudo qemu-nbd -d /dev/nbd2
 </li>
 <li>
 <p>Then connect again with xvncviewer:</p>
-<div class="highlight"><pre><span></span>$ xvncviewer &lt;IP_OF_HYPERVISOR&gt;:9
+<div class="highlight"><pre><span></span>$ xvncviewer <span class="p">&amp;</span>lt<span class="p">;</span>IP_OF_HYPERVISOR<span class="p">&amp;</span>gt<span class="p">;</span>:9
 </pre></div>
 
 
@@ -277,8 +277,8 @@ $ sudo qemu-nbd -d /dev/nbd2
 <p>Once the installation is done, we can clean any temporary files
   created, then shutdown the system. The image is ready to be uploaded
   in OpenStack Glance:</p>
-<div class="highlight"><pre><span></span>$ glance add <span class="nv">name</span><span class="o">=</span>&lt;OPENSTACK_IMAGE_NAME&gt; <span class="nv">is_public</span><span class="o">=</span><span class="nb">true</span> <span class="se">\</span>
-    <span class="nv">container_format</span><span class="o">=</span>bare <span class="nv">disk_format</span><span class="o">=</span>qcow2 &lt; &lt;IMAGE_FILENAME&gt;
+<div class="highlight"><pre><span></span>$ glance add <span class="nv">name</span><span class="o">=</span><span class="p">&amp;</span>lt<span class="p">;</span>OPENSTACK_IMAGE_NAME<span class="p">&amp;</span>gt<span class="p">;</span> <span class="nv">is_public</span><span class="o">=</span><span class="nb">true</span> <span class="se">\</span>
+    <span class="nv">container_format</span><span class="o">=</span>bare <span class="nv">disk_format</span><span class="o">=</span>qcow2 <span class="p">&amp;</span>lt<span class="p">;</span> <span class="p">&amp;</span>lt<span class="p">;</span>IMAGE_FILENAME<span class="p">&amp;</span>gt<span class="p">;</span>
 </pre></div>
 
 
@@ -298,9 +298,9 @@ tested yet). Cloud-Init base creates an <code>Admin</code> user, with either:</p
   password must respect Windows password strength constraints (upper
   and lower case characters, as well as numbers). If not it will be
   silently ignored. For instance:</p>
-<div class="highlight"><pre><span></span>$ nova boot --key-name &lt;KEYPAIR_NAME&gt; --image &lt;IMAGE_ID&gt; <span class="se">\</span>
-    --flavor &lt;FLAVOR_ID&gt; --nic net-id<span class="o">=</span>&lt;NET_ID&gt; <span class="se">\</span>
-    --meta <span class="nv">admin_pass</span><span class="o">=</span>&lt;ADMIN_PASSWORD&gt; &lt;VM_NAME&gt;
+<div class="highlight"><pre><span></span>$ nova boot --key-name <span class="p">&amp;</span>lt<span class="p">;</span>KEYPAIR_NAME<span class="p">&amp;</span>gt<span class="p">;</span> --image <span class="p">&amp;</span>lt<span class="p">;</span>IMAGE_ID<span class="p">&amp;</span>gt<span class="p">;</span> <span class="se">\</span>
+    --flavor <span class="p">&amp;</span>lt<span class="p">;</span>FLAVOR_ID<span class="p">&amp;</span>gt<span class="p">;</span> --nic net-id<span class="o">=</span><span class="p">&amp;</span>lt<span class="p">;</span>NET_ID<span class="p">&amp;</span>gt<span class="p">;</span> <span class="se">\</span>
+    --meta <span class="nv">admin_pass</span><span class="o">=</span><span class="p">&amp;</span>lt<span class="p">;</span>ADMIN_PASSWORD<span class="p">&amp;</span>gt<span class="p">;</span> <span class="p">&amp;</span>lt<span class="p">;</span>VM_NAME<span class="p">&amp;</span>gt<span class="p">;</span>
 </pre></div>
 
 
@@ -311,7 +311,7 @@ tested yet). Cloud-Init base creates an <code>Admin</code> user, with either:</p
   VM. Such password can be retrieved and decrypted with the
   corresponding private ssh key, by using the following command (note
   that the private key is used locally):</p>
-<div class="highlight"><pre><span></span>$ nova get-password &lt;VM_NAME_OR_ID&gt; &lt;SSH_PRIVATE_KEY&gt;
+<div class="highlight"><pre><span></span>$ nova get-password <span class="p">&amp;</span>lt<span class="p">;</span>VM_NAME_OR_ID<span class="p">&amp;</span>gt<span class="p">;</span> <span class="p">&amp;</span>lt<span class="p">;</span>SSH_PRIVATE_KEY<span class="p">&amp;</span>gt<span class="p">;</span>
 </pre></div>
 
 
@@ -359,6 +359,11 @@ to a windows 2012 VM using <code>rdesktop</code>.</p>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
 <li class="tag-4">
+    <a href="./tag/amd.html">
+        <i class="icon-tag icon-large"></i>AMD
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/atmega.html">
         <i class="icon-tag icon-large"></i>ATmega
     </a>
@@ -376,6 +381,11 @@ to a windows 2012 VM using <code>rdesktop</code>.</p>
 <li class="tag-1">
     <a href="./tag/arduino.html">
         <i class="icon-tag icon-large"></i>Arduino
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/benchmark.html">
+        <i class="icon-tag icon-large"></i>Benchmark
     </a>
 </li>
 <li class="tag-4">
@@ -424,6 +434,11 @@ to a windows 2012 VM using <code>rdesktop</code>.</p>
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/gpu.html">
+        <i class="icon-tag icon-large"></i>GPU
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/git.html">
         <i class="icon-tag icon-large"></i>Git
     </a>
@@ -463,6 +478,11 @@ to a windows 2012 VM using <code>rdesktop</code>.</p>
         <i class="icon-tag icon-large"></i>Microsft
     </a>
 </li>
+<li class="tag-4">
+    <a href="./tag/opencl.html">
+        <i class="icon-tag icon-large"></i>OpenCL
+    </a>
+</li>
 <li class="tag-1">
     <a href="./tag/openstack.html">
         <i class="icon-tag icon-large"></i>OpenStack
@@ -476,6 +496,16 @@ to a windows 2012 VM using <code>rdesktop</code>.</p>
 <li class="tag-4">
     <a href="./tag/printers.html">
         <i class="icon-tag icon-large"></i>Printers
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/rx-480.html">
+        <i class="icon-tag icon-large"></i>RX 480
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/radeon.html">
+        <i class="icon-tag icon-large"></i>Radeon
     </a>
 </li>
 <li class="tag-4">

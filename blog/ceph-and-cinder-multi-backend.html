@@ -107,7 +107,7 @@
 <footer class="post-info">
 <span class="label">Date</span>
 <abbr class="published" title="2013-11-17T00:00:00+01:00">
-        <i class="icon-calendar"></i>Sun 17 November 2013
+        <i class="icon-calendar"></i>dim. 17 novembre 2013
 </abbr>
 <span class="label">By</span>
 <a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
@@ -145,7 +145,7 @@ storage. The following command has to be launched on a Ceph node:</p>
 <p>The keyring (token used to identify Ceph users) has to be copied on
 cinder-volume nodes. The keyring file can be created with the
 following command on a Ceph node:</p>
-<div class="highlight"><pre><span></span>ceph auth get-or-create client.volumes &gt; ceph.client.images.keyring
+<div class="highlight"><pre><span></span>ceph auth get-or-create client.volumes <span class="p">&amp;</span>gt<span class="p">;</span> ceph.client.images.keyring
 </pre></div>
 
 
@@ -215,17 +215,17 @@ cinder list
 mount Ceph block devices. To do that, we have to dump Ceph's
 authentication token to a file that we'll use on each nova-compute
 node. On a Ceph node:</p>
-<div class="highlight"><pre><span></span>ceph auth get-key client.volumes &gt; client.volumes.key
+<div class="highlight"><pre><span></span>ceph auth get-key client.volumes <span class="p">&amp;</span>gt<span class="p">;</span> client.volumes.key
 </pre></div>
 
 
 <p>We will also need a <code>secret.xml</code> file that will be used on each
 compute node, with the following initial content:</p>
-<div class="highlight"><pre><span></span><span class="nt">&lt;secret</span> <span class="na">ephemeral=</span><span class="s">&#39;no&#39;</span> <span class="na">private=</span><span class="s">&#39;no&#39;</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;usage</span> <span class="na">type=</span><span class="s">&#39;ceph&#39;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;name&gt;</span>client.volumes secret<span class="nt">&lt;/name&gt;</span>
-  <span class="nt">&lt;/usage&gt;</span>
-<span class="nt">&lt;/secret&gt;</span>
+<div class="highlight"><pre><span></span><span class="ni">&amp;lt;</span>secret ephemeral=&#39;no&#39; private=&#39;no&#39;<span class="ni">&amp;gt;</span>
+  <span class="ni">&amp;lt;</span>usage type=&#39;ceph&#39;<span class="ni">&amp;gt;</span>
+    <span class="ni">&amp;lt;</span>name<span class="ni">&amp;gt;</span>client.volumes secret<span class="ni">&amp;lt;</span>/name<span class="ni">&amp;gt;</span>
+  <span class="ni">&amp;lt;</span>/usage<span class="ni">&amp;gt;</span>
+<span class="ni">&amp;lt;</span>/secret<span class="ni">&amp;gt;</span>
 </pre></div>
 
 
@@ -249,7 +249,7 @@ following command:</p>
 updated on the first nova-compute node (in order to ensure that the
 same UUID_OF_SECRET will be used on each nova-compute node), with the
 following command:</p>
-<div class="highlight"><pre><span></span>virsh secret-dumpxml UUID_OF_SECRET &gt; secret.xml
+<div class="highlight"><pre><span></span>virsh secret-dumpxml UUID_OF_SECRET <span class="p">&amp;</span>gt<span class="p">;</span> secret.xml
 </pre></div>
 
 
@@ -313,6 +313,11 @@ backend!</p>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
 <li class="tag-4">
+    <a href="./tag/amd.html">
+        <i class="icon-tag icon-large"></i>AMD
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/atmega.html">
         <i class="icon-tag icon-large"></i>ATmega
     </a>
@@ -330,6 +335,11 @@ backend!</p>
 <li class="tag-1">
     <a href="./tag/arduino.html">
         <i class="icon-tag icon-large"></i>Arduino
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/benchmark.html">
+        <i class="icon-tag icon-large"></i>Benchmark
     </a>
 </li>
 <li class="tag-4">
@@ -378,6 +388,11 @@ backend!</p>
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/gpu.html">
+        <i class="icon-tag icon-large"></i>GPU
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/git.html">
         <i class="icon-tag icon-large"></i>Git
     </a>
@@ -417,6 +432,11 @@ backend!</p>
         <i class="icon-tag icon-large"></i>Microsft
     </a>
 </li>
+<li class="tag-4">
+    <a href="./tag/opencl.html">
+        <i class="icon-tag icon-large"></i>OpenCL
+    </a>
+</li>
 <li class="tag-1">
     <a href="./tag/openstack.html">
         <i class="icon-tag icon-large"></i>OpenStack
@@ -430,6 +450,16 @@ backend!</p>
 <li class="tag-4">
     <a href="./tag/printers.html">
         <i class="icon-tag icon-large"></i>Printers
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/rx-480.html">
+        <i class="icon-tag icon-large"></i>RX 480
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/radeon.html">
+        <i class="icon-tag icon-large"></i>Radeon
     </a>
 </li>
 <li class="tag-4">

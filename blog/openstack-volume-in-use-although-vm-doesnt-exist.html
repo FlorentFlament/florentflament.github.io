@@ -107,7 +107,7 @@
 <footer class="post-info">
 <span class="label">Date</span>
 <abbr class="published" title="2014-01-04T00:00:00+01:00">
-        <i class="icon-calendar"></i>Sat 04 January 2014
+        <i class="icon-calendar"></i>sam. 04 janvier 2014
 </abbr>
 <span class="label">By</span>
 <a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
@@ -138,45 +138,45 @@ some weird methods for both version of the API.</p>
 which is neither documented <a href="http://docs.openstack.org/api/openstack-block-storage/2.0/content/Volumes.html">here</a> nor <a href="http://api.openstack.org/api-ref-blockstorage.html">there</a>. They can be used
 to "set attachment metadata", which according to my opinion has no
 good reason to be performed directly by a user.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">time</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">cinderclient.v1.client</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">novaclient.v1_1.client</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Creating manager</span>
+<div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="kn">import</span> <span class="nn">time</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="kn">import</span> <span class="nn">cinderclient.v1.client</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="kn">import</span> <span class="nn">novaclient.v1_1.client</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="c1"># Creating manager</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;project_name&quot;</span><span class="p">,</span> <span class="s2">&quot;auth_url&quot;</span><span class="p">]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span> <span class="o">=</span> <span class="n">cinderclient</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span> <span class="o">=</span> <span class="n">novaclient</span><span class="o">.</span><span class="n">v1_1</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Getting an image and a flavor to launch our VM</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;project_name&quot;</span><span class="p">,</span> <span class="s2">&quot;auth_url&quot;</span><span class="p">]</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">cinder</span> <span class="o">=</span> <span class="n">cinderclient</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">nova</span> <span class="o">=</span> <span class="n">novaclient</span><span class="o">.</span><span class="n">v1_1</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="c1"># Getting an image and a flavor to launch our VM</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">img</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">list</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">fla</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">flavors</span><span class="o">.</span><span class="n">list</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Creating our resources (vm and volume)</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">img</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">list</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">fla</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">flavors</span><span class="o">.</span><span class="n">list</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="c1"># Creating our resources (vm and volume)</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">vm</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;MyVm&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">fla</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">vol</span> <span class="o">=</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;MyVol&quot;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Waiting for VM to be spawned</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">vm</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;MyVm&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">fla</span><span class="p">)</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">vol</span> <span class="o">=</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s2">&quot;MyVol&quot;</span><span class="p">)</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="c1"># Waiting for VM to be spawned</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">while</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="s2">&quot;ACTIVE&quot;</span><span class="p">:</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="k">while</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="s2">&quot;ACTIVE&quot;</span><span class="p">:</span>
 <span class="o">...</span>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Try an attach the volume using the VolumeManager.attach method</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="c1"># Try an attach the volume using the VolumeManager.attach method</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">vol</span><span class="p">,</span> <span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;/dev/vdb&quot;</span><span class="p">)</span>
-<span class="p">(</span><span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">202</span><span class="p">]</span><span class="o">&gt;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;attachments&quot;</span><span class="p">]</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">vol</span><span class="p">,</span> <span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;/dev/vdb&quot;</span><span class="p">)</span>
+<span class="p">(</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">202</span><span class="p">]</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;,</span> <span class="bp">None</span><span class="p">)</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;attachments&quot;</span><span class="p">]</span>
 <span class="p">[{</span><span class="sa">u</span><span class="s1">&#39;device&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;/dev/vdb&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;server_id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;volume_id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;host_name&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Well it looks like it is attached</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="c1"># Well it looks like it is attached</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">vm</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">vm</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">vm</span> <span class="o">=</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">)</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">vm</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
 <span class="p">[]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># But actually it isn&#39;t</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="c1"># But actually it isn&#39;t</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>
 </pre></div>
 
 
@@ -186,26 +186,26 @@ instance. This should be done by using the
 <a href="https://github.com/openstack/python-novaclient/blob/master/novaclient/v1_1/volumes.py">novaclient.v1_1.volumes.VolumeManager.create_server_volume</a>
 method. It actually allows to "attach a volume to a server", which is
 what we want to do (And yes the method's name is not super clear).</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="c1"># Let&#39;s continue on the example above</span>
+<div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="c1"># Let&#39;s continue on the example above</span>
 <span class="o">...</span> <span class="c1"># First by clearing our volume attachment&#39;s metadata</span>
 <span class="o">...</span> <span class="c1"># to recover a consistent state</span>
 <span class="o">...</span> 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">vol</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
-<span class="p">(</span><span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">202</span><span class="p">]</span><span class="o">&gt;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;attachments&#39;</span><span class="p">]</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">vol</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+<span class="p">(</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">202</span><span class="p">]</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;,</span> <span class="bp">None</span><span class="p">)</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;attachments&#39;</span><span class="p">]</span>
 <span class="p">[]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
 <span class="p">[]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Now we can use the VolumeManager.create_server_volume method</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="c1"># Now we can use the VolumeManager.create_server_volume method</span>
 <span class="o">...</span> <span class="c1"># to really attach our volume to our vm</span>
 <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">create_server_volume</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;/dev/vdb&quot;</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="n">Volume</span><span class="p">:</span> <span class="n">f024883d</span><span class="o">-</span><span class="mi">4</span><span class="n">b35</span><span class="o">-</span><span class="mi">4894</span><span class="o">-</span><span class="mi">9</span><span class="n">fbf</span><span class="o">-</span><span class="mf">51498e6</span><span class="n">c3c09</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;attachments&quot;</span><span class="p">]</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">nova</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">create_server_volume</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;/dev/vdb&quot;</span><span class="p">)</span>
+<span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Volume</span><span class="p">:</span> <span class="n">f024883d</span><span class="o">-</span><span class="mi">4</span><span class="n">b35</span><span class="o">-</span><span class="mi">4894</span><span class="o">-</span><span class="mi">9</span><span class="n">fbf</span><span class="o">-</span><span class="mf">51498e6</span><span class="n">c3c09</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">cinder</span><span class="o">.</span><span class="n">volumes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;attachments&quot;</span><span class="p">]</span>
 <span class="p">[{</span><span class="sa">u</span><span class="s1">&#39;device&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;/dev/vdb&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;server_id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;3ee03547-7b93-4c8f-9316-bc2adafbd08a&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;volume_id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;host_name&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">nova</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;os-extended-volumes:volumes_attached&#39;</span><span class="p">]</span>
 <span class="p">[{</span><span class="sa">u</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;f024883d-4b35-4894-9fbf-51498e6c3c09&#39;</span><span class="p">}]</span>
-<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>
 </pre></div>
 
 
@@ -237,7 +237,7 @@ owners.
 
 Type <span class="s1">&#39;help;&#39;</span> or <span class="s1">&#39;\h&#39;</span> <span class="k">for</span> help. Type <span class="s1">&#39;\c&#39;</span> to clear the current input statement.
 
-mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<span class="p">;</span>
+mysql<span class="p">&amp;</span>gt<span class="p">;</span> SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<span class="p">;</span>
 +--------------------------------------+---------+---------------+------------+--------------------------------------+
 <span class="p">|</span> id                                   <span class="p">|</span> status  <span class="p">|</span> attach_status <span class="p">|</span> mountpoint <span class="p">|</span> instance_uuid                        <span class="p">|</span>
 +--------------------------------------+---------+---------------+------------+--------------------------------------+
@@ -251,11 +251,11 @@ mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<s
 +--------------------------------------+---------+---------------+------------+--------------------------------------+
 <span class="m">7</span> rows in <span class="nb">set</span> <span class="o">(</span><span class="m">0</span>.00 sec<span class="o">)</span>
 
-mysql&gt; UPDATE volumes SET <span class="nv">status</span><span class="o">=</span><span class="s2">&quot;available&quot;</span>, <span class="nv">attach_status</span><span class="o">=</span><span class="s2">&quot;detached&quot;</span>, <span class="nv">mountpoint</span><span class="o">=</span>NULL, <span class="nv">instance_uuid</span><span class="o">=</span>NULL WHERE <span class="nv">id</span><span class="o">=</span><span class="s2">&quot;57b32eaf-7b71-49bf-a8fd-4115567a6cda&quot;</span><span class="p">;</span>
+mysql<span class="p">&amp;</span>gt<span class="p">;</span> UPDATE volumes SET <span class="nv">status</span><span class="o">=</span><span class="s2">&quot;available&quot;</span>, <span class="nv">attach_status</span><span class="o">=</span><span class="s2">&quot;detached&quot;</span>, <span class="nv">mountpoint</span><span class="o">=</span>NULL, <span class="nv">instance_uuid</span><span class="o">=</span>NULL WHERE <span class="nv">id</span><span class="o">=</span><span class="s2">&quot;57b32eaf-7b71-49bf-a8fd-4115567a6cda&quot;</span><span class="p">;</span>
 Query OK, <span class="m">1</span> row affected <span class="o">(</span><span class="m">0</span>.00 sec<span class="o">)</span>
 Rows matched: <span class="m">1</span>  Changed: <span class="m">1</span>  Warnings: <span class="m">0</span>
 
-mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<span class="p">;</span>
+mysql<span class="p">&amp;</span>gt<span class="p">;</span> SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<span class="p">;</span>
 +--------------------------------------+-----------+---------------+------------+---------------+
 <span class="p">|</span> id                                   <span class="p">|</span> status    <span class="p">|</span> attach_status <span class="p">|</span> mountpoint <span class="p">|</span> instance_uuid <span class="p">|</span>
 +--------------------------------------+-----------+---------------+------------+---------------+
@@ -269,7 +269,7 @@ mysql&gt; SELECT id,status,attach_status,mountpoint,instance_uuid from volumes<s
 +--------------------------------------+-----------+---------------+------------+---------------+
 <span class="m">7</span> rows in <span class="nb">set</span> <span class="o">(</span><span class="m">0</span>.00 sec<span class="o">)</span>
 
-mysql&gt; Bye
+mysql<span class="p">&amp;</span>gt<span class="p">;</span> Bye
 $ cinder list
 +--------------------------------------+-----------+------+------+-------------+----------+-------------+
 <span class="p">|</span>                  ID                  <span class="p">|</span>   Status  <span class="p">|</span> Name <span class="p">|</span> Size <span class="p">|</span> Volume Type <span class="p">|</span> Bootable <span class="p">|</span> Attached to <span class="p">|</span>
@@ -316,6 +316,11 @@ $ cinder list
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
 <li class="tag-4">
+    <a href="./tag/amd.html">
+        <i class="icon-tag icon-large"></i>AMD
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/atmega.html">
         <i class="icon-tag icon-large"></i>ATmega
     </a>
@@ -333,6 +338,11 @@ $ cinder list
 <li class="tag-1">
     <a href="./tag/arduino.html">
         <i class="icon-tag icon-large"></i>Arduino
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/benchmark.html">
+        <i class="icon-tag icon-large"></i>Benchmark
     </a>
 </li>
 <li class="tag-4">
@@ -381,6 +391,11 @@ $ cinder list
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/gpu.html">
+        <i class="icon-tag icon-large"></i>GPU
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/git.html">
         <i class="icon-tag icon-large"></i>Git
     </a>
@@ -420,6 +435,11 @@ $ cinder list
         <i class="icon-tag icon-large"></i>Microsft
     </a>
 </li>
+<li class="tag-4">
+    <a href="./tag/opencl.html">
+        <i class="icon-tag icon-large"></i>OpenCL
+    </a>
+</li>
 <li class="tag-1">
     <a href="./tag/openstack.html">
         <i class="icon-tag icon-large"></i>OpenStack
@@ -433,6 +453,16 @@ $ cinder list
 <li class="tag-4">
     <a href="./tag/printers.html">
         <i class="icon-tag icon-large"></i>Printers
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/rx-480.html">
+        <i class="icon-tag icon-large"></i>RX 480
+    </a>
+</li>
+<li class="tag-4">
+    <a href="./tag/radeon.html">
+        <i class="icon-tag icon-large"></i>Radeon
     </a>
 </li>
 <li class="tag-4">

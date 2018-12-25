@@ -2,13 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Florent Flament's Tech Blog</title>
+    <title>Florent Flament's Tech Blog - OpenCL</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Florent Flament">
 
     <!-- Le styles -->
-    <link rel="stylesheet" href="./theme/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../theme/css/bootstrap.min.css" type="text/css" />
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -30,10 +30,10 @@
         font-size: 6pt;
      }
     </style>
-    <link href="./theme/css/bootstrap-responsive.min.css" rel="stylesheet">
-        <link href="./theme/css/font-awesome.css" rel="stylesheet">
+    <link href="../theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="../theme/css/font-awesome.css" rel="stylesheet">
 
-    <link href="./theme/css/pygments.css" rel="stylesheet">
+    <link href="../theme/css/pygments.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -41,12 +41,12 @@
     <![endif]-->
 
     <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="./theme/images/favicon.ico">
-    <link rel="apple-touch-icon" href="./theme/images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="./theme/images/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="./theme/images/apple-touch-icon-114x114.png">
+    <link rel="shortcut icon" href="../theme/images/favicon.ico">
+    <link rel="apple-touch-icon" href="../theme/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="../theme/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="../theme/images/apple-touch-icon-114x114.png">
 
-    <link href="./" type="application/atom+xml" rel="alternate" title="Florent Flament's Tech Blog ATOM Feed" />
+    <link href="../" type="application/atom+xml" rel="alternate" title="Florent Flament's Tech Blog ATOM Feed" />
 
   </head>
 
@@ -60,23 +60,23 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="./index.html">Florent Flament's Tech Blog </a>
+          <a class="brand" href="../index.html">Florent Flament's Tech Blog </a>
           <div class="nav-collapse">
             <ul class="nav">
                           <li class="divider-vertical"></li>
                   <li >
-                    <a href="./category/misc.html">
+                    <a href="../category/misc.html">
 						<i class="icon-folder-open icon-large"></i>misc
 					</a>
                   </li>
                   <li >
-                    <a href="./category/openstack.html">
+                    <a href="../category/openstack.html">
 						<i class="icon-folder-open icon-large"></i>OpenStack
 					</a>
                   </li>
 
                           <ul class="nav pull-right">
-                                <li><a href="./archives.html"><i class="icon-th-list"></i>Archives</a></li>
+                                <li><a href="../archives.html"><i class="icon-th-list"></i>Archives</a></li>
                           </ul>
 
             </ul>
@@ -89,239 +89,38 @@
     <div class="container-fluid">
       <div class="row">
         <div class="span9" id="content">
-<ul>
-<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-4">
-	<a href="./tag/amd.html">
-		<i class="icon-tag icon-large"></i>AMD
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/atmega.html">
-		<i class="icon-tag icon-large"></i>ATmega
-	</a>
-</li>
-<li class="tag-2">
-	<a href="./tag/ay-3-8910.html">
-		<i class="icon-tag icon-large"></i>AY-3-8910
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/apple.html">
-		<i class="icon-tag icon-large"></i>Apple
-	</a>
-</li>
-<li class="tag-1">
-	<a href="./tag/arduino.html">
-		<i class="icon-tag icon-large"></i>Arduino
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/benchmark.html">
-		<i class="icon-tag icon-large"></i>Benchmark
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/ceph.html">
-		<i class="icon-tag icon-large"></i>Ceph
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/chef.html">
-		<i class="icon-tag icon-large"></i>Chef
-	</a>
-</li>
-<li class="tag-2">
-	<a href="./tag/cinder.html">
-		<i class="icon-tag icon-large"></i>Cinder
-	</a>
-</li>
-<li class="tag-2">
-	<a href="./tag/costs.html">
-		<i class="icon-tag icon-large"></i>Costs
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/data-safety.html">
-		<i class="icon-tag icon-large"></i>Data Safety
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/data-security.html">
-		<i class="icon-tag icon-large"></i>Data Security
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/data-management.html">
-		<i class="icon-tag icon-large"></i>Data management
-	</a>
-</li>
-<li class="tag-2">
-	<a href="./tag/docker.html">
-		<i class="icon-tag icon-large"></i>Docker
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/documentation.html">
-		<i class="icon-tag icon-large"></i>Documentation
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/gpu.html">
-		<i class="icon-tag icon-large"></i>GPU
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/git.html">
-		<i class="icon-tag icon-large"></i>Git
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/hardware.html">
-		<i class="icon-tag icon-large"></i>Hardware
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/irc.html">
-		<i class="icon-tag icon-large"></i>IRC
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/kvm.html">
-		<i class="icon-tag icon-large"></i>KVM
-	</a>
-</li>
-<li class="tag-2">
-	<a href="./tag/kernel.html">
-		<i class="icon-tag icon-large"></i>Kernel
-	</a>
-</li>
-<li class="tag-2">
-	<a href="./tag/keystone.html">
-		<i class="icon-tag icon-large"></i>Keystone
-	</a>
-</li>
-<li class="tag-2">
-	<a href="./tag/linux.html">
-		<i class="icon-tag icon-large"></i>Linux
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/microsft.html">
-		<i class="icon-tag icon-large"></i>Microsft
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/opencl.html">
-		<i class="icon-tag icon-large"></i>OpenCL
-	</a>
-</li>
-<li class="tag-1">
-	<a href="./tag/openstack.html">
-		<i class="icon-tag icon-large"></i>OpenStack
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/policies.html">
-		<i class="icon-tag icon-large"></i>Policies
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/printers.html">
-		<i class="icon-tag icon-large"></i>Printers
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/rx-480.html">
-		<i class="icon-tag icon-large"></i>RX 480
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/radeon.html">
-		<i class="icon-tag icon-large"></i>Radeon
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/raspberry-pi.html">
-		<i class="icon-tag icon-large"></i>Raspberry Pi
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/raspbian.html">
-		<i class="icon-tag icon-large"></i>Raspbian
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/ring.html">
-		<i class="icon-tag icon-large"></i>Ring
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/sndh.html">
-		<i class="icon-tag icon-large"></i>SNDH
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/ssh.html">
-		<i class="icon-tag icon-large"></i>SSH
-	</a>
-</li>
-<li class="tag-2">
-	<a href="./tag/swift.html">
-		<i class="icon-tag icon-large"></i>Swift
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/ubuntu.html">
-		<i class="icon-tag icon-large"></i>Ubuntu
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/vm.html">
-		<i class="icon-tag icon-large"></i>VM
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/virtualization.html">
-		<i class="icon-tag icon-large"></i>Virtualization
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/windows.html">
-		<i class="icon-tag icon-large"></i>Windows
-	</a>
-</li>
-<li class="tag-2">
-	<a href="./tag/ym2149.html">
-		<i class="icon-tag icon-large"></i>YM2149
-	</a>
-</li>
-<li class="tag-2">
-	<a href="./tag/ym2149f.html">
-		<i class="icon-tag icon-large"></i>YM2149F
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/znc.html">
-		<i class="icon-tag icon-large"></i>ZNC
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/bug.html">
-		<i class="icon-tag icon-large"></i>bug
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/libvirt.html">
-		<i class="icon-tag icon-large"></i>libvirt
-	</a>
-</li>
-<li class="tag-4">
-	<a href="./tag/operations.html">
-		<i class="icon-tag icon-large"></i>operations
-	</a>
-</li>
-</ul>
+        <div class="article">
+                <h1><a href="../amd-rx-480-gpu-opencl-benchmark.html">AMD RX 480 GPU OpenCL benchmark</a></h1>
+                <div class="well small"><footer class="post-info">
+<span class="label">Date</span>
+<abbr class="published" title="2018-12-25T00:00:00+01:00">
+        <i class="icon-calendar"></i>mar. 25 décembre 2018
+</abbr>
+<span class="label">By</span>
+<a href="../author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
+<span class="label">Category</span>
+<a href="../category/misc.html"><i class="icon-folder-open"></i>misc</a>.
+
+
+<span class="label">Tags</span>
+	<a href="../tag/amd.html"><i class="icon-tag"></i>AMD</a>
+	<a href="../tag/radeon.html"><i class="icon-tag"></i>Radeon</a>
+	<a href="../tag/rx-480.html"><i class="icon-tag"></i>RX 480</a>
+	<a href="../tag/gpu.html"><i class="icon-tag"></i>GPU</a>
+	<a href="../tag/opencl.html"><i class="icon-tag"></i>OpenCL</a>
+	<a href="../tag/benchmark.html"><i class="icon-tag"></i>Benchmark</a>
+</footer><!-- /.post-info --></div>
+                <div class="summary"><p>This post summarizes the results of my <a href="https://github.com/FlorentFlament/amd-gpu-benchmark">AMD GPU benchmark code</a> to
+benchmark the computing power of an AMD Radeon RX 480 GPU against an
+Intel Core i5-7400 CPU.</p>
+<p>The benchmarking code I am running on is the following code:</p>
+<div class="highlight"><pre><span></span>__kernel void kerntest(__global char* data, int loops_cnt) {
+  size_t id …</pre></div>
+                        <a class="btn primary xsmall" href="../amd-rx-480-gpu-opencl-benchmark.html">more ...</a>
+                </div>
+        </div>
+        <hr />
+
         </div><!--/span-->
 
                 <div class="span3 well sidebar-nav" id="sidebar">
@@ -332,244 +131,244 @@
 
 <li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
 <li>
-<a href="./category/misc.html">
+<a href="../category/misc.html">
     <i class="icon-folder-open icon-large"></i>misc
 </a>
 </li>
 <li>
-<a href="./category/openstack.html">
+<a href="../category/openstack.html">
     <i class="icon-folder-open icon-large"></i>OpenStack
 </a>
 </li>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
 <li class="tag-4">
-    <a href="./tag/amd.html">
+    <a href="../tag/amd.html">
         <i class="icon-tag icon-large"></i>AMD
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/atmega.html">
+    <a href="../tag/atmega.html">
         <i class="icon-tag icon-large"></i>ATmega
     </a>
 </li>
 <li class="tag-2">
-    <a href="./tag/ay-3-8910.html">
+    <a href="../tag/ay-3-8910.html">
         <i class="icon-tag icon-large"></i>AY-3-8910
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/apple.html">
+    <a href="../tag/apple.html">
         <i class="icon-tag icon-large"></i>Apple
     </a>
 </li>
 <li class="tag-1">
-    <a href="./tag/arduino.html">
+    <a href="../tag/arduino.html">
         <i class="icon-tag icon-large"></i>Arduino
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/benchmark.html">
+    <a href="../tag/benchmark.html">
         <i class="icon-tag icon-large"></i>Benchmark
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/ceph.html">
+    <a href="../tag/ceph.html">
         <i class="icon-tag icon-large"></i>Ceph
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/chef.html">
+    <a href="../tag/chef.html">
         <i class="icon-tag icon-large"></i>Chef
     </a>
 </li>
 <li class="tag-2">
-    <a href="./tag/cinder.html">
+    <a href="../tag/cinder.html">
         <i class="icon-tag icon-large"></i>Cinder
     </a>
 </li>
 <li class="tag-2">
-    <a href="./tag/costs.html">
+    <a href="../tag/costs.html">
         <i class="icon-tag icon-large"></i>Costs
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/data-safety.html">
+    <a href="../tag/data-safety.html">
         <i class="icon-tag icon-large"></i>Data Safety
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/data-security.html">
+    <a href="../tag/data-security.html">
         <i class="icon-tag icon-large"></i>Data Security
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/data-management.html">
+    <a href="../tag/data-management.html">
         <i class="icon-tag icon-large"></i>Data management
     </a>
 </li>
 <li class="tag-2">
-    <a href="./tag/docker.html">
+    <a href="../tag/docker.html">
         <i class="icon-tag icon-large"></i>Docker
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/documentation.html">
+    <a href="../tag/documentation.html">
         <i class="icon-tag icon-large"></i>Documentation
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/gpu.html">
+    <a href="../tag/gpu.html">
         <i class="icon-tag icon-large"></i>GPU
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/git.html">
+    <a href="../tag/git.html">
         <i class="icon-tag icon-large"></i>Git
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/hardware.html">
+    <a href="../tag/hardware.html">
         <i class="icon-tag icon-large"></i>Hardware
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/irc.html">
+    <a href="../tag/irc.html">
         <i class="icon-tag icon-large"></i>IRC
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/kvm.html">
+    <a href="../tag/kvm.html">
         <i class="icon-tag icon-large"></i>KVM
     </a>
 </li>
 <li class="tag-2">
-    <a href="./tag/kernel.html">
+    <a href="../tag/kernel.html">
         <i class="icon-tag icon-large"></i>Kernel
     </a>
 </li>
 <li class="tag-2">
-    <a href="./tag/keystone.html">
+    <a href="../tag/keystone.html">
         <i class="icon-tag icon-large"></i>Keystone
     </a>
 </li>
 <li class="tag-2">
-    <a href="./tag/linux.html">
+    <a href="../tag/linux.html">
         <i class="icon-tag icon-large"></i>Linux
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/microsft.html">
+    <a href="../tag/microsft.html">
         <i class="icon-tag icon-large"></i>Microsft
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/opencl.html">
+    <a href="../tag/opencl.html">
         <i class="icon-tag icon-large"></i>OpenCL
     </a>
 </li>
 <li class="tag-1">
-    <a href="./tag/openstack.html">
+    <a href="../tag/openstack.html">
         <i class="icon-tag icon-large"></i>OpenStack
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/policies.html">
+    <a href="../tag/policies.html">
         <i class="icon-tag icon-large"></i>Policies
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/printers.html">
+    <a href="../tag/printers.html">
         <i class="icon-tag icon-large"></i>Printers
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/rx-480.html">
+    <a href="../tag/rx-480.html">
         <i class="icon-tag icon-large"></i>RX 480
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/radeon.html">
+    <a href="../tag/radeon.html">
         <i class="icon-tag icon-large"></i>Radeon
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/raspberry-pi.html">
+    <a href="../tag/raspberry-pi.html">
         <i class="icon-tag icon-large"></i>Raspberry Pi
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/raspbian.html">
+    <a href="../tag/raspbian.html">
         <i class="icon-tag icon-large"></i>Raspbian
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/ring.html">
+    <a href="../tag/ring.html">
         <i class="icon-tag icon-large"></i>Ring
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/sndh.html">
+    <a href="../tag/sndh.html">
         <i class="icon-tag icon-large"></i>SNDH
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/ssh.html">
+    <a href="../tag/ssh.html">
         <i class="icon-tag icon-large"></i>SSH
     </a>
 </li>
 <li class="tag-2">
-    <a href="./tag/swift.html">
+    <a href="../tag/swift.html">
         <i class="icon-tag icon-large"></i>Swift
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/ubuntu.html">
+    <a href="../tag/ubuntu.html">
         <i class="icon-tag icon-large"></i>Ubuntu
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/vm.html">
+    <a href="../tag/vm.html">
         <i class="icon-tag icon-large"></i>VM
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/virtualization.html">
+    <a href="../tag/virtualization.html">
         <i class="icon-tag icon-large"></i>Virtualization
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/windows.html">
+    <a href="../tag/windows.html">
         <i class="icon-tag icon-large"></i>Windows
     </a>
 </li>
 <li class="tag-2">
-    <a href="./tag/ym2149.html">
+    <a href="../tag/ym2149.html">
         <i class="icon-tag icon-large"></i>YM2149
     </a>
 </li>
 <li class="tag-2">
-    <a href="./tag/ym2149f.html">
+    <a href="../tag/ym2149f.html">
         <i class="icon-tag icon-large"></i>YM2149F
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/znc.html">
+    <a href="../tag/znc.html">
         <i class="icon-tag icon-large"></i>ZNC
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/bug.html">
+    <a href="../tag/bug.html">
         <i class="icon-tag icon-large"></i>bug
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/libvirt.html">
+    <a href="../tag/libvirt.html">
         <i class="icon-tag icon-large"></i>libvirt
     </a>
 </li>
 <li class="tag-4">
-    <a href="./tag/operations.html">
+    <a href="../tag/operations.html">
         <i class="icon-tag icon-large"></i>operations
     </a>
 </li>
@@ -615,7 +414,7 @@ pageTracker._trackPageview();
 
     <!-- Le javascript -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="./theme/js/jquery-1.7.2.min.js"></script>
-    <script src="./theme/js/bootstrap.min.js"></script>
+    <script src="../theme/js/jquery-1.7.2.min.js"></script>
+    <script src="../theme/js/bootstrap.min.js"></script>
   </body>
 </html>
