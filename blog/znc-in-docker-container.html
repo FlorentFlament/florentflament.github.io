@@ -107,7 +107,7 @@
 <footer class="post-info">
 <span class="label">Date</span>
 <abbr class="published" title="2013-12-15T00:00:00+01:00">
-        <i class="icon-calendar"></i>dim. 15 décembre 2013
+        <i class="icon-calendar"></i>Sun 15 December 2013
 </abbr>
 <span class="label">By</span>
 <a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
@@ -135,9 +135,9 @@ MAINTAINER Florent Flament
 
 # Using fr ubuntu mirrors and adding universe repository, to install znc
 RUN echo &quot;deb http://fr.archive.ubuntu.com/ubuntu precise main restricted&quot; \
-&amp;gt; /etc/apt/sources.list
+&gt; /etc/apt/sources.list
 RUN echo &quot;deb http://fr.archive.ubuntu.com/ubuntu precise universe&quot; \
-&amp;gt;&amp;gt; /etc/apt/sources.list
+&gt;&gt; /etc/apt/sources.list
 
 # Installing znc package
 RUN apt-get -y update
@@ -169,8 +169,8 @@ configuration files. It will then be ready to run in daemon mode. Now
 we can save a Docker image including ZNC's configuration files.</p>
 <div class="highlight"><pre><span></span>$ <span class="nv">CONT</span><span class="o">=</span><span class="k">$(</span>docker ps -a <span class="p">|</span> grep <span class="s2">&quot;minutes ago&quot;</span> <span class="p">|</span> head -1 <span class="p">|</span> awk <span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 $ docker commit <span class="se">\</span>
-<span class="p">&amp;</span>gt<span class="p">;</span> -run<span class="o">=</span><span class="s1">&#39;{&quot;Cmd&quot;: [&quot;/usr/bin/znc&quot;, &quot;-f&quot;, &quot;-d&quot;, &quot;/var/znc/&quot;], &quot;User&quot;: &quot;daemon&quot;}&#39;</span> <span class="se">\</span>
-<span class="p">&amp;</span>gt<span class="p">;</span> <span class="nv">$CONT</span> znc:ready
+&gt; -run<span class="o">=</span><span class="s1">&#39;{&quot;Cmd&quot;: [&quot;/usr/bin/znc&quot;, &quot;-f&quot;, &quot;-d&quot;, &quot;/var/znc/&quot;], &quot;User&quot;: &quot;daemon&quot;}&#39;</span> <span class="se">\</span>
+&gt; <span class="nv">$CONT</span> znc:ready
 </pre></div>
 
 
@@ -192,9 +192,9 @@ MAINTAINER Florent Flament
 
 # Using fr ubuntu mirrors and adding universe repository, to install znc
 RUN echo &quot;deb http://fr.archive.ubuntu.com/ubuntu precise main restricted&quot; \
-&amp;gt; /etc/apt/sources.list
+&gt; /etc/apt/sources.list
 RUN echo &quot;deb http://fr.archive.ubuntu.com/ubuntu precise universe&quot; \
-&amp;gt;&amp;gt; /etc/apt/sources.list
+&gt;&gt; /etc/apt/sources.list
 
 # Installing znc package
 RUN apt-get -y update
@@ -225,7 +225,7 @@ $ docker run -d -p <span class="m">6697</span>:6697 znc:myznc
 connexions:</p>
 <div class="highlight"><pre><span></span>Listener4  = +6697
 
-&amp;lt;User USER1&amp;gt;
+<span class="nt">&lt;User</span> <span class="err">USER1</span><span class="nt">&gt;</span>
         Pass       = PASSWORDHASHHERE
         Admin      = true
         Nick       = NICK1
@@ -238,9 +238,9 @@ connexions:</p>
         LoadModule = admin
         Server     = irc.freenode.net 6667 
         BindHost   = 0.0.0.0
-&amp;lt;/User&amp;gt;
+<span class="nt">&lt;/User&gt;</span>
 
-&amp;lt;User USER2&amp;gt;
+<span class="nt">&lt;User</span> <span class="err">USER2</span><span class="nt">&gt;</span>
         Pass       = PASSWORDHASHHERE
         Admin      = true
         Nick       = NICK1
@@ -253,7 +253,7 @@ connexions:</p>
         LoadModule = admin
         Server     = CUSTOMIRCSERVER +6697 IRCSERVERPASSWORD
         BindHost   = 0.0.0.0
-&amp;lt;/User&amp;gt;
+<span class="nt">&lt;/User&gt;</span>
 </pre></div>
 
 
@@ -299,7 +299,7 @@ USER1:PASSORDHASHHERE).</p>
 </li>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/amd.html">
         <i class="icon-tag icon-large"></i>AMD
     </a>
@@ -350,6 +350,11 @@ USER1:PASSORDHASHHERE).</p>
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/cryptocurrency.html">
+        <i class="icon-tag icon-large"></i>Cryptocurrency
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/data-safety.html">
         <i class="icon-tag icon-large"></i>Data Safety
     </a>
@@ -375,6 +380,11 @@ USER1:PASSORDHASHHERE).</p>
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/gf7050t-m5.html">
+        <i class="icon-tag icon-large"></i>GF7050T-M5
+    </a>
+</li>
+<li class="tag-2">
     <a href="./tag/gpu.html">
         <i class="icon-tag icon-large"></i>GPU
     </a>
@@ -420,6 +430,11 @@ USER1:PASSORDHASHHERE).</p>
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/old-hardware.html">
+        <i class="icon-tag icon-large"></i>Old Hardware
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/opencl.html">
         <i class="icon-tag icon-large"></i>OpenCL
     </a>
@@ -439,12 +454,12 @@ USER1:PASSORDHASHHERE).</p>
         <i class="icon-tag icon-large"></i>Printers
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/rx-480.html">
         <i class="icon-tag icon-large"></i>RX 480
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/radeon.html">
         <i class="icon-tag icon-large"></i>Radeon
     </a>

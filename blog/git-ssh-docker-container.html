@@ -107,7 +107,7 @@
 <footer class="post-info">
 <span class="label">Date</span>
 <abbr class="published" title="2014-06-28T00:00:00+02:00">
-        <i class="icon-calendar"></i>sam. 28 juin 2014
+        <i class="icon-calendar"></i>Sat 28 June 2014
 </abbr>
 <span class="label">By</span>
 <a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
@@ -147,9 +147,9 @@ RUN adduser --system git
 RUN mkdir -p /home/git/.ssh
 
 <span class="c1"># Clearing and setting authorized ssh keys</span>
-RUN <span class="nb">echo</span> <span class="s1">&#39;&#39;</span> <span class="p">&amp;</span>gt<span class="p">;</span> /home/git/.ssh/authorized_keys
-RUN <span class="nb">echo</span> <span class="s1">&#39;First SSH public key&#39;</span> <span class="p">&amp;</span>gt<span class="p">;&amp;</span>gt<span class="p">;</span> /home/git/.ssh/authorized_keys
-RUN <span class="nb">echo</span> <span class="s1">&#39;Second SSH public key&#39;</span> <span class="p">&amp;</span>gt<span class="p">;&amp;</span>gt<span class="p">;</span> /home/git/.ssh/authorized_keys
+RUN <span class="nb">echo</span> <span class="s1">&#39;&#39;</span> &gt; /home/git/.ssh/authorized_keys
+RUN <span class="nb">echo</span> <span class="s1">&#39;First SSH public key&#39;</span> &gt;&gt; /home/git/.ssh/authorized_keys
+RUN <span class="nb">echo</span> <span class="s1">&#39;Second SSH public key&#39;</span> &gt;&gt; /home/git/.ssh/authorized_keys
 <span class="c1"># ...</span>
 
 <span class="c1"># Updating shell to bash</span>
@@ -180,7 +180,7 @@ CMD <span class="o">[</span><span class="s2">&quot;/usr/sbin/sshd&quot;</span>, 
 <p>The previous command maps the container's host port 1234 on the
 container's SSH port. Of course, this port can be changed to any
 value. One can then ssh to the container with the following command:</p>
-<div class="highlight"><pre><span></span>$ ssh -p <span class="m">1234</span> git@<span class="p">&amp;</span>lt<span class="p">;</span>container_host<span class="p">&amp;</span>gt<span class="p">;</span>
+<div class="highlight"><pre><span></span>$ ssh -p <span class="m">1234</span> git@&lt;container_host&gt;
 </pre></div>
                 </div><!-- /.entry-content -->
                 <div class="comments">
@@ -220,7 +220,7 @@ value. One can then ssh to the container with the following command:</p>
 </li>
 
 <li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/amd.html">
         <i class="icon-tag icon-large"></i>AMD
     </a>
@@ -271,6 +271,11 @@ value. One can then ssh to the container with the following command:</p>
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/cryptocurrency.html">
+        <i class="icon-tag icon-large"></i>Cryptocurrency
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/data-safety.html">
         <i class="icon-tag icon-large"></i>Data Safety
     </a>
@@ -296,6 +301,11 @@ value. One can then ssh to the container with the following command:</p>
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/gf7050t-m5.html">
+        <i class="icon-tag icon-large"></i>GF7050T-M5
+    </a>
+</li>
+<li class="tag-2">
     <a href="./tag/gpu.html">
         <i class="icon-tag icon-large"></i>GPU
     </a>
@@ -341,6 +351,11 @@ value. One can then ssh to the container with the following command:</p>
     </a>
 </li>
 <li class="tag-4">
+    <a href="./tag/old-hardware.html">
+        <i class="icon-tag icon-large"></i>Old Hardware
+    </a>
+</li>
+<li class="tag-4">
     <a href="./tag/opencl.html">
         <i class="icon-tag icon-large"></i>OpenCL
     </a>
@@ -360,12 +375,12 @@ value. One can then ssh to the container with the following command:</p>
         <i class="icon-tag icon-large"></i>Printers
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/rx-480.html">
         <i class="icon-tag icon-large"></i>RX 480
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/radeon.html">
         <i class="icon-tag icon-large"></i>Radeon
     </a>

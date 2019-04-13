@@ -1,5 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog - misc</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2018-12-25T00:00:00+01:00</updated><entry><title>AMD RX 480 GPU OpenCL benchmark</title><link href="http://www.florentflament.com/blog/amd-rx-480-gpu-opencl-benchmark.html" rel="alternate"></link><published>2018-12-25T00:00:00+01:00</published><updated>2018-12-25T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2018-12-25:/blog/amd-rx-480-gpu-opencl-benchmark.html</id><summary type="html">&lt;p&gt;This post summarizes the results of my &lt;a href="https://github.com/FlorentFlament/amd-gpu-benchmark"&gt;AMD GPU benchmark code&lt;/a&gt; to
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog - misc</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2019-04-13T00:00:00+02:00</updated><entry><title>Attempting to mine Cryptocurrency with an old machine</title><link href="http://www.florentflament.com/blog/attempting-to-mine-cryptocurrency-with-an-old-machine.html" rel="alternate"></link><published>2019-04-13T00:00:00+02:00</published><updated>2019-04-13T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2019-04-13:/blog/attempting-to-mine-cryptocurrency-with-an-old-machine.html</id><summary type="html">&lt;p&gt;This is the story of me attempting to convert an old machine into a
+Cryptocurrency miner. I basically tried to plug my AMD Radeon RX 480
+graphic card into an old PC, a Core 2 duo with 4GB RAM and a
+GF7050T-M5 motherboard.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;According to the &lt;a href="https://www.manualslib.com/manual/451735/Ecs-Gf7050vt-M5.html"&gt;GF7050T-M5 manual&lt;/a&gt;, its PCI …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;This is the story of me attempting to convert an old machine into a
+Cryptocurrency miner. I basically tried to plug my AMD Radeon RX 480
+graphic card into an old PC, a Core 2 duo with 4GB RAM and a
+GF7050T-M5 motherboard.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;According to the &lt;a href="https://www.manualslib.com/manual/451735/Ecs-Gf7050vt-M5.html"&gt;GF7050T-M5 manual&lt;/a&gt;, its PCI Express bus is most
+  probably a PCI Express 1.0 x16 bus.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;While the &lt;a href="https://www.diamondmm.com/images/480X/RX480D58G%20%20setup%20sheet.pdf"&gt;AMD Radeon RX 480&lt;/a&gt; has a PCI Express 3.0 x16
+  interface.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/PCI_Express"&gt;Wikipedia's PCI Express pages&lt;/a&gt; is not very clear regarding the
+compatibility between PCI Express 3.0 and 1.0. At the very least, the
+PCI Express 3.0 card fits into the PCI Express 1.0 slot. In the end, I
+couldn't have the card working properly on the machine, though I did a
+number of interesting findings.&lt;/p&gt;
+&lt;h2&gt;Booting on USB key&lt;/h2&gt;
+&lt;p&gt;I made several OS installations (Ubuntu) on the machine using a
+rewritable DVD-RW, because I failed to boot on a USB key. After
+spending a bunch of time exploring the BIOS menu, I figured out that
+the board allowed booting on USB keys with the following settings (in
+the correct order):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;USB Legacy enabled&lt;/li&gt;
+&lt;li&gt;Reboot, to have the USB key recognized by the BIOS&lt;/li&gt;
+&lt;li&gt;First hard drive set to the USB key&lt;/li&gt;
+&lt;li&gt;First boot device set to the USB key&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This allowed much faster iterations, especially because I had to
+remove the Radeon card to plug the DVD reader (The connector is placed
+below the card, once plugged).&lt;/p&gt;
+&lt;h2&gt;Working text mode&lt;/h2&gt;
+&lt;p&gt;Ubuntu 18.04 desktop, 18.04 server and 16.04 desktop installs load the
+&lt;code&gt;amdgpu&lt;/code&gt; driver at some point during boot time. When the Radeon RX 480
+is plugged in the machine, the screen turns black at this moment. This
+looks like the machine is completely crashed, but only the display is
+actually missing. I can still connect to the machine through SSH
+(having setup an SSH server before plugging the Radeon card).&lt;/p&gt;
+&lt;p&gt;Ubuntu 16.04 server never loads the &lt;code&gt;amdgpu&lt;/code&gt; driver by default,
+neither during the installation process, nor when booting on the
+installed OS. I could install Ubuntu 16.04 server from a USB key and
+run it properly, while the AMD Radeon card was plugged into the
+machine.&lt;/p&gt;
+&lt;h2&gt;Driver crash&lt;/h2&gt;
+&lt;p&gt;Both &lt;code&gt;amdgpu&lt;/code&gt; and &lt;code&gt;amdgpu-pro&lt;/code&gt; drivers crashed when loaded, whatever
+the OS version I used:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ubuntu 16.04.3&lt;/li&gt;
+&lt;li&gt;Ubuntu 16.04.5&lt;/li&gt;
+&lt;li&gt;Ubuntu 18.04.2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The following trace is a typical one obtained from &lt;code&gt;dmesg&lt;/code&gt; when
+loading the &lt;code&gt;amdgpu&lt;/code&gt; module. This one was obtained after having
+installed the &lt;code&gt;amdgpu-pro-17.40&lt;/code&gt; driver on Ubuntu 16.04.3:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ dmesg | grep &amp;quot;\[drm&amp;quot;
+[    1.266917] [drm] Initialized drm 1.1.0 20060810
+[    1.420705] [drm] amdgpu kernel modesetting enabled.
+[    1.450320] [drm] initializing kernel modesetting (POLARIS10 0x1002:0x67DF 0x1002:0x0B37 0xC7).
+[    1.450338] [drm] register mmio base: 0xFEBC0000
+[    1.450342] [drm] register mmio size: 262144
+[    1.450353] [drm] probing gen 2 caps for device 10de:56e = 113d01/0
+[    1.450358] [drm] probing mlw for device 10de:56e = 113d01
+[    1.450372] [drm] UVD is enabled in VM mode
+[    1.450376] [drm] VCE enabled in VM mode
+[    1.451068] [drm] GPU post is not needed
+[    1.451090] [drm] vm size is 32 GB, block size is 13-bit, fragment size is 4-bit
+[    1.451169] [drm] Detected VRAM RAM=8192M, BAR=256M
+[    1.451173] [drm] RAM width 256bits GDDR5
+[    1.451281] [drm] amdgpu: 8192M of VRAM memory ready
+[    1.451286] [drm] amdgpu: 8192M of GTT memory ready.
+[    1.451299] [drm] GART: num cpu pages 65536, num gpu pages 65536
+[    1.451347] [drm] PCIE GART of 256M enabled (table at 0x000000F400040000).
+[    1.451466] [drm] amdgpu: irq initialized.
+[    1.623059] [drm] Chained IB support enabled!
+[    1.624743] [drm] Found UVD firmware Version: 1.79 Family ID: 16
+[    1.625444] [drm] Found VCE firmware Version: 52.4 Binary ID: 3
+[    1.673073] [drm:amdgpu_mm_wdoorbell [amdgpu]] *ERROR* writing beyond doorbell aperture: 0x000001e8!
+[    1.678312] [drm] DAL is enabled
+[    1.678667] [drm] DM_PPLIB: values for Engine clock
+[    1.678671] [drm] DM_PPLIB:   30000
+[    1.678675] [drm] DM_PPLIB:   60800
+[    1.678678] [drm] DM_PPLIB:   91000
+[    1.678681] [drm] DM_PPLIB:   107700
+[    1.678685] [drm] DM_PPLIB:   114500
+[    1.678688] [drm] DM_PPLIB:   119100
+[    1.678691] [drm] DM_PPLIB:   123600
+[    1.678695] [drm] DM_PPLIB:   126600
+[    1.678698] [drm] DM_PPLIB: Warning: using default validation clocks!
+[    1.678702] [drm] DM_PPLIB: Validation clocks:
+[    1.678706] [drm] DM_PPLIB:    engine_max_clock: 72000
+[    1.678709] [drm] DM_PPLIB:    memory_max_clock: 80000
+[    1.678713] [drm] DM_PPLIB:    level           : 0
+[    1.678717] [drm] DM_PPLIB: reducing engine clock level from 8 to 2
+[    1.678721] [drm] DM_PPLIB: values for Memory clock
+[    1.678725] [drm] DM_PPLIB:   30000
+[    1.678728] [drm] DM_PPLIB:   200000
+[    1.678732] [drm] DM_PPLIB: Warning: using default validation clocks!
+[    1.678735] [drm] DM_PPLIB: Validation clocks:
+[    1.678739] [drm] DM_PPLIB:    engine_max_clock: 72000
+[    1.678742] [drm] DM_PPLIB:    memory_max_clock: 80000
+[    1.678746] [drm] DM_PPLIB:    level           : 0
+[    1.678750] [drm] DM_PPLIB: reducing memory clock level from 2 to 1
+[    1.678755] [drm] DC: create_links: connectors_num: physical:4, virtual:0
+[    1.678764] [drm] Connector[0] description:signal 32
+[    1.678771] [drm] Using channel: CHANNEL_ID_DDC1 [1]
+[    1.678788] [drm] Connector[1] description:signal 32
+[    1.678794] [drm] Using channel: CHANNEL_ID_DDC3 [3]
+[    1.678810] [drm] Connector[2] description:signal 32
+[    1.678815] [drm] Using channel: CHANNEL_ID_DDC2 [2]
+[    1.678831] [drm] Connector[3] description:signal 4
+[    1.678837] [drm] Using channel: CHANNEL_ID_DDC4 [4]
+[    1.692079] [drm] Display Core initialized
+[    1.692095] [drm] amdgpu: freesync_module init done ffff8800ca602700.
+[    1.692603] [drm] link=0, dc_sink_in=          (null) is now Disconnected
+[    1.692609] [drm] DCHPD: connector_id=0: dc_sink didn&amp;#39;t change.
+[    1.693057] [drm] link=1, dc_sink_in=          (null) is now Disconnected
+[    1.693062] [drm] DCHPD: connector_id=1: dc_sink didn&amp;#39;t change.
+[    1.693490] [drm] link=2, dc_sink_in=          (null) is now Disconnected
+[    1.693495] [drm] DCHPD: connector_id=2: dc_sink didn&amp;#39;t change.
+[    1.718488] [drm] [Detect]   [HDMIA][ConnIdx:3] SAMSUNG: [Block 0] 00 FF FF FF FF FF FF 00 4C 2D A4 02 00 00 00 00 2E 10 01 03 80 10 09 8C 0A E2 BD A1 5B 4A 98 24 15 47 4A A1 08 00 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 66 21 50 B0 51 00 1B 30 40 70 36 00 A0 5A 00 00 00 1E 01 1D 00 72 51 D0 1E 20 6E 28 55 00 A0 5A 00 00 00 1E 00 00 00 FD 00 31 47 0F 32 09 00 0A 20 20 20 20 20 20 00 00 00 FC 00 53 41 4D 53 55 4E 47 0A 20 20 20 20 20 01 15 ^
+[    1.718522] [drm] [Detect]   [HDMIA][ConnIdx:3] SAMSUNG: [Block 1] 02 03 1A F1 46 84 13 05 14 03 12 23 09 07 07 83 01 00 00 66 03 0C 00 20 00 80 01 1D 00 BC 52 D0 1E 20 B8 28 55 40 A0 5A 00 00 00 1E 01 1D 80 18 71 1C 16 20 58 2C 25 00 A0 5A 00 00 00 9E 01 1D 80 D0 72 1C 16 20 10 2C 25 80 A0 5A 00 00 00 9E 8C 0A D0 8A 20 E0 2D 10 10 3E 96 00 A0 5A 00 00 00 18 8C 0A D0 90 20 40 31 20 0C 40 55 00 A0 5A 00 00 00 18 00 00 00 00 00 00 00 00 00 00 00 69 ^
+[    1.718542] [drm] dc_link_detect: manufacturer_id = 2D4C, product_id = 2A4, serial_number = 0, manufacture_week = 46, manufacture_year = 16, display_name = SAMSUNG, speaker_flag = 1, audio_mode_count = 1
+[    1.718552] [drm] dc_link_detect: mode number = 0, format_code = 1, channel_count = 1, sample_rate = 7, sample_size = 7
+[    1.718559] [drm] link=3, dc_sink_in=ffff880034b69000 is now Connected
+[    1.718564] [drm] DCHPD: connector_id=3: Old sink=          (null) New sink=ffff880034b69000
+[    1.718588] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
+[    1.718592] [drm] Driver supports precise vblank timestamp query.
+[    1.718596] [drm] KMS initialized.
+[    1.721322] [drm:amdgpu_mm_wdoorbell [amdgpu]] *ERROR* writing beyond doorbell aperture: 0x00000020!
+[    1.721372] [drm:amdgpu_mm_wdoorbell [amdgpu]] *ERROR* writing beyond doorbell aperture: 0x00000020!
+[    1.909995] [drm:gfx_v8_0_ring_test_ring [amdgpu]] *ERROR* amdgpu: ring 0 test failed (scratch(0xC040)=0xCAFEDEAD)
+[    1.910050] [drm:amdgpu_device_init [amdgpu]] *ERROR* hw_init of IP block &amp;lt;gfx_v8_0&amp;gt; failed -22
+[    2.047138] [drm] amdgpu: ttm finalized
+[    2.047152] [drm] amdgpu: finishing device.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When trying to google for the error messages like &lt;code&gt;*ERROR* writing
+beyond doorbell aperture&lt;/code&gt;, the only pages found were the &lt;a href="https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c"&gt;Linux source
+code on github&lt;/a&gt;. This makes me believe that only a few people tried
+such a crazy experiment. Therefore, it would probably require a
+significant effort (that may not be worth) to have this setup working.&lt;/p&gt;
+&lt;h2&gt;Giving up&lt;/h2&gt;
+&lt;p&gt;After having messed around a few days (I even tried to plug the power
+supply from a computer where the Radeon card is working well, with no
+better outcome), I decided to plug the graphic card back to the
+computer it was shipped with. At least, it is still working ; )&lt;/p&gt;
+&lt;h2&gt;Resources&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.manualslib.com/manual/451735/Ecs-Gf7050vt-M5.html"&gt;GF7050T-M5 manual&lt;/a&gt; is available online.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.amd.com/en/products/graphics/radeon-rx-480"&gt;AMD Radeon RX 480 specifications&lt;/a&gt; are available too.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.diamondmm.com/images/480X/RX480D58G%20%20setup%20sheet.pdf"&gt;Diamond AMD Radeon RX 480 specs&lt;/a&gt; provide a bit more details.&lt;/li&gt;
+&lt;/ul&gt;</content><category term="AMD"></category><category term="Radeon"></category><category term="RX 480"></category><category term="GPU"></category><category term="Old Hardware"></category><category term="Cryptocurrency"></category><category term="GF7050T-M5"></category></entry><entry><title>AMD RX 480 GPU OpenCL benchmark</title><link href="http://www.florentflament.com/blog/amd-rx-480-gpu-opencl-benchmark.html" rel="alternate"></link><published>2018-12-25T00:00:00+01:00</published><updated>2018-12-25T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2018-12-25:/blog/amd-rx-480-gpu-opencl-benchmark.html</id><summary type="html">&lt;p&gt;This post summarizes the results of my &lt;a href="https://github.com/FlorentFlament/amd-gpu-benchmark"&gt;AMD GPU benchmark code&lt;/a&gt; to
 benchmark the computing power of an AMD Radeon RX 480 GPU against an
 Intel Core i5-7400 CPU.&lt;/p&gt;
 &lt;p&gt;The benchmarking code I am running on is the following code:&lt;/p&gt;
@@ -393,7 +554,7 @@ referred as the samples) at the appropriate frequency.&lt;/p&gt;
 &lt;p&gt;I wrote a small Python script, available in the &lt;a href="https://github.com/FlorentFlament/ym2149-streamer"&gt;ym2149-streamer
 repository&lt;/a&gt;, that parses a YM file and sends it to the Arduino
 board. The syntax is:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python streamer.py &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;lt&lt;span class="p"&gt;;&lt;/span&gt;output_device&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;lt&lt;span class="p"&gt;;&lt;/span&gt;ym_filepath&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python streamer.py &amp;lt;output_device&amp;gt; &amp;lt;ym_filepath&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1292,9 +1453,9 @@ RUN adduser --system git
 RUN mkdir -p /home/git/.ssh
 
 &lt;span class="c1"&gt;# Clearing and setting authorized ssh keys&lt;/span&gt;
-RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&lt;/span&gt; /home/git/.ssh/authorized_keys
-RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;First SSH public key&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&lt;/span&gt; /home/git/.ssh/authorized_keys
-RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Second SSH public key&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&lt;/span&gt; /home/git/.ssh/authorized_keys
+RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; &amp;gt; /home/git/.ssh/authorized_keys
+RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;First SSH public key&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; /home/git/.ssh/authorized_keys
+RUN &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Second SSH public key&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; /home/git/.ssh/authorized_keys
 &lt;span class="c1"&gt;# ...&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Updating shell to bash&lt;/span&gt;
@@ -1325,7 +1486,7 @@ CMD &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/sb
 &lt;p&gt;The previous command maps the container's host port 1234 on the
 container's SSH port. Of course, this port can be changed to any
 value. One can then ssh to the container with the following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ssh -p &lt;span class="m"&gt;1234&lt;/span&gt; git@&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;lt&lt;span class="p"&gt;;&lt;/span&gt;container_host&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ssh -p &lt;span class="m"&gt;1234&lt;/span&gt; git@&amp;lt;container_host&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;</content><category term="Git"></category><category term="SSH"></category><category term="Docker"></category></entry><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><published>2014-05-03T23:34:00+02:00</published><updated>2014-05-03T23:34:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-05-03:/blog/securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
 the main threats (if possible by using only open source software). For
 instance, losing data because of a hardware failure is just something
@@ -1579,7 +1740,7 @@ when installing chef-server via deb packages&lt;/a&gt;. I got errors when
 launching commands &lt;code&gt;knife client create&lt;/code&gt; or &lt;code&gt;knife client reregister&lt;/code&gt;,
 with following message in &lt;code&gt;rabbitmq&lt;/code&gt; log:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;=ERROR REPORT==== 4-Jun-2012::14:56:01 ===
-exception on TCP connection &amp;amp;lt;0.583.0&amp;amp;gt; from 127.0.0.1:34143
+exception on TCP connection &amp;lt;0.583.0&amp;gt; from 127.0.0.1:34143
 {channel0_error,starting,
     {amqp_error,access_refused,
         &amp;quot;AMQPLAIN login refused: user &amp;#39;chef&amp;#39; - invalid credentials&amp;quot;,
@@ -1709,9 +1870,9 @@ MAINTAINER Florent Flament
 
 # Using fr ubuntu mirrors and adding universe repository, to install znc
 RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise main restricted&amp;quot; \
-&amp;amp;gt; /etc/apt/sources.list
+&amp;gt; /etc/apt/sources.list
 RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise universe&amp;quot; \
-&amp;amp;gt;&amp;amp;gt; /etc/apt/sources.list
+&amp;gt;&amp;gt; /etc/apt/sources.list
 
 # Installing znc package
 RUN apt-get -y update
@@ -1743,8 +1904,8 @@ configuration files. It will then be ready to run in daemon mode. Now
 we can save a Docker image including ZNC's configuration files.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nv"&gt;CONT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;docker ps -a &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="s2"&gt;&amp;quot;minutes ago&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; head -1 &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $1}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
 $ docker commit &lt;span class="se"&gt;\&lt;/span&gt;
-&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&lt;/span&gt; -run&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;{&amp;quot;Cmd&amp;quot;: [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;quot;, &amp;quot;/var/znc/&amp;quot;], &amp;quot;User&amp;quot;: &amp;quot;daemon&amp;quot;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
-&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nv"&gt;$CONT&lt;/span&gt; znc:ready
+&amp;gt; -run&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;{&amp;quot;Cmd&amp;quot;: [&amp;quot;/usr/bin/znc&amp;quot;, &amp;quot;-f&amp;quot;, &amp;quot;-d&amp;quot;, &amp;quot;/var/znc/&amp;quot;], &amp;quot;User&amp;quot;: &amp;quot;daemon&amp;quot;}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&amp;gt; &lt;span class="nv"&gt;$CONT&lt;/span&gt; znc:ready
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1766,9 +1927,9 @@ MAINTAINER Florent Flament
 
 # Using fr ubuntu mirrors and adding universe repository, to install znc
 RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise main restricted&amp;quot; \
-&amp;amp;gt; /etc/apt/sources.list
+&amp;gt; /etc/apt/sources.list
 RUN echo &amp;quot;deb http://fr.archive.ubuntu.com/ubuntu precise universe&amp;quot; \
-&amp;amp;gt;&amp;amp;gt; /etc/apt/sources.list
+&amp;gt;&amp;gt; /etc/apt/sources.list
 
 # Installing znc package
 RUN apt-get -y update
@@ -1799,7 +1960,7 @@ $ docker run -d -p &lt;span class="m"&gt;6697&lt;/span&gt;:6697 znc:myznc
 connexions:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Listener4  = +6697
 
-&amp;amp;lt;User USER1&amp;amp;gt;
+&lt;span class="nt"&gt;&amp;lt;User&lt;/span&gt; &lt;span class="err"&gt;USER1&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
         Pass       = PASSWORDHASHHERE
         Admin      = true
         Nick       = NICK1
@@ -1812,9 +1973,9 @@ connexions:&lt;/p&gt;
         LoadModule = admin
         Server     = irc.freenode.net 6667 
         BindHost   = 0.0.0.0
-&amp;amp;lt;/User&amp;amp;gt;
+&lt;span class="nt"&gt;&amp;lt;/User&amp;gt;&lt;/span&gt;
 
-&amp;amp;lt;User USER2&amp;amp;gt;
+&lt;span class="nt"&gt;&amp;lt;User&lt;/span&gt; &lt;span class="err"&gt;USER2&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
         Pass       = PASSWORDHASHHERE
         Admin      = true
         Nick       = NICK1
@@ -1827,7 +1988,7 @@ connexions:&lt;/p&gt;
         LoadModule = admin
         Server     = CUSTOMIRCSERVER +6697 IRCSERVERPASSWORD
         BindHost   = 0.0.0.0
-&amp;amp;lt;/User&amp;amp;gt;
+&lt;span class="nt"&gt;&amp;lt;/User&amp;gt;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1862,8 +2023,8 @@ configure the system, without the need to ask any question.&lt;/p&gt;
 &lt;p&gt;Here's my generic &lt;a href="http://www.florentflament.com/blog/static/preseed.cfg"&gt;preseed.cfg&lt;/a&gt; file. It is a mix of &lt;a href="http://www.debian.org/releases/squeeze/example-preseed.txt"&gt;Debian's
 example-preseed&lt;/a&gt; file and parameters gathered using Debian's
 suggested method after a manual installation:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;debconf-get-selections --installer &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&lt;/span&gt; file
-debconf-get-selections &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&amp;amp;&lt;/span&gt;gt&lt;span class="p"&gt;;&lt;/span&gt; file
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;debconf-get-selections --installer &amp;gt; file
+debconf-get-selections &amp;gt;&amp;gt; file
 &lt;/pre&gt;&lt;/div&gt;
 
 

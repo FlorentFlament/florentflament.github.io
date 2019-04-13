@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Florent Flament's Tech Blog - Florent Flament</title><link>http://www.florentflament.com/blog/</link><description></description><lastBuildDate>Tue, 25 Dec 2018 00:00:00 +0100</lastBuildDate><item><title>AMD RX 480 GPU OpenCL benchmark</title><link>http://www.florentflament.com/blog/amd-rx-480-gpu-opencl-benchmark.html</link><description>&lt;p&gt;This post summarizes the results of my &lt;a href="https://github.com/FlorentFlament/amd-gpu-benchmark"&gt;AMD GPU benchmark code&lt;/a&gt; to
+<rss version="2.0"><channel><title>Florent Flament's Tech Blog - Florent Flament</title><link>http://www.florentflament.com/blog/</link><description></description><lastBuildDate>Sat, 13 Apr 2019 00:00:00 +0200</lastBuildDate><item><title>Attempting to mine Cryptocurrency with an old machine</title><link>http://www.florentflament.com/blog/attempting-to-mine-cryptocurrency-with-an-old-machine.html</link><description>&lt;p&gt;This is the story of me attempting to convert an old machine into a
+Cryptocurrency miner. I basically tried to plug my AMD Radeon RX 480
+graphic card into an old PC, a Core 2 duo with 4GB RAM and a
+GF7050T-M5 motherboard.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;According to the &lt;a href="https://www.manualslib.com/manual/451735/Ecs-Gf7050vt-M5.html"&gt;GF7050T-M5 manual&lt;/a&gt;, its PCI …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Florent Flament</dc:creator><pubDate>Sat, 13 Apr 2019 00:00:00 +0200</pubDate><guid isPermaLink="false">tag:www.florentflament.com,2019-04-13:/blog/attempting-to-mine-cryptocurrency-with-an-old-machine.html</guid><category>AMD</category><category>Radeon</category><category>RX 480</category><category>GPU</category><category>Old Hardware</category><category>Cryptocurrency</category><category>GF7050T-M5</category></item><item><title>AMD RX 480 GPU OpenCL benchmark</title><link>http://www.florentflament.com/blog/amd-rx-480-gpu-opencl-benchmark.html</link><description>&lt;p&gt;This post summarizes the results of my &lt;a href="https://github.com/FlorentFlament/amd-gpu-benchmark"&gt;AMD GPU benchmark code&lt;/a&gt; to
 benchmark the computing power of an AMD Radeon RX 480 GPU against an
 Intel Core i5-7400 CPU.&lt;/p&gt;
 &lt;p&gt;The benchmarking code I am running on is the following code:&lt;/p&gt;
