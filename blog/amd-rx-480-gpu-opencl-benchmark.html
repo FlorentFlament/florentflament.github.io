@@ -127,19 +127,19 @@
 benchmark the computing power of an AMD Radeon RX 480 GPU against an
 Intel Core i5-7400 CPU.</p>
 <p>The benchmarking code I am running on is the following code:</p>
-<div class="highlight"><pre><span></span>__kernel void kerntest(__global char* data, int loops_cnt) {
-  size_t id = get_global_id(0);
-  int tmp = data[id] - 32;
-  for (int i=0; i&lt;loops_cnt; i++) {
-    tmp = (2*tmp + id) % 95;
-  }
-  data[id] = (char)(tmp + 32);
-};
+<div class="highlight"><pre><span></span><span class="n">__kernel</span><span class="w"> </span><span class="n">void</span><span class="w"> </span><span class="n">kerntest</span><span class="p">(</span><span class="n">__global</span><span class="w"> </span><span class="nc">char</span><span class="o">*</span><span class="w"> </span><span class="k">data</span><span class="p">,</span><span class="w"> </span><span class="nc">int</span><span class="w"> </span><span class="n">loops_cnt</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">size_t</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="nc">int</span><span class="w"> </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">data</span><span class="o">[</span><span class="n">id</span><span class="o">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">loops_cnt</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">tmp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">95</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">data</span><span class="o">[</span><span class="n">id</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nc">char</span><span class="p">)(</span><span class="n">tmp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">32</span><span class="p">);</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 
 
 <p>The operation we will be counting is the one in the loop:</p>
-<div class="highlight"><pre><span></span>tmp = (2*tmp + id) % 95;
+<div class="highlight"><pre><span></span><span class="err">tmp = (2*tmp + id) % 95;</span>
 </pre></div>
 
 
@@ -156,15 +156,15 @@ during a given period for:</p>
 performed during the corresponding period. Each line is the linear
 approximation of the corresponding points.</p>
 <p>A couple of statistics are printed by gnuplot:</p>
-<div class="highlight"><pre><span></span>-= Millions operations per second =-
-CPU: 152
-GPU 1 worker: 3
-GPU many workers: 44045
+<div class="highlight"><pre><span></span><span class="o">-=</span> <span class="n">Millions</span> <span class="n">operations</span> <span class="n">per</span> <span class="k">second</span> <span class="o">=-</span>
+<span class="n">CPU</span><span class="p">:</span> <span class="mi">152</span>
+<span class="n">GPU</span> <span class="mi">1</span> <span class="n">worker</span><span class="p">:</span> <span class="mi">3</span>
+<span class="n">GPU</span> <span class="n">many</span> <span class="n">workers</span><span class="p">:</span> <span class="mi">44045</span>
 
--= Ratios =-
-CPU / GPU 1 worker: 45
-GPU many workers / CPU: 287
-GPU many workers / GPU 1 worker: 13081
+<span class="o">-=</span> <span class="n">Ratios</span> <span class="o">=-</span>
+<span class="n">CPU</span> <span class="o">/</span> <span class="n">GPU</span> <span class="mi">1</span> <span class="n">worker</span><span class="p">:</span> <span class="mi">45</span>
+<span class="n">GPU</span> <span class="n">many</span> <span class="n">workers</span> <span class="o">/</span> <span class="n">CPU</span><span class="p">:</span> <span class="mi">287</span>
+<span class="n">GPU</span> <span class="n">many</span> <span class="n">workers</span> <span class="o">/</span> <span class="n">GPU</span> <span class="mi">1</span> <span class="n">worker</span><span class="p">:</span> <span class="mi">13081</span>
 </pre></div>
 
 
@@ -250,7 +250,7 @@ results:</p>
         <i class="icon-tag icon-large"></i>Benchmark
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/ceph.html">
         <i class="icon-tag icon-large"></i>Ceph
     </a>

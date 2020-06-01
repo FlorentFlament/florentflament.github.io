@@ -268,32 +268,32 @@ by different layers:</p>
 </li>
 </ul>
 <h2>Example table</h2>
-<div class="highlight"><pre><span></span>+------------------+-------------+--------+-------------+-------------+------------------+
-|                  |             |        |             |             |                  |
-| Files            | text / code | Emails | Binary data | Binary data |      Threat      |
-|                  |             |        | important   | throwable   |                  |
-+------------------+-------------+--------+-------------+-------------+------------------+
-|                  |             |                                    |                  |
-| Version layer    |     git     |                 None               | Human            |
-|                  |             |                                    | error ++         |
-+------------------+-------------+--------+---------------------------+------------------+
-|                  |             |        |                           |                  |
-| Exposition layer |     ssh     | IMAPs  |            NFS            |                  |
-|                  |             |        |                           |                  |
-+------------------+------------------- Block devices ----------------+------------------+
-|                  |                      |                           |                  |
-| Encryption layer |         LUKS         |           None            | Theft (abuse)    |
-|                  |                      |                           |                  |
-+------------------+------------------- Block devices ----------------+------------------+
-|                  |                                                  |                  |
-| Redundancy       |                  Disks / RAID                    | Hardware         |
-|                  |                                                  | failure ++       |
-+------------------+------------------------------------+-------------+------------------+
-|                  |                                    |             | Human error /    |
-| Backup           |         Regular snapshots          |    None     | Theft (loss) /   |
-|                  |                                    |             | Piracy /         |
-|                  |                                    |             | Hardware failure |
-+------------------+------------------------------------+-------------+------------------+
+<div class="highlight"><pre><span></span><span class="err">+------------------+-------------+--------+-------------+-------------+------------------+</span>
+<span class="err">|                  |             |        |             |             |                  |</span>
+<span class="err">| Files            | text / code | Emails | Binary data | Binary data |      Threat      |</span>
+<span class="err">|                  |             |        | important   | throwable   |                  |</span>
+<span class="err">+------------------+-------------+--------+-------------+-------------+------------------+</span>
+<span class="err">|                  |             |                                    |                  |</span>
+<span class="err">| Version layer    |     git     |                 None               | Human            |</span>
+<span class="err">|                  |             |                                    | error ++         |</span>
+<span class="err">+------------------+-------------+--------+---------------------------+------------------+</span>
+<span class="err">|                  |             |        |                           |                  |</span>
+<span class="err">| Exposition layer |     ssh     | IMAPs  |            NFS            |                  |</span>
+<span class="err">|                  |             |        |                           |                  |</span>
+<span class="err">+------------------+------------------- Block devices ----------------+------------------+</span>
+<span class="err">|                  |                      |                           |                  |</span>
+<span class="err">| Encryption layer |         LUKS         |           None            | Theft (abuse)    |</span>
+<span class="err">|                  |                      |                           |                  |</span>
+<span class="err">+------------------+------------------- Block devices ----------------+------------------+</span>
+<span class="err">|                  |                                                  |                  |</span>
+<span class="err">| Redundancy       |                  Disks / RAID                    | Hardware         |</span>
+<span class="err">|                  |                                                  | failure ++       |</span>
+<span class="err">+------------------+------------------------------------+-------------+------------------+</span>
+<span class="err">|                  |                                    |             | Human error /    |</span>
+<span class="err">| Backup           |         Regular snapshots          |    None     | Theft (loss) /   |</span>
+<span class="err">|                  |                                    |             | Piracy /         |</span>
+<span class="err">|                  |                                    |             | Hardware failure |</span>
+<span class="err">+------------------+------------------------------------+-------------+------------------+</span>
 </pre></div>
                 </div><!-- /.entry-content -->
                 <div class="comments">
@@ -363,7 +363,7 @@ by different layers:</p>
         <i class="icon-tag icon-large"></i>Benchmark
     </a>
 </li>
-<li class="tag-4">
+<li class="tag-2">
     <a href="./tag/ceph.html">
         <i class="icon-tag icon-large"></i>Ceph
     </a>

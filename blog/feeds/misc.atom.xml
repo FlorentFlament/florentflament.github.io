@@ -1,5 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog - misc</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2019-04-13T00:00:00+02:00</updated><entry><title>Attempting to mine Cryptocurrency with an old machine</title><link href="http://www.florentflament.com/blog/attempting-to-mine-cryptocurrency-with-an-old-machine.html" rel="alternate"></link><published>2019-04-13T00:00:00+02:00</published><updated>2019-04-13T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2019-04-13:/blog/attempting-to-mine-cryptocurrency-with-an-old-machine.html</id><summary type="html">&lt;p&gt;This is the story of me attempting to convert an old machine into a
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament's Tech Blog - misc</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2020-05-30T00:00:00+02:00</updated><entry><title>Ceph monitor status switching due to slow IOs</title><link href="http://www.florentflament.com/blog/ceph-monitor-status-switching-due-to-slow-ios.html" rel="alternate"></link><published>2020-05-30T00:00:00+02:00</published><updated>2020-05-30T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2020-05-30:/blog/ceph-monitor-status-switching-due-to-slow-ios.html</id><summary type="html">&lt;p&gt;I deployed a Ceph cluster (Nautilus, then upgraded to the Octopus
+release) to store my personal data a few months ago. So far it has
+been working pretty well, apart from a 1 hour partial outage that
+won't be covered there, most probably linked to the issue described.&lt;/p&gt;
+&lt;p&gt;That said …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I deployed a Ceph cluster (Nautilus, then upgraded to the Octopus
+release) to store my personal data a few months ago. So far it has
+been working pretty well, apart from a 1 hour partial outage that
+won't be covered there, most probably linked to the issue described.&lt;/p&gt;
+&lt;p&gt;That said, I noticed that &lt;code&gt;mon.cephpi&lt;/code&gt; was seen down for a few seconds
+every few minutes, and that it happened during leader elections. And
+when &lt;code&gt;mon.cephpi&lt;/code&gt; goes back online, it seems triggers a new election a
+few seconds after the previous one. (There &lt;code&gt;mon.cephpi&lt;/code&gt; is also a bit
+low on disk space, but that's not related to the issue under
+examination).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@ceph-mon0:/var/log/ceph# zgrep ^2020-05-30T00:5 ceph.log.1.gz | egrep &amp;quot;INF|WRN&amp;quot;
+2020-05-30T00:50:54.874314+0200 mon.yumy (mon.1) 26519 : cluster [INF] mon.yumy calling monitor election
+2020-05-30T00:50:54.907529+0200 mon.ceph-mon0 (mon.0) 27086 : cluster [INF] mon.ceph-mon0 calling monitor election
+2020-05-30T00:50:59.916206+0200 mon.ceph-mon0 (mon.0) 27087 : cluster [INF] mon.ceph-mon0 is new leader, mons ceph-mon0,yumy in quorum (ranks 0,1)
+2020-05-30T00:51:00.026583+0200 mon.ceph-mon0 (mon.0) 27092 : cluster [WRN] Health check failed: 1/3 mons down, quorum ceph-mon0,yumy (MON_DOWN)
+2020-05-30T00:51:00.026770+0200 mon.ceph-mon0 (mon.0) 27093 : cluster [INF] Health check cleared: MON_DISK_LOW (was: mon cephpi is low on available space)
+2020-05-30T00:51:00.129247+0200 mon.ceph-mon0 (mon.0) 27094 : cluster [WRN] overall HEALTH_WARN 1/3 mons down, quorum ceph-mon0,yumy
+2020-05-30T00:51:06.174123+0200 mon.cephpi (mon.2) 250 : cluster [INF] mon.cephpi calling monitor election
+2020-05-30T00:51:06.239131+0200 mon.yumy (mon.1) 26520 : cluster [INF] mon.yumy calling monitor election
+2020-05-30T00:51:06.240313+0200 mon.ceph-mon0 (mon.0) 27102 : cluster [INF] mon.ceph-mon0 calling monitor election
+2020-05-30T00:51:06.286552+0200 mon.ceph-mon0 (mon.0) 27103 : cluster [INF] mon.ceph-mon0 is new leader, mons ceph-mon0,yumy,cephpi in quorum (ranks 0,1,2)
+2020-05-30T00:51:06.403610+0200 mon.ceph-mon0 (mon.0) 27108 : cluster [INF] Health check cleared: MON_DOWN (was: 1/3 mons down, quorum ceph-mon0,yumy)
+2020-05-30T00:51:06.403837+0200 mon.ceph-mon0 (mon.0) 27109 : cluster [INF] Cluster is now healthy
+2020-05-30T00:51:06.517425+0200 mon.ceph-mon0 (mon.0) 27110 : cluster [INF] overall HEALTH_OK
+2020-05-30T00:51:11.180148+0200 mon.ceph-mon0 (mon.0) 27116 : cluster [WRN] Health check failed: mon cephpi is low on available space (MON_DISK_LOW)
+2020-05-30T00:52:42.757032+0200 mon.cephpi (mon.2) 251 : cluster [INF] mon.cephpi calling monitor election
+2020-05-30T00:52:42.847724+0200 mon.ceph-mon0 (mon.0) 27203 : cluster [INF] mon.ceph-mon0 calling monitor election
+2020-05-30T00:52:42.867228+0200 mon.yumy (mon.1) 26521 : cluster [INF] mon.yumy calling monitor election
+2020-05-30T00:52:42.932928+0200 mon.ceph-mon0 (mon.0) 27204 : cluster [INF] mon.ceph-mon0 is new leader, mons ceph-mon0,yumy,cephpi in quorum (ranks 0,1,2)
+2020-05-30T00:52:43.223146+0200 mon.ceph-mon0 (mon.0) 27210 : cluster [WRN] overall HEALTH_WARN mon cephpi is low on available space
+2020-05-30T00:56:46.567727+0200 mon.yumy (mon.1) 26522 : cluster [INF] mon.yumy calling monitor election
+2020-05-30T00:56:46.589153+0200 mon.ceph-mon0 (mon.0) 27448 : cluster [INF] mon.ceph-mon0 calling monitor election
+2020-05-30T00:56:51.599236+0200 mon.ceph-mon0 (mon.0) 27449 : cluster [INF] mon.ceph-mon0 is new leader, mons ceph-mon0,yumy in quorum (ranks 0,1)
+2020-05-30T00:56:51.700268+0200 mon.ceph-mon0 (mon.0) 27454 : cluster [WRN] Health check failed: 1/3 mons down, quorum ceph-mon0,yumy (MON_DOWN)
+2020-05-30T00:56:51.700470+0200 mon.ceph-mon0 (mon.0) 27455 : cluster [INF] Health check cleared: MON_DISK_LOW (was: mon cephpi is low on available space)
+2020-05-30T00:56:51.801453+0200 mon.ceph-mon0 (mon.0) 27456 : cluster [WRN] overall HEALTH_WARN 1/3 mons down, quorum ceph-mon0,yumy
+2020-05-30T00:57:04.048894+0200 mon.ceph-mon0 (mon.0) 27469 : cluster [INF] mon.ceph-mon0 calling monitor election
+2020-05-30T00:57:04.060391+0200 mon.yumy (mon.1) 26523 : cluster [INF] mon.yumy calling monitor election
+2020-05-30T00:57:04.135749+0200 mon.ceph-mon0 (mon.0) 27470 : cluster [INF] mon.ceph-mon0 is new leader, mons ceph-mon0,yumy,cephpi in quorum (ranks 0,1,2)
+2020-05-30T00:57:04.322415+0200 mon.ceph-mon0 (mon.0) 27476 : cluster [INF] Health check cleared: MON_DOWN (was: 1/3 mons down, quorum ceph-mon0,yumy)
+2020-05-30T00:57:04.322579+0200 mon.ceph-mon0 (mon.0) 27477 : cluster [INF] Cluster is now healthy
+2020-05-30T00:57:05.149468+0200 mon.ceph-mon0 (mon.0) 27478 : cluster [INF] overall HEALTH_OK
+2020-05-30T00:57:08.912387+0200 mon.ceph-mon0 (mon.0) 27483 : cluster [WRN] Health check failed: mon cephpi is low on available space (MON_DISK_LOW)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Sometimes, I was also seeing &lt;code&gt;check_auth_rotating possible clock skew,
+rotating keys expired way too early&lt;/code&gt; messages in the logs of
+non-monitor daemons (MDS, managers or OSD alike).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@cephpi:/var/log/ceph# zgrep &amp;#39;clock skew&amp;#39; ceph-osd.0.log.1.gz 
+2020-05-30T00:56:56.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:56.555279+0200)
+2020-05-30T00:56:56.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:56.556551+0200)
+2020-05-30T00:56:57.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:57.555610+0200)
+2020-05-30T00:56:57.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:57.556922+0200)
+2020-05-30T00:56:58.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:58.555918+0200)
+2020-05-30T00:56:58.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:58.557175+0200)
+2020-05-30T00:56:59.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:59.556250+0200)
+2020-05-30T00:56:59.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:59.557567+0200)
+2020-05-30T00:57:00.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:00.556559+0200)
+2020-05-30T00:57:00.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:00.557819+0200)
+2020-05-30T00:57:01.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:01.556899+0200)
+2020-05-30T00:57:01.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:01.558013+0200)
+2020-05-30T00:57:02.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:02.557226+0200)
+2020-05-30T00:57:02.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:02.558396+0200)
+2020-05-30T00:57:03.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:03.557531+0200)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's focus on the time period between &lt;code&gt;2020-05-30T00:56:51&lt;/code&gt; and
+&lt;code&gt;2020-05-30T00:57:04&lt;/code&gt;, i.e 00:56:51 and 00:57:04. Here's my assumption
+about what happened:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;At 00:56:51 &lt;code&gt;mon.cephpi&lt;/code&gt; was seen down by &lt;code&gt;mon.ceph-mon0&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;between 00:56:56 and 00:57:03 &lt;code&gt;ceph-osd@0&lt;/code&gt; obtained expired keys
+  when trying to rotate them.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;At 00:57:04 &lt;code&gt;mon.cephpi&lt;/code&gt; was seen up by &lt;code&gt;mon.ceph-mon0&lt;/code&gt; and
+  &lt;code&gt;ceph-osd@0&lt;/code&gt; could rotate its keys succesfully.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It looks like between 00:56:51 and 00:57:04 &lt;code&gt;mon.cephpi&lt;/code&gt; was out of
+the quorum for 13 seconds and kept issuing expired keys to
+&lt;code&gt;ceph-osd@0&lt;/code&gt; during that period.&lt;/p&gt;
+&lt;p&gt;Let's have a look at the logs of &lt;code&gt;mon.cephpi&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Between 00:56:35 and 00:56:57, &lt;code&gt;mon.cephpi&lt;/code&gt; was apparently writing
+  to its rocksdb database, and it took 22 seconds to write 49442280
+  bytes (i.e 50MB). This is why it missed the leader election that
+  happened between 00:56:46 and 00:56:51, which resulted in
+  &lt;code&gt;mon.cephpi&lt;/code&gt; being flagged at down by the leader.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;At 00:56:57, when going back online, &lt;code&gt;mon.cephpi&lt;/code&gt; triggered a new
+  election, which ended at 00:57:04, with &lt;code&gt;mon.cephpi&lt;/code&gt; being back in
+  the monitors quorum, and able to issue valid keys again.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;2020-05-30T00:56:35.549+0200 ffffad98b400  4 rocksdb: [db/compaction_job.cc:1649] [default] Compaction start summary: Base version 1187 Base level 0, inputs: [48626(8490KB)], [48624(43MB)]
+2020-05-30T00:56:35.549+0200 ffffad98b400  4 rocksdb: EVENT_LOG_v1 {&amp;quot;time_micros&amp;quot;: 1590792995552781, &amp;quot;job&amp;quot;: 1188, &amp;quot;event&amp;quot;: &amp;quot;compaction_started&amp;quot;, &amp;quot;compaction_reason&amp;quot;: &amp;quot;ManualCompaction&amp;quot;, &amp;quot;files_L0&amp;quot;: [48626], &amp;quot;files_L6&amp;quot;: [48624], &amp;quot;score&amp;quot;: -1, &amp;quot;input_data_size&amp;quot;: 53833362}
+2020-05-30T00:56:57.853+0200 ffffad98b400  4 rocksdb: [db/compaction_job.cc:1332] [default] [JOB 1188] Generated table #48627: 4687 keys, 49442280 bytes
+2020-05-30T00:56:57.853+0200 ffffad98b400  4 rocksdb: EVENT_LOG_v1 {&amp;quot;time_micros&amp;quot;: 1590793017855925, &amp;quot;cf_name&amp;quot;: &amp;quot;default&amp;quot;, &amp;quot;job&amp;quot;: 1188, &amp;quot;event&amp;quot;: &amp;quot;table_file_creation&amp;quot;, &amp;quot;file_number&amp;quot;: 48627, &amp;quot;file_size&amp;quot;: 49442280, &amp;quot;table_properties&amp;quot;: {&amp;quot;data_size&amp;quot;: 49336024, &amp;quot;index_size&amp;quot;: 93526, &amp;quot;filter_size&amp;quot;: 11909, &amp;quot;raw_key_size&amp;quot;: 97594, &amp;quot;raw_average_key_size&amp;quot;: 20, &amp;quot;raw_value_size&amp;quot;: 49203175, &amp;quot;raw_average_value_size&amp;quot;: 10497, &amp;quot;num_data_blocks&amp;quot;: 2720, &amp;quot;num_entries&amp;quot;: 4687, &amp;quot;filter_policy_name&amp;quot;: &amp;quot;rocksdb.BuiltinBloomFilter&amp;quot;}}
+2020-05-30T00:56:57.905+0200 ffffa797f400  1 mon.cephpi@2(electing) e14 collect_metadata :  no unique device id for : fallback method has no model nor serial&amp;#39;
+2020-05-30T00:56:57.905+0200 ffffad98b400  4 rocksdb: [db/compaction_job.cc:1395] [default] [JOB 1188] Compacted 1@0 + 1@6 files to L6 =&amp;gt; 49442280 bytes
+2020-05-30T00:56:58.001+0200 ffffad98b400  4 rocksdb: (Original Log Time 2020/05/30-00:56:58.003695) [db/compaction_job.cc:768] [default] compacted to: base level 6 level multiplier 10.00 max bytes base 268435456 files[0 0 0 0 0 0 1] max score 0.00, MB/sec: 2.4 rd, 2.2 wr, level 6, files in(1, 1) out(1) MB in(8.3, 43.0) out(47.2), read-write-amplify(11.9) write-amplify(5.7) OK, records in: 5202, records dropped: 515 output_compression: NoCompression
+2020-05-30T00:56:58.001+0200 ffffad98b400  4 rocksdb: (Original Log Time 2020/05/30-00:56:58.003819) EVENT_LOG_v1 {&amp;quot;time_micros&amp;quot;: 1590793018003758, &amp;quot;job&amp;quot;: 1188, &amp;quot;event&amp;quot;: &amp;quot;compaction_finished&amp;quot;, &amp;quot;compaction_time_micros&amp;quot;: 22303522, &amp;quot;compaction_time_cpu_micros&amp;quot;: 1184121, &amp;quot;output_level&amp;quot;: 6, &amp;quot;num_output_files&amp;quot;: 1, &amp;quot;total_output_size&amp;quot;: 49442280, &amp;quot;num_input_records&amp;quot;: 5202, &amp;quot;num_output_records&amp;quot;: 4687, &amp;quot;num_subcompactions&amp;quot;: 1, &amp;quot;output_compression&amp;quot;: &amp;quot;NoCompression&amp;quot;, &amp;quot;num_single_delete_mismatches&amp;quot;: 0, &amp;quot;num_single_delete_fallthrough&amp;quot;: 0, &amp;quot;lsm_state&amp;quot;: [0, 0, 0, 0, 0, 0, 1]}
+2020-05-30T00:56:58.005+0200 ffffad98b400  4 rocksdb: EVENT_LOG_v1 {&amp;quot;time_micros&amp;quot;: 1590793018011605, &amp;quot;job&amp;quot;: 1188, &amp;quot;event&amp;quot;: &amp;quot;table_file_deletion&amp;quot;, &amp;quot;file_number&amp;quot;: 48626}
+2020-05-30T00:56:58.021+0200 ffffad98b400  4 rocksdb: EVENT_LOG_v1 {&amp;quot;time_micros&amp;quot;: 1590793018027883, &amp;quot;job&amp;quot;: 1188, &amp;quot;event&amp;quot;: &amp;quot;table_file_deletion&amp;quot;, &amp;quot;file_number&amp;quot;: 48624}
+2020-05-30T00:56:58.025+0200 ffffa3176400  4 rocksdb: [db/db_impl_compaction_flush.cc:1403] [default] Manual compaction starting
+2020-05-30T00:56:58.025+0200 ffffa3176400  4 rocksdb: [db/db_impl_compaction_flush.cc:1403] [default] Manual compaction starting
+2020-05-30T00:56:58.025+0200 ffffa3176400  4 rocksdb: [db/db_impl_compaction_flush.cc:1403] [default] Manual compaction starting
+2020-05-30T00:56:58.025+0200 ffffa3176400  4 rocksdb: [db/db_impl_compaction_flush.cc:1403] [default] Manual compaction starting
+2020-05-30T00:56:58.025+0200 ffffa3176400  4 rocksdb: [db/db_impl_compaction_flush.cc:1403] [default] Manual compaction starting
+2020-05-30T00:57:03.905+0200 ffffaa184400  1 paxos.2).electionLogic(33771) init, last seen epoch 33771, mid-election, bumping
+2020-05-30T00:57:04.045+0200 ffffaa184400  1 mon.cephpi@2(electing) e14 collect_metadata :  no unique device id for : fallback method has no model nor serial&amp;#39;
+2020-05-30T00:57:04.125+0200 ffffa797f400  1 mon.cephpi@2(electing) e14 collect_metadata :  no unique device id for : fallback method has no model nor serial&amp;#39;
+2020-05-30T00:57:07.905+0200 ffffaa184400  1 mon.cephpi@2(peon).osd e4911 _set_new_cache_sizes cache_size:1020054731 inc_alloc: 71303168 full_alloc: 71303168 kv_alloc: 876609536
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's do a quick check to see if how long it takes for cephpi to write
+on the monitor's partition:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@cephpi:~# time sh -c &amp;quot;dd if=/dev/zero of=test bs=1M count=50; sync&amp;quot;
+50+0 records in
+50+0 records out
+52428800 bytes (52 MB, 50 MiB) copied, 9.84231 s, 5.3 MB/s
+
+real    0m10.375s
+user    0m0.001s
+sys     0m0.290s
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Indeed, it takes &lt;code&gt;cephpi&lt;/code&gt; 10 seconds to write 50MB of zeros. Which
+makes sense because it is a Raspberry Pi with a MicroSD card used to
+store the monitor's database. On the other hand writing 50MB to a
+standard spinning disk takes less than 2 seconds:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;svc@yumy:/tmp$ time sh -c &amp;quot;dd if=/dev/zero of=test bs=1M count=50; sync&amp;quot;
+50+0 records in
+50+0 records out
+52428800 bytes (52 MB, 50 MiB) copied, 0.111206 s, 471 MB/s
+
+real    0m1.492s
+user    0m0.003s
+sys 0m0.117s
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Resolution&lt;/h2&gt;
+&lt;p&gt;I eventually plugged a USB disk on &lt;code&gt;cephpi&lt;/code&gt; to store &lt;code&gt;mon.cephpi&lt;/code&gt;
+data. It has been running for a few hour now, without any &lt;code&gt;MON_DOWN&lt;/code&gt;
+event, nor any leader election triggered.&lt;/p&gt;
+&lt;p&gt;In conclusion, one should avoid using slow storage devices (i.e SD
+cards or USB sticks) to store Ceph monitors data. Monitors need to
+write chunks of data (of 50MB in this case) at regular intervals in
+less than a few seconds (less than 5 seconds I guess); otherwise, they
+end up switching in and out of the monitors quorum and triggering many
+elections.&lt;/p&gt;</content><category term="misc"></category><category term="Ceph"></category></entry><entry><title>Attempting to mine Cryptocurrency with an old machine</title><link href="http://www.florentflament.com/blog/attempting-to-mine-cryptocurrency-with-an-old-machine.html" rel="alternate"></link><published>2019-04-13T00:00:00+02:00</published><updated>2019-04-13T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2019-04-13:/blog/attempting-to-mine-cryptocurrency-with-an-old-machine.html</id><summary type="html">&lt;p&gt;This is the story of me attempting to convert an old machine into a
 Cryptocurrency miner. I basically tried to plug my AMD Radeon RX 480
 graphic card into an old PC, a Core 2 duo with 4GB RAM and a
 GF7050T-M5 motherboard.&lt;/p&gt;
@@ -160,28 +325,28 @@ computer it was shipped with. At least, it is still working ; )&lt;/p&gt;
 &lt;li&gt;&lt;a href="https://www.manualslib.com/manual/451735/Ecs-Gf7050vt-M5.html"&gt;GF7050T-M5 manual&lt;/a&gt; is available online.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://www.amd.com/en/products/graphics/radeon-rx-480"&gt;AMD Radeon RX 480 specifications&lt;/a&gt; are available too.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://www.diamondmm.com/images/480X/RX480D58G%20%20setup%20sheet.pdf"&gt;Diamond AMD Radeon RX 480 specs&lt;/a&gt; provide a bit more details.&lt;/li&gt;
-&lt;/ul&gt;</content><category term="AMD"></category><category term="Radeon"></category><category term="RX 480"></category><category term="GPU"></category><category term="Old Hardware"></category><category term="Cryptocurrency"></category><category term="GF7050T-M5"></category></entry><entry><title>AMD RX 480 GPU OpenCL benchmark</title><link href="http://www.florentflament.com/blog/amd-rx-480-gpu-opencl-benchmark.html" rel="alternate"></link><published>2018-12-25T00:00:00+01:00</published><updated>2018-12-25T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2018-12-25:/blog/amd-rx-480-gpu-opencl-benchmark.html</id><summary type="html">&lt;p&gt;This post summarizes the results of my &lt;a href="https://github.com/FlorentFlament/amd-gpu-benchmark"&gt;AMD GPU benchmark code&lt;/a&gt; to
+&lt;/ul&gt;</content><category term="misc"></category><category term="AMD"></category><category term="Radeon"></category><category term="RX 480"></category><category term="GPU"></category><category term="Old Hardware"></category><category term="Cryptocurrency"></category><category term="GF7050T-M5"></category></entry><entry><title>AMD RX 480 GPU OpenCL benchmark</title><link href="http://www.florentflament.com/blog/amd-rx-480-gpu-opencl-benchmark.html" rel="alternate"></link><published>2018-12-25T00:00:00+01:00</published><updated>2018-12-25T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2018-12-25:/blog/amd-rx-480-gpu-opencl-benchmark.html</id><summary type="html">&lt;p&gt;This post summarizes the results of my &lt;a href="https://github.com/FlorentFlament/amd-gpu-benchmark"&gt;AMD GPU benchmark code&lt;/a&gt; to
 benchmark the computing power of an AMD Radeon RX 480 GPU against an
 Intel Core i5-7400 CPU.&lt;/p&gt;
 &lt;p&gt;The benchmarking code I am running on is the following code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;__kernel void kerntest(__global char* data, int loops_cnt) {
-  size_t id …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;This post summarizes the results of my &lt;a href="https://github.com/FlorentFlament/amd-gpu-benchmark"&gt;AMD GPU benchmark code&lt;/a&gt; to
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;__kernel&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;kerntest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;__global&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;loops_cnt&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="n"&gt;size_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;This post summarizes the results of my &lt;a href="https://github.com/FlorentFlament/amd-gpu-benchmark"&gt;AMD GPU benchmark code&lt;/a&gt; to
 benchmark the computing power of an AMD Radeon RX 480 GPU against an
 Intel Core i5-7400 CPU.&lt;/p&gt;
 &lt;p&gt;The benchmarking code I am running on is the following code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;__kernel void kerntest(__global char* data, int loops_cnt) {
-  size_t id = get_global_id(0);
-  int tmp = data[id] - 32;
-  for (int i=0; i&amp;lt;loops_cnt; i++) {
-    tmp = (2*tmp + id) % 95;
-  }
-  data[id] = (char)(tmp + 32);
-};
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;__kernel&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;kerntest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;__global&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;loops_cnt&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="n"&gt;size_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;get_global_id&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nc"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;data&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nc"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;loops_cnt&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;95&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="err"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;data&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nc"&gt;char&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="err"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;The operation we will be counting is the one in the loop:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tmp = (2*tmp + id) % 95;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;tmp = (2*tmp + id) % 95;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -198,15 +363,15 @@ during a given period for:&lt;/p&gt;
 performed during the corresponding period. Each line is the linear
 approximation of the corresponding points.&lt;/p&gt;
 &lt;p&gt;A couple of statistics are printed by gnuplot:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;-= Millions operations per second =-
-CPU: 152
-GPU 1 worker: 3
-GPU many workers: 44045
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="n"&gt;Millions&lt;/span&gt; &lt;span class="n"&gt;operations&lt;/span&gt; &lt;span class="n"&gt;per&lt;/span&gt; &lt;span class="k"&gt;second&lt;/span&gt; &lt;span class="o"&gt;=-&lt;/span&gt;
+&lt;span class="n"&gt;CPU&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;152&lt;/span&gt;
+&lt;span class="n"&gt;GPU&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;
+&lt;span class="n"&gt;GPU&lt;/span&gt; &lt;span class="n"&gt;many&lt;/span&gt; &lt;span class="n"&gt;workers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;44045&lt;/span&gt;
 
--= Ratios =-
-CPU / GPU 1 worker: 45
-GPU many workers / CPU: 287
-GPU many workers / GPU 1 worker: 13081
+&lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="n"&gt;Ratios&lt;/span&gt; &lt;span class="o"&gt;=-&lt;/span&gt;
+&lt;span class="n"&gt;CPU&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;GPU&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;45&lt;/span&gt;
+&lt;span class="n"&gt;GPU&lt;/span&gt; &lt;span class="n"&gt;many&lt;/span&gt; &lt;span class="n"&gt;workers&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;CPU&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;287&lt;/span&gt;
+&lt;span class="n"&gt;GPU&lt;/span&gt; &lt;span class="n"&gt;many&lt;/span&gt; &lt;span class="n"&gt;workers&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;GPU&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;13081&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -223,7 +388,7 @@ results:&lt;/p&gt;
 &lt;li&gt;The GPU with many workers performs 287 times more operations.&lt;/li&gt;
 &lt;li&gt;the GPU with many workers performs 13081 times more operations than
   when using only 1 worker on the same GPU.&lt;/li&gt;
-&lt;/ul&gt;</content><category term="AMD"></category><category term="Radeon"></category><category term="RX 480"></category><category term="GPU"></category><category term="OpenCL"></category><category term="Benchmark"></category></entry><entry><title>Installing a Vanilla Linux Kernel on Fedora</title><link href="http://www.florentflament.com/blog/installing-a-vanilla-linux-kernel-on-fedora.html" rel="alternate"></link><published>2017-11-19T00:00:00+01:00</published><updated>2017-11-19T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2017-11-19:/blog/installing-a-vanilla-linux-kernel-on-fedora.html</id><summary type="html">&lt;p&gt;Updated on 2017-12-28&lt;/p&gt;
+&lt;/ul&gt;</content><category term="misc"></category><category term="AMD"></category><category term="Radeon"></category><category term="RX 480"></category><category term="GPU"></category><category term="OpenCL"></category><category term="Benchmark"></category></entry><entry><title>Installing a Vanilla Linux Kernel on Fedora</title><link href="http://www.florentflament.com/blog/installing-a-vanilla-linux-kernel-on-fedora.html" rel="alternate"></link><published>2017-11-19T00:00:00+01:00</published><updated>2017-11-19T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2017-11-19:/blog/installing-a-vanilla-linux-kernel-on-fedora.html</id><summary type="html">&lt;p&gt;Updated on 2017-12-28&lt;/p&gt;
 &lt;p&gt;Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
 knows how to do it..)&lt;/p&gt;
 &lt;h2&gt;Configuring &amp;amp; Building Linux&lt;/h2&gt;
@@ -332,7 +497,7 @@ menu (together with the previously installed kernels) .&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Tested with Linux 4.14.0 hash ed30b147e1f6e396e70a52dbb6c7d66befedd786&lt;/p&gt;</content><category term="Linux"></category><category term="Kernel"></category></entry><entry><title>A couple of statistics about Linux kernel documentation</title><link href="http://www.florentflament.com/blog/a-couple-of-statistics-about-linux-kernel-documentation.html" rel="alternate"></link><published>2017-03-04T00:00:00+01:00</published><updated>2017-03-04T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2017-03-04:/blog/a-couple-of-statistics-about-linux-kernel-documentation.html</id><summary type="html">&lt;p&gt;There is a whole lot of files in the &lt;code&gt;Documentation&lt;/code&gt; directory of the
+&lt;p&gt;Tested with Linux 4.14.0 hash ed30b147e1f6e396e70a52dbb6c7d66befedd786&lt;/p&gt;</content><category term="misc"></category><category term="Linux"></category><category term="Kernel"></category></entry><entry><title>A couple of statistics about Linux kernel documentation</title><link href="http://www.florentflament.com/blog/a-couple-of-statistics-about-linux-kernel-documentation.html" rel="alternate"></link><published>2017-03-04T00:00:00+01:00</published><updated>2017-03-04T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2017-03-04:/blog/a-couple-of-statistics-about-linux-kernel-documentation.html</id><summary type="html">&lt;p&gt;There is a whole lot of files in the &lt;code&gt;Documentation&lt;/code&gt; directory of the
 &lt;a href="https://github.com/torvalds/linux"&gt;Linux kernel source&lt;/a&gt;. Is it possible for a single person to read
 the whole documentation ? Let's have a look at what's inside it.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;pwd&lt;/span&gt;
@@ -392,7 +557,7 @@ file&lt;/a&gt;:&lt;/p&gt;
 
 
 &lt;p&gt;520.000 word (Roughly &lt;a href="https://electricliterature.com/infographic-word-counts-of-famous-books-161f025a6b09"&gt;equilvalent to reading 'The Lord of the
-Rings'&lt;/a&gt;) for the 'Kernel API documentation'.&lt;/p&gt;</content><category term="Linux"></category><category term="Kernel"></category><category term="Documentation"></category></entry><entry><title>Playing SNDH on YM2149</title><link href="http://www.florentflament.com/blog/playing-sndh-on-ym2149.html" rel="alternate"></link><published>2016-10-15T00:00:00+02:00</published><updated>2016-10-15T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-10-15:/blog/playing-sndh-on-ym2149.html</id><summary type="html">&lt;p&gt;This is the sequel of the &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;Streaming music to YM2149&lt;/a&gt; post. After
+Rings'&lt;/a&gt;) for the 'Kernel API documentation'.&lt;/p&gt;</content><category term="misc"></category><category term="Linux"></category><category term="Kernel"></category><category term="Documentation"></category></entry><entry><title>Playing SNDH on YM2149</title><link href="http://www.florentflament.com/blog/playing-sndh-on-ym2149.html" rel="alternate"></link><published>2016-10-15T00:00:00+02:00</published><updated>2016-10-15T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-10-15:/blog/playing-sndh-on-ym2149.html</id><summary type="html">&lt;p&gt;This is the sequel of the &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;Streaming music to YM2149&lt;/a&gt; post. After
 playing YM chip tunes on the YM2149, I wanted to take profit from the
 &lt;a href="http://sndh.atari.org/"&gt;super large database of SNDH files available online&lt;/a&gt;, by being
 able to play these tunes on my YM2149. This has been possible with the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is the sequel of the &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;Streaming music to YM2149&lt;/a&gt; post. After
@@ -509,7 +674,7 @@ normally played at 22 KHz). This would lower the sound quality of the
 tunes downsampled, but would allow us to play them on this
 YM2149/ATmega implementation.&lt;/p&gt;
 &lt;p&gt;The schematic and &lt;a href="https://github.com/FlorentFlament/ym2149-sndh"&gt;source code to play sndh files on the YM2149&lt;/a&gt; is
-available on GitHub.&lt;/p&gt;</content><category term="Arduino"></category><category term="ATmega"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category><category term="SNDH"></category></entry><entry><title>Streaming music to YM2149F</title><link href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html" rel="alternate"></link><published>2016-09-10T00:00:00+02:00</published><updated>2016-09-10T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-09-10:/blog/streaming-music-to-ym2149f.html</id><summary type="html">&lt;p&gt;To follow-up on my previous blog post about &lt;a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html"&gt;driving a YM2149F chip
+available on GitHub.&lt;/p&gt;</content><category term="misc"></category><category term="Arduino"></category><category term="ATmega"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category><category term="SNDH"></category></entry><entry><title>Streaming music to YM2149F</title><link href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html" rel="alternate"></link><published>2016-09-10T00:00:00+02:00</published><updated>2016-09-10T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-09-10:/blog/streaming-music-to-ym2149f.html</id><summary type="html">&lt;p&gt;To follow-up on my previous blog post about &lt;a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html"&gt;driving a YM2149F chip
 with an Arduino&lt;/a&gt;, I wrote an Arduino firmware that can be used
 together with a PC side Python script to send music to the
 YM2149F. All the code is available in the &lt;a href="https://github.com/FlorentFlament/ym2149-streamer"&gt;ym2149-streamer
@@ -574,7 +739,7 @@ directly in the script some day.&lt;/p&gt;
 with a more dynamic community. Though the tunes are in the &lt;code&gt;sndh&lt;/code&gt;
 format, which is harder to interpret and stream to a YM2149 chip. A
 nice thing would be to find a way to have these &lt;code&gt;sndh&lt;/code&gt; files played on
-the sound chip!&lt;/p&gt;</content><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Driving YM2149F sound chip with an Arduino</title><link href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html" rel="alternate"></link><published>2016-09-03T00:00:00+02:00</published><updated>2016-09-03T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-09-03:/blog/driving-ym2149f-sound-chip-with-an-arduino.html</id><summary type="html">&lt;p&gt;A few months ago, I had the opportunity to get a Yamaha YM2149F
+the sound chip!&lt;/p&gt;</content><category term="misc"></category><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Driving YM2149F sound chip with an Arduino</title><link href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html" rel="alternate"></link><published>2016-09-03T00:00:00+02:00</published><updated>2016-09-03T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-09-03:/blog/driving-ym2149f-sound-chip-with-an-arduino.html</id><summary type="html">&lt;p&gt;A few months ago, I had the opportunity to get a Yamaha YM2149F
 chip. This chip is basically a clone of &lt;a href="https://en.wikipedia.org/wiki/General_Instrument_AY-3-8910"&gt;General Instrument's
 AY-3-8910&lt;/a&gt;, "a 3 voices programmable sound generator" widely used
 in the 80's in many arcade games and home computers (including the
@@ -640,7 +805,7 @@ one has to follow the connections described on the schematic above.&lt;/p&gt;
 &lt;h2&gt;What next&lt;/h2&gt;
 &lt;p&gt;The next blog post describes how to have &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;YM files streamed to the
 YM2149F chip&lt;/a&gt;. Besides, a video of my &lt;a href="https://www.youtube.com/watch?v=MTRJdDbY048"&gt;YM2149F chip playing some
-tune&lt;/a&gt; is available online.&lt;/p&gt;</content><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Arduino Hello World without IDE</title><link href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html" rel="alternate"></link><published>2016-08-08T00:00:00+02:00</published><updated>2016-08-08T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-08-08:/blog/arduino-hello-world-without-ide.html</id><summary type="html">&lt;p&gt;There is already a number of resources available about programming the
+tune&lt;/a&gt; is available online.&lt;/p&gt;</content><category term="misc"></category><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Arduino Hello World without IDE</title><link href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html" rel="alternate"></link><published>2016-08-08T00:00:00+02:00</published><updated>2016-08-08T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-08-08:/blog/arduino-hello-world-without-ide.html</id><summary type="html">&lt;p&gt;There is already a number of resources available about programming the
 Arduino with or without the IDE (I won't discuss here the pros and
 cons of using it). This aims at being a quick memo for those who
 already have some knowledge about C programming, and just want the
@@ -733,7 +898,7 @@ found this code somewhere (though I couldn't recover where from..):&lt;/p&gt;
 &lt;p&gt;That's all folks. With the packages installed and the Makefile
 described earlier, one can compile this little C code and upload it to
 an Arduino board and see the little red LED blinking. From this
-starting point, one can easily work on bigger Arduino based projects.&lt;/p&gt;</content><category term="Arduino"></category></entry><entry><title>Inkjet versus laser printer</title><link href="http://www.florentflament.com/blog/inkjet-versus-laser-printer.html" rel="alternate"></link><published>2015-05-09T00:00:00+02:00</published><updated>2015-05-09T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2015-05-09:/blog/inkjet-versus-laser-printer.html</id><summary type="html">&lt;p&gt;Contrary to what I found on most websites when googling about
+starting point, one can easily work on bigger Arduino based projects.&lt;/p&gt;</content><category term="misc"></category><category term="Arduino"></category></entry><entry><title>Inkjet versus laser printer</title><link href="http://www.florentflament.com/blog/inkjet-versus-laser-printer.html" rel="alternate"></link><published>2015-05-09T00:00:00+02:00</published><updated>2015-05-09T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2015-05-09:/blog/inkjet-versus-laser-printer.html</id><summary type="html">&lt;p&gt;Contrary to what I found on most websites when googling about
 comparisons between inkjet and laser printers, the cost per page on
 high end inkjet printers is lower than that of laser printers.&lt;/p&gt;
 &lt;p&gt;Moreover, when buying a new printer one has to consider the number of
@@ -1236,7 +1401,7 @@ page). On the other hand, the printer with the lowest cost per page
 of $1000.&lt;/p&gt;
 &lt;p&gt;In the end, the ideal printer depends on the usage that will be done
 (number of pages printed). Besides, one may consider additional
-features (print speed, duplex printing, ...) when choosing a printer.&lt;/p&gt;</content><category term="Printers"></category><category term="Costs"></category></entry><entry><title>Right VM cost</title><link href="http://www.florentflament.com/blog/right-vm-cost.html" rel="alternate"></link><published>2014-08-03T00:00:00+02:00</published><updated>2014-08-03T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-08-03:/blog/right-vm-cost.html</id><summary type="html">&lt;p&gt;With cloud Virtual Machines prices dropping month after month, we may
+features (print speed, duplex printing, ...) when choosing a printer.&lt;/p&gt;</content><category term="misc"></category><category term="Printers"></category><category term="Costs"></category></entry><entry><title>Right VM cost</title><link href="http://www.florentflament.com/blog/right-vm-cost.html" rel="alternate"></link><published>2014-08-03T00:00:00+02:00</published><updated>2014-08-03T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-08-03:/blog/right-vm-cost.html</id><summary type="html">&lt;p&gt;With cloud Virtual Machines prices dropping month after month, we may
 be asking if the margins previously done by cloud operators were not
 outrageously high. I actually find surprising that current VM price is
 on average higher than equivalent dedicated server even though
@@ -1414,13 +1579,13 @@ dedicated servers with big HDDs may be more appropriate.&lt;/p&gt;
 &lt;span class="n"&gt;SSres&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;multiply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="n"&gt;Rsq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;SSres&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;SStot&lt;/span&gt;
 
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Constant:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / CPU thread:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / GB of RAM:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / TB of HDD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / GB of SSD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;R^2:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Rsq&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</content><category term="Virtualization"></category><category term="VM"></category><category term="Hardware"></category><category term="Costs"></category></entry><entry><title>Git SSH Docker container</title><link href="http://www.florentflament.com/blog/git-ssh-docker-container.html" rel="alternate"></link><published>2014-06-28T00:00:00+02:00</published><updated>2014-06-28T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-06-28:/blog/git-ssh-docker-container.html</id><summary type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Constant:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / CPU thread:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / GB of RAM:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / TB of HDD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Eur / GB of SSD:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;R^2:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Rsq&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="Virtualization"></category><category term="VM"></category><category term="Hardware"></category><category term="Costs"></category></entry><entry><title>Git SSH Docker container</title><link href="http://www.florentflament.com/blog/git-ssh-docker-container.html" rel="alternate"></link><published>2014-06-28T00:00:00+02:00</published><updated>2014-06-28T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-06-28:/blog/git-ssh-docker-container.html</id><summary type="html">&lt;p&gt;My favorite option to backup and version my code and text files is
 using git with a remote repository. The implementation I have chosen
 for that consists in running an ssh server, with git, in a Docker
 container. This has the following advantages over other solutions:&lt;/p&gt;
@@ -1487,7 +1652,7 @@ CMD &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/sb
 container's SSH port. Of course, this port can be changed to any
 value. One can then ssh to the container with the following command:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ssh -p &lt;span class="m"&gt;1234&lt;/span&gt; git@&amp;lt;container_host&amp;gt;
-&lt;/pre&gt;&lt;/div&gt;</content><category term="Git"></category><category term="SSH"></category><category term="Docker"></category></entry><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><published>2014-05-03T23:34:00+02:00</published><updated>2014-05-03T23:34:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-05-03:/blog/securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
+&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="Git"></category><category term="SSH"></category><category term="Docker"></category></entry><entry><title>Securing Data</title><link href="http://www.florentflament.com/blog/securing-data.html" rel="alternate"></link><published>2014-05-03T23:34:00+02:00</published><updated>2014-05-03T23:34:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-05-03:/blog/securing-data.html</id><summary type="html">&lt;p&gt;As a data geek, I've been wondering how I could protect my data from
 the main threats (if possible by using only open source software). For
 instance, losing data because of a hardware failure is just something
 that shouldn't happen anymore, thanks to all the technology available
@@ -1640,33 +1805,33 @@ by different layers:&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Example table&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;+------------------+-------------+--------+-------------+-------------+------------------+
-|                  |             |        |             |             |                  |
-| Files            | text / code | Emails | Binary data | Binary data |      Threat      |
-|                  |             |        | important   | throwable   |                  |
-+------------------+-------------+--------+-------------+-------------+------------------+
-|                  |             |                                    |                  |
-| Version layer    |     git     |                 None               | Human            |
-|                  |             |                                    | error ++         |
-+------------------+-------------+--------+---------------------------+------------------+
-|                  |             |        |                           |                  |
-| Exposition layer |     ssh     | IMAPs  |            NFS            |                  |
-|                  |             |        |                           |                  |
-+------------------+------------------- Block devices ----------------+------------------+
-|                  |                      |                           |                  |
-| Encryption layer |         LUKS         |           None            | Theft (abuse)    |
-|                  |                      |                           |                  |
-+------------------+------------------- Block devices ----------------+------------------+
-|                  |                                                  |                  |
-| Redundancy       |                  Disks / RAID                    | Hardware         |
-|                  |                                                  | failure ++       |
-+------------------+------------------------------------+-------------+------------------+
-|                  |                                    |             | Human error /    |
-| Backup           |         Regular snapshots          |    None     | Theft (loss) /   |
-|                  |                                    |             | Piracy /         |
-|                  |                                    |             | Hardware failure |
-+------------------+------------------------------------+-------------+------------------+
-&lt;/pre&gt;&lt;/div&gt;</content><category term="Data Safety"></category><category term="Data Security"></category></entry><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><published>2014-03-03T00:00:00+01:00</published><updated>2014-03-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-03-03:/blog/chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;+------------------+-------------+--------+-------------+-------------+------------------+&lt;/span&gt;
+&lt;span class="err"&gt;|                  |             |        |             |             |                  |&lt;/span&gt;
+&lt;span class="err"&gt;| Files            | text / code | Emails | Binary data | Binary data |      Threat      |&lt;/span&gt;
+&lt;span class="err"&gt;|                  |             |        | important   | throwable   |                  |&lt;/span&gt;
+&lt;span class="err"&gt;+------------------+-------------+--------+-------------+-------------+------------------+&lt;/span&gt;
+&lt;span class="err"&gt;|                  |             |                                    |                  |&lt;/span&gt;
+&lt;span class="err"&gt;| Version layer    |     git     |                 None               | Human            |&lt;/span&gt;
+&lt;span class="err"&gt;|                  |             |                                    | error ++         |&lt;/span&gt;
+&lt;span class="err"&gt;+------------------+-------------+--------+---------------------------+------------------+&lt;/span&gt;
+&lt;span class="err"&gt;|                  |             |        |                           |                  |&lt;/span&gt;
+&lt;span class="err"&gt;| Exposition layer |     ssh     | IMAPs  |            NFS            |                  |&lt;/span&gt;
+&lt;span class="err"&gt;|                  |             |        |                           |                  |&lt;/span&gt;
+&lt;span class="err"&gt;+------------------+------------------- Block devices ----------------+------------------+&lt;/span&gt;
+&lt;span class="err"&gt;|                  |                      |                           |                  |&lt;/span&gt;
+&lt;span class="err"&gt;| Encryption layer |         LUKS         |           None            | Theft (abuse)    |&lt;/span&gt;
+&lt;span class="err"&gt;|                  |                      |                           |                  |&lt;/span&gt;
+&lt;span class="err"&gt;+------------------+------------------- Block devices ----------------+------------------+&lt;/span&gt;
+&lt;span class="err"&gt;|                  |                                                  |                  |&lt;/span&gt;
+&lt;span class="err"&gt;| Redundancy       |                  Disks / RAID                    | Hardware         |&lt;/span&gt;
+&lt;span class="err"&gt;|                  |                                                  | failure ++       |&lt;/span&gt;
+&lt;span class="err"&gt;+------------------+------------------------------------+-------------+------------------+&lt;/span&gt;
+&lt;span class="err"&gt;|                  |                                    |             | Human error /    |&lt;/span&gt;
+&lt;span class="err"&gt;| Backup           |         Regular snapshots          |    None     | Theft (loss) /   |&lt;/span&gt;
+&lt;span class="err"&gt;|                  |                                    |             | Piracy /         |&lt;/span&gt;
+&lt;span class="err"&gt;|                  |                                    |             | Hardware failure |&lt;/span&gt;
+&lt;span class="err"&gt;+------------------+------------------------------------+-------------+------------------+&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="Data Safety"></category><category term="Data Security"></category></entry><entry><title>Chef Server on Raspberry Pi</title><link href="http://www.florentflament.com/blog/chef-server-on-raspberry-pi.html" rel="alternate"></link><published>2014-03-03T00:00:00+01:00</published><updated>2014-03-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-03-03:/blog/chef-server-on-raspberry-pi.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt; devices are cheap, quiet, and powerful enough to run
 a Debian based Linux Operating System called &lt;a href="http://www.raspbian.org/"&gt;Raspbian&lt;/a&gt;. Such
 device would be very convenient to manage one's personal
 infrastructure, composed of some physical and / or virtual machines,
@@ -1752,7 +1917,7 @@ exception on TCP connection &amp;lt;0.583.0&amp;gt; from 127.0.0.1:34143
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo rabbitmqctl add_vhost /chef
 $ sudo rabbitmqctl add_user chef PASSWORD_PER_CONFIGURATION
 $ sudo rabbitmqctl set_permissions -p /chef chef &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.*&amp;quot;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</content><category term="Chef"></category><category term="Raspberry Pi"></category><category term="Raspbian"></category></entry><entry><title>Data management</title><link href="http://www.florentflament.com/blog/data-management.html" rel="alternate"></link><published>2014-02-27T00:00:00+01:00</published><updated>2014-02-27T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-02-27:/blog/data-management.html</id><summary type="html">&lt;p&gt;When using several computers (or devices) from different locations,
+&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="Chef"></category><category term="Raspberry Pi"></category><category term="Raspbian"></category></entry><entry><title>Data management</title><link href="http://www.florentflament.com/blog/data-management.html" rel="alternate"></link><published>2014-02-27T00:00:00+01:00</published><updated>2014-02-27T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2014-02-27:/blog/data-management.html</id><summary type="html">&lt;p&gt;When using several computers (or devices) from different locations,
 the question of data management arises. Basically, I wish being able
 to access my data from any computer; I wish my data to be protected,
 accordingly to its privacy and I wish my data to be backed up
@@ -1851,7 +2016,7 @@ into.&lt;/p&gt;
   if the data is stolen, it cannot be read. Backup has to be done
   locally.&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ul&gt;</content><category term="Data management"></category></entry><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><published>2013-12-15T00:00:00+01:00</published><updated>2013-12-15T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-12-15:/blog/znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
+&lt;/ul&gt;</content><category term="misc"></category><category term="Data management"></category></entry><entry><title>ZNC in Docker container</title><link href="http://www.florentflament.com/blog/znc-in-docker-container.html" rel="alternate"></link><published>2013-12-15T00:00:00+01:00</published><updated>2013-12-15T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-12-15:/blog/znc-in-docker-container.html</id><summary type="html">&lt;p&gt;&lt;a href="http://wiki.znc.in/ZNC"&gt;ZNC&lt;/a&gt; is a popular IRC bouncer, which stays connected to IRC
 channels and log conversations while one isn't connected. This note
 desrcibes how to launch ZNC in a &lt;a href="https://www.docker.io/"&gt;Docker&lt;/a&gt; container, so that it be
 launched on any Docker enabled platform. To quick start with Docker,
@@ -1995,7 +2160,7 @@ connexions:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;PASSWORDHASHHERE&lt;/code&gt; can be generated by using &lt;code&gt;znc -s&lt;/code&gt;. IRC clients
 (like xchat) have to be set up by specifying in the "Server Password"
 field a user's credentials &lt;code&gt;&amp;lt;user&amp;gt;:&amp;lt;password&amp;gt;&lt;/code&gt; (i.e
-USER1:PASSORDHASHHERE).&lt;/p&gt;</content><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><published>2013-11-30T00:00:00+01:00</published><updated>2013-11-30T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-30:/blog/ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
+USER1:PASSORDHASHHERE).&lt;/p&gt;</content><category term="misc"></category><category term="ZNC"></category><category term="Docker"></category><category term="IRC"></category></entry><entry><title>Ubuntu VM auto installation</title><link href="http://www.florentflament.com/blog/ubuntu-vm-auto-installation.html" rel="alternate"></link><published>2013-11-30T00:00:00+01:00</published><updated>2013-11-30T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-30:/blog/ubuntu-vm-auto-installation.html</id><summary type="html">&lt;p&gt;Installing a fresh Ubuntu, or any other Linux distribution, on a new
 system is quite forward. The installer asks you a few question about
 your country, keyboard, network, ... . Then it installs all the
 required packages on the system, and makes it bootable.&lt;/p&gt;
@@ -2062,7 +2227,7 @@ following unique command (to be customized):&lt;/p&gt;
 of the standard &lt;code&gt;precise&lt;/code&gt;. It addresses a &lt;a href="https://bugs.launchpad.net/ubuntu/+source/net-retriever/+bug/1067934"&gt;bug that makes the
 installation freeze for 10+ minutes&lt;/a&gt; during the components download
 phase.&lt;/p&gt;
-&lt;p&gt;After some 30 minutes the system installation should be completed.&lt;/p&gt;</content><category term="Ubuntu"></category><category term="KVM"></category><category term="libvirt"></category></entry><entry><title>Macmini2,1 Linux dual boot</title><link href="http://www.florentflament.com/blog/macmini21-linux-dual-boot.html" rel="alternate"></link><published>2013-11-03T00:00:00+01:00</published><updated>2013-11-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-03:/blog/macmini21-linux-dual-boot.html</id><summary type="html">&lt;p&gt;While online resources provide documentation about &lt;a href="https://wiki.debian.org/MacMiniIntel"&gt;how to install
+&lt;p&gt;After some 30 minutes the system installation should be completed.&lt;/p&gt;</content><category term="misc"></category><category term="Ubuntu"></category><category term="KVM"></category><category term="libvirt"></category></entry><entry><title>Macmini2,1 Linux dual boot</title><link href="http://www.florentflament.com/blog/macmini21-linux-dual-boot.html" rel="alternate"></link><published>2013-11-03T00:00:00+01:00</published><updated>2013-11-03T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2013-11-03:/blog/macmini21-linux-dual-boot.html</id><summary type="html">&lt;p&gt;While online resources provide documentation about &lt;a href="https://wiki.debian.org/MacMiniIntel"&gt;how to install
 Linux on a Mac Mini&lt;/a&gt;, this guide focuses on the Apple Macmini2,1
 and its peculiarities. Please refer to &lt;a href="http://en.wikipedia.org/wiki/Macmini#Specifications"&gt;these tables&lt;/a&gt; to properly
 identify your hardware.&lt;/p&gt;
@@ -2127,4 +2292,4 @@ rEFit menu timeout can be set with the &lt;code&gt;timeout&lt;/code&gt; option. 
 &lt;code&gt;default_selection&lt;/code&gt; (at the end of the file) allows us to choose the
 default OS to boot.&lt;/p&gt;
 &lt;p&gt;That's it ! Restart, rEFit allows us to choose between booting Mac OS
-X and Linux.&lt;/p&gt;</content><category term="Apple"></category><category term="Linux"></category></entry></feed>
+X and Linux.&lt;/p&gt;</content><category term="misc"></category><category term="Apple"></category><category term="Linux"></category></entry></feed>
