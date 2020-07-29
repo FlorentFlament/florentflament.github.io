@@ -81,6 +81,6 @@ phase.
 After some 30 minutes the system installation should be completed.
 
 [0]: http://www.debian.org/releases/stable/i386/apbs02.html.en
-[1]: {filename}/static/preseed.cfg
+[1]: {static}/static/preseed.cfg
 [2]: http://www.debian.org/releases/squeeze/example-preseed.txt
 [3]: https://bugs.launchpad.net/ubuntu/+source/net-retriever/+bug/1067934
