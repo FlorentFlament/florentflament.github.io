@@ -8,7 +8,6 @@ SITEURL = '' # Empty site for development purpose
 
 PATH = 'content'
 STATIC_PATHS = ['images', 'static']
-PLUGIN_PATHS = ["plugins"]
 
 TIMEZONE = 'Europe/Paris'
 
@@ -26,4 +25,17 @@ DEFAULT_PAGINATION = 10
 # Uncomment following line if you want document-relative URLs when developing
 RELATIVE_URLS = True
 
-THEME = 'theme/'
+
+# Using m.css pelican theme
+# see: https://mcss.mosra.cz/themes/pelican/
+
+THEME = 'm.css/pelican-theme'
+THEME_STATIC_DIR = 'static'
+DIRECT_TEMPLATES = ['index']
+
+M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600',
+               '/static/m-dark.css']
+M_THEME_COLOR = '#22272e'
+
+PLUGIN_PATHS = ['m.css/plugins']
+PLUGINS = ['m.htmlsanity']
