@@ -4,41 +4,26 @@ from __future__ import unicode_literals
 
 AUTHOR = u'Florent Flament'
 SITENAME = u"Florent Flament's Tech Blog"
-SITEURL = 'http://www.florentflament.com/blog'
+SITEURL = '' # Empty site for development purpose
 
+PATH = 'content'
 STATIC_PATHS = ['images', 'static']
-
 PLUGIN_PATHS = ["plugins"]
-PLUGINS = ["tag_cloud"]
 
 TIMEZONE = 'Europe/Paris'
 
 DEFAULT_LANG = u'en'
 
 # Feed generation is usually not desired when developing
-FEED_ALL_ATOM = 'feeds/all.atom.xml'
-CATEGORY_FEED_ATOM = 'feeds/%s.atom.xml'
+FEED_ALL_ATOM = None
+CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
+AUTHOR_FEED_ATOM = None
+AUTHOR_FEED_RSS = None
 
-# Blogroll
-LINKS =  (
-    ("Chmouel's Blog", "http://blog.chmouel.com/"),
-    ("Loïc Dachary's Blog", "http://dachary.org/"),
-)
-
-# Social widget
-SOCIAL = None # (('Social links to come', '#'),)
-
-DEFAULT_PAGINATION = 5
+DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
 RELATIVE_URLS = True
 
-THEME = "theme/"
-
-
-# tag_cloud configuration
-TAG_CLOUD_STEPS = 4
-TAG_CLOUD_MAX_ITEMS = 100
-TAG_CLOUD_SORTING = 'alphabetically'
-TAG_CLOUD_BADGE = False
+THEME = 'theme/'

@@ -10,19 +10,17 @@ import sys
 sys.path.append(os.curdir)
 from pelicanconf import *
 
-# Everything's already set in pelicanconf.py
 
-#SITEURL = 'http://www.florentflament.com/blog'
-#FEED_ALL_ATOM = 'feeds/all.atom.xml'
-#CATEGORY_FEED_ATOM = 'feeds/%s.atom.xml'
+# Publishing specifics
 
-#RELATIVE_URLS = False # Keep relative URLs, Icons do not display
-# correctly with absolute URLS.
+SITEURL = 'http://www.florentflament.com/blog'
+RELATIVE_URLS = False
 
-#DELETE_OUTPUT_DIRECTORY = True
+FEED_ALL_ATOM = 'feeds/all.atom.xml'
+CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
 
-# Following items are often useful when publishing
+# This removes the previously generated content
+DELETE_OUTPUT_DIRECTORY = True
 
 DISQUS_SITENAME = "florentflament"
 GOOGLE_ANALYTICS = "UA-23791515-4"
-TWITTER_USERNAME = "florentflament_"
