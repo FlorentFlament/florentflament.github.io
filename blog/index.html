@@ -1,564 +1,468 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Florent Flament's Tech Blog</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Florent Flament">
-    <link rel="canonical" href="./index.html" />
-
-    <!-- Le styles -->
-    <link rel="stylesheet" href="./theme/css/bootstrap.min.css" type="text/css" />
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-      .tag-1 {
-        font-size: 13pt;
-      }
-      .tag-2 {
-        font-size: 10pt;
-      }
-      .tag-2 {
-        font-size: 8pt;
-      }
-      .tag-4 {
-        font-size: 6pt;
-     }
-    </style>
-    <link href="./theme/css/bootstrap-responsive.min.css" rel="stylesheet">
-        <link href="./theme/css/font-awesome.css" rel="stylesheet">
-
-    <link href="./theme/css/pygments.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="./theme/images/favicon.ico">
-    <link rel="apple-touch-icon" href="./theme/images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="./theme/images/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="./theme/images/apple-touch-icon-114x114.png">
-
-    <link href="./" type="application/atom+xml" rel="alternate" title="Florent Flament's Tech Blog ATOM Feed" />
-
-  </head>
-
-  <body>
-
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="./index.html">Florent Flament's Tech Blog </a>
-          <div class="nav-collapse">
-            <ul class="nav">
-                          <li class="divider-vertical"></li>
-                  <li >
-                    <a href="./category/misc.html">
-						<i class="icon-folder-open icon-large"></i>misc
-					</a>
-                  </li>
-                  <li >
-                    <a href="./category/openstack.html">
-						<i class="icon-folder-open icon-large"></i>OpenStack
-					</a>
-                  </li>
-
-                          <ul class="nav pull-right">
-                                <li><a href="./archives.html"><i class="icon-th-list"></i>Archives</a></li>
-                          </ul>
-
-            </ul>
-            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8" />
+  <title>Florent Flament 2 cents</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="http://www.florentflament.com/static/m-dark.css" />
+  <link rel="next" href="http://www.florentflament.com/blog/index2.html" />
+  <link href="http://www.florentflament.com/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Florent Flament 2 cents" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+  <meta property="og:site_name" content="Florent Flament 2 cents" />
+  <meta property="og:title" content="Florent Flament 2 cents" />
+  <meta name="twitter:title" content="Florent Flament 2 cents" />
+  <meta property="og:url" content="http://www.florentflament.com/blog/" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:type" content="website" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="http://www.florentflament.com/blog/" id="m-navbar-brand" class="m-col-t-9 m-col-m-none m-left-m">Florent Flament 2 cents</a>
     </div>
-
-    <div class="container-fluid">
-      <div class="row">
-        <div class="span9" id="content">
-        <div class="article">
-                <h1><a href="./ceph-monitor-status-switching-due-to-slow-ios.html">Ceph monitor status switching due to slow IOs</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2020-05-30T00:00:00+02:00">
-        <i class="icon-calendar"></i>Sat 30 May 2020
-</abbr>
-<span class="label">By</span>
-<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
-
-
-<span class="label">Tags</span>
-	<a href="./tag/ceph.html"><i class="icon-tag"></i>Ceph</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p>I deployed a Ceph cluster (Nautilus, then upgraded to the Octopus
+  </div>
+</nav></header>
+<main>
+<div class="m-container">
+  <div class="m-row">
+    <div class="m-col-m-10">
+      <article>
+        <header>
+          <h1><a href="http://www.florentflament.com/blog/ceph-monitor-status-switching-due-to-slow-ios.html" rel="bookmark" title="Permalink to Ceph monitor status switching due to slow IOs">
+            <time class="m-date" datetime="2020-05-30T00:00:00+02:00">
+              May <span class="m-date-day">30</span> 2020
+            </time>
+            Ceph monitor status switching due to slow IOs
+          </a></h1>
+          <p>I deployed a Ceph cluster (Nautilus, then upgraded to the Octopus
+          release) to store my personal data a few months ago. So far it has
+          been working pretty well, apart from a 1 hour partial outage that
+          won't be covered there, most probably linked to the issue described.</p>
+          <p>That said …</p>
+        </header>
+        <div class="m-clearfix-l"></div>
+<!-- content -->
+<p>I deployed a Ceph cluster (Nautilus, then upgraded to the Octopus
 release) to store my personal data a few months ago. So far it has
 been working pretty well, apart from a 1 hour partial outage that
 won't be covered there, most probably linked to the issue described.</p>
-<p>That said …</p>
-                        <a class="btn primary xsmall" href="./ceph-monitor-status-switching-due-to-slow-ios.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-        <div class="article">
-                <h1><a href="./attempting-to-mine-cryptocurrency-with-an-old-machine.html">Attempting to mine Cryptocurrency with an old machine</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2019-04-13T00:00:00+02:00">
-        <i class="icon-calendar"></i>Sat 13 April 2019
-</abbr>
-<span class="label">By</span>
-<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
+<p>That said, I noticed that <code>mon.cephpi</code> was seen down for a few seconds
+every few minutes, and that it happened during leader elections. And
+when <code>mon.cephpi</code> goes back online, it seems triggers a new election a
+few seconds after the previous one. (There <code>mon.cephpi</code> is also a bit
+low on disk space, but that's not related to the issue under
+examination).</p>
+<div class="highlight"><pre><span></span>root@ceph-mon0:/var/log/ceph# zgrep ^2020-05-30T00:5 ceph.log.1.gz | egrep &quot;INF|WRN&quot;
+2020-05-30T00:50:54.874314+0200 mon.yumy (mon.1) 26519 : cluster [INF] mon.yumy calling monitor election
+2020-05-30T00:50:54.907529+0200 mon.ceph-mon0 (mon.0) 27086 : cluster [INF] mon.ceph-mon0 calling monitor election
+2020-05-30T00:50:59.916206+0200 mon.ceph-mon0 (mon.0) 27087 : cluster [INF] mon.ceph-mon0 is new leader, mons ceph-mon0,yumy in quorum (ranks 0,1)
+2020-05-30T00:51:00.026583+0200 mon.ceph-mon0 (mon.0) 27092 : cluster [WRN] Health check failed: 1/3 mons down, quorum ceph-mon0,yumy (MON_DOWN)
+2020-05-30T00:51:00.026770+0200 mon.ceph-mon0 (mon.0) 27093 : cluster [INF] Health check cleared: MON_DISK_LOW (was: mon cephpi is low on available space)
+2020-05-30T00:51:00.129247+0200 mon.ceph-mon0 (mon.0) 27094 : cluster [WRN] overall HEALTH_WARN 1/3 mons down, quorum ceph-mon0,yumy
+2020-05-30T00:51:06.174123+0200 mon.cephpi (mon.2) 250 : cluster [INF] mon.cephpi calling monitor election
+2020-05-30T00:51:06.239131+0200 mon.yumy (mon.1) 26520 : cluster [INF] mon.yumy calling monitor election
+2020-05-30T00:51:06.240313+0200 mon.ceph-mon0 (mon.0) 27102 : cluster [INF] mon.ceph-mon0 calling monitor election
+2020-05-30T00:51:06.286552+0200 mon.ceph-mon0 (mon.0) 27103 : cluster [INF] mon.ceph-mon0 is new leader, mons ceph-mon0,yumy,cephpi in quorum (ranks 0,1,2)
+2020-05-30T00:51:06.403610+0200 mon.ceph-mon0 (mon.0) 27108 : cluster [INF] Health check cleared: MON_DOWN (was: 1/3 mons down, quorum ceph-mon0,yumy)
+2020-05-30T00:51:06.403837+0200 mon.ceph-mon0 (mon.0) 27109 : cluster [INF] Cluster is now healthy
+2020-05-30T00:51:06.517425+0200 mon.ceph-mon0 (mon.0) 27110 : cluster [INF] overall HEALTH_OK
+2020-05-30T00:51:11.180148+0200 mon.ceph-mon0 (mon.0) 27116 : cluster [WRN] Health check failed: mon cephpi is low on available space (MON_DISK_LOW)
+2020-05-30T00:52:42.757032+0200 mon.cephpi (mon.2) 251 : cluster [INF] mon.cephpi calling monitor election
+2020-05-30T00:52:42.847724+0200 mon.ceph-mon0 (mon.0) 27203 : cluster [INF] mon.ceph-mon0 calling monitor election
+2020-05-30T00:52:42.867228+0200 mon.yumy (mon.1) 26521 : cluster [INF] mon.yumy calling monitor election
+2020-05-30T00:52:42.932928+0200 mon.ceph-mon0 (mon.0) 27204 : cluster [INF] mon.ceph-mon0 is new leader, mons ceph-mon0,yumy,cephpi in quorum (ranks 0,1,2)
+2020-05-30T00:52:43.223146+0200 mon.ceph-mon0 (mon.0) 27210 : cluster [WRN] overall HEALTH_WARN mon cephpi is low on available space
+2020-05-30T00:56:46.567727+0200 mon.yumy (mon.1) 26522 : cluster [INF] mon.yumy calling monitor election
+2020-05-30T00:56:46.589153+0200 mon.ceph-mon0 (mon.0) 27448 : cluster [INF] mon.ceph-mon0 calling monitor election
+2020-05-30T00:56:51.599236+0200 mon.ceph-mon0 (mon.0) 27449 : cluster [INF] mon.ceph-mon0 is new leader, mons ceph-mon0,yumy in quorum (ranks 0,1)
+2020-05-30T00:56:51.700268+0200 mon.ceph-mon0 (mon.0) 27454 : cluster [WRN] Health check failed: 1/3 mons down, quorum ceph-mon0,yumy (MON_DOWN)
+2020-05-30T00:56:51.700470+0200 mon.ceph-mon0 (mon.0) 27455 : cluster [INF] Health check cleared: MON_DISK_LOW (was: mon cephpi is low on available space)
+2020-05-30T00:56:51.801453+0200 mon.ceph-mon0 (mon.0) 27456 : cluster [WRN] overall HEALTH_WARN 1/3 mons down, quorum ceph-mon0,yumy
+2020-05-30T00:57:04.048894+0200 mon.ceph-mon0 (mon.0) 27469 : cluster [INF] mon.ceph-mon0 calling monitor election
+2020-05-30T00:57:04.060391+0200 mon.yumy (mon.1) 26523 : cluster [INF] mon.yumy calling monitor election
+2020-05-30T00:57:04.135749+0200 mon.ceph-mon0 (mon.0) 27470 : cluster [INF] mon.ceph-mon0 is new leader, mons ceph-mon0,yumy,cephpi in quorum (ranks 0,1,2)
+2020-05-30T00:57:04.322415+0200 mon.ceph-mon0 (mon.0) 27476 : cluster [INF] Health check cleared: MON_DOWN (was: 1/3 mons down, quorum ceph-mon0,yumy)
+2020-05-30T00:57:04.322579+0200 mon.ceph-mon0 (mon.0) 27477 : cluster [INF] Cluster is now healthy
+2020-05-30T00:57:05.149468+0200 mon.ceph-mon0 (mon.0) 27478 : cluster [INF] overall HEALTH_OK
+2020-05-30T00:57:08.912387+0200 mon.ceph-mon0 (mon.0) 27483 : cluster [WRN] Health check failed: mon cephpi is low on available space (MON_DISK_LOW)
+</pre></div>
 
 
-<span class="label">Tags</span>
-	<a href="./tag/amd.html"><i class="icon-tag"></i>AMD</a>
-	<a href="./tag/radeon.html"><i class="icon-tag"></i>Radeon</a>
-	<a href="./tag/rx-480.html"><i class="icon-tag"></i>RX 480</a>
-	<a href="./tag/gpu.html"><i class="icon-tag"></i>GPU</a>
-	<a href="./tag/old-hardware.html"><i class="icon-tag"></i>Old Hardware</a>
-	<a href="./tag/cryptocurrency.html"><i class="icon-tag"></i>Cryptocurrency</a>
-	<a href="./tag/gf7050t-m5.html"><i class="icon-tag"></i>GF7050T-M5</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p>This is the story of me attempting to convert an old machine into a
-Cryptocurrency miner. I basically tried to plug my AMD Radeon RX 480
-graphic card into an old PC, a Core 2 duo with 4GB RAM and a
-GF7050T-M5 motherboard.</p>
+<p>Sometimes, I was also seeing <code>check_auth_rotating possible clock skew,
+rotating keys expired way too early</code> messages in the logs of
+non-monitor daemons (MDS, managers or OSD alike).</p>
+<div class="highlight"><pre><span></span>root@cephpi:/var/log/ceph# zgrep &#39;clock skew&#39; ceph-osd.0.log.1.gz 
+2020-05-30T00:56:56.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:56.555279+0200)
+2020-05-30T00:56:56.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:56.556551+0200)
+2020-05-30T00:56:57.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:57.555610+0200)
+2020-05-30T00:56:57.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:57.556922+0200)
+2020-05-30T00:56:58.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:58.555918+0200)
+2020-05-30T00:56:58.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:58.557175+0200)
+2020-05-30T00:56:59.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:59.556250+0200)
+2020-05-30T00:56:59.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:56:59.557567+0200)
+2020-05-30T00:57:00.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:00.556559+0200)
+2020-05-30T00:57:00.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:00.557819+0200)
+2020-05-30T00:57:01.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:01.556899+0200)
+2020-05-30T00:57:01.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:01.558013+0200)
+2020-05-30T00:57:02.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:02.557226+0200)
+2020-05-30T00:57:02.553+0200 ffff9e734bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:02.558396+0200)
+2020-05-30T00:57:03.553+0200 ffff9d732bc0 -1 monclient: _check_auth_rotating possible clock skew, rotating keys expired way too early (before 2020-05-29T23:57:03.557531+0200)
+</pre></div>
+
+
+<p>Let's focus on the time period between <code>2020-05-30T00:56:51</code> and
+<code>2020-05-30T00:57:04</code>, i.e 00:56:51 and 00:57:04. Here's my assumption
+about what happened:</p>
 <ul>
 <li>
-<p>According to the <a href="https://www.manualslib.com/manual/451735/Ecs-Gf7050vt-M5.html">GF7050T-M5 manual</a>, its PCI …</p></li></ul>
-                        <a class="btn primary xsmall" href="./attempting-to-mine-cryptocurrency-with-an-old-machine.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-        <div class="article">
-                <h1><a href="./amd-rx-480-gpu-opencl-benchmark.html">AMD RX 480 GPU OpenCL benchmark</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2018-12-25T00:00:00+01:00">
-        <i class="icon-calendar"></i>Tue 25 December 2018
-</abbr>
-<span class="label">By</span>
-<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
-
-
-<span class="label">Tags</span>
-	<a href="./tag/amd.html"><i class="icon-tag"></i>AMD</a>
-	<a href="./tag/radeon.html"><i class="icon-tag"></i>Radeon</a>
-	<a href="./tag/rx-480.html"><i class="icon-tag"></i>RX 480</a>
-	<a href="./tag/gpu.html"><i class="icon-tag"></i>GPU</a>
-	<a href="./tag/opencl.html"><i class="icon-tag"></i>OpenCL</a>
-	<a href="./tag/benchmark.html"><i class="icon-tag"></i>Benchmark</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p>This post summarizes the results of my <a href="https://github.com/FlorentFlament/amd-gpu-benchmark">AMD GPU benchmark code</a> to
-benchmark the computing power of an AMD Radeon RX 480 GPU against an
-Intel Core i5-7400 CPU.</p>
-<p>The benchmarking code I am running on is the following code:</p>
-<div class="highlight"><pre><span></span><span class="n">__kernel</span><span class="w"> </span><span class="n">void</span><span class="w"> </span><span class="n">kerntest</span><span class="p">(</span><span class="n">__global</span><span class="w"> </span><span class="nc">char</span><span class="o">*</span><span class="w"> </span><span class="k">data</span><span class="p">,</span><span class="w"> </span><span class="nc">int</span><span class="w"> </span><span class="n">loops_cnt</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">size_t</span><span class="w"> </span><span class="n">id …</span></pre></div>
-                        <a class="btn primary xsmall" href="./amd-rx-480-gpu-opencl-benchmark.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-        <div class="article">
-                <h1><a href="./installing-a-vanilla-linux-kernel-on-fedora.html">Installing a Vanilla Linux Kernel on Fedora</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2017-11-19T00:00:00+01:00">
-        <i class="icon-calendar"></i>Sun 19 November 2017
-</abbr>
-<span class="label">By</span>
-<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
-
-
-<span class="label">Tags</span>
-	<a href="./tag/linux.html"><i class="icon-tag"></i>Linux</a>
-	<a href="./tag/kernel.html"><i class="icon-tag"></i>Kernel</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p>Updated on 2017-12-28</p>
-<p>Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
-knows how to do it..)</p>
-<h2>Configuring &amp; Building Linux</h2>
-<p>One can start by cloning Torvalds' Linux repository to fetch the
-latest master (or we could fetch the latest stable release) :</p>
-<div class="highlight"><pre><span></span>$ git clone https://github.com/torvalds …</pre></div>
-                        <a class="btn primary xsmall" href="./installing-a-vanilla-linux-kernel-on-fedora.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-        <div class="article">
-                <h1><a href="./a-couple-of-statistics-about-linux-kernel-documentation.html">A couple of statistics about Linux kernel documentation</a></h1>
-                <div class="well small"><footer class="post-info">
-<span class="label">Date</span>
-<abbr class="published" title="2017-03-04T00:00:00+01:00">
-        <i class="icon-calendar"></i>Sat 04 March 2017
-</abbr>
-<span class="label">By</span>
-<a href="./author/florent-flament.html"><i class="icon-user"></i>Florent Flament</a>
-<span class="label">Category</span>
-<a href="./category/misc.html"><i class="icon-folder-open"></i>misc</a>.
-
-
-<span class="label">Tags</span>
-	<a href="./tag/linux.html"><i class="icon-tag"></i>Linux</a>
-	<a href="./tag/kernel.html"><i class="icon-tag"></i>Kernel</a>
-	<a href="./tag/documentation.html"><i class="icon-tag"></i>Documentation</a>
-</footer><!-- /.post-info --></div>
-                <div class="summary"><p>There is a whole lot of files in the <code>Documentation</code> directory of the
-<a href="https://github.com/torvalds/linux">Linux kernel source</a>. Is it possible for a single person to read
-the whole documentation ? Let's have a look at what's inside it.</p>
-<div class="highlight"><pre><span></span>$ <span class="nb">pwd</span>
-/home/florent/src/linux/linux-4.10/Documentation
-
-$ find . -type f <span class="p">|</span> wc -l
-<span class="m">5118 …</span></pre></div>
-                        <a class="btn primary xsmall" href="./a-couple-of-statistics-about-linux-kernel-documentation.html">more ...</a>
-                </div>
-        </div>
-        <hr />
-
-        <div class="pagination">
-        <ul>
-                        <li class="prev disabled"><a href="#">&larr; Previous</a></li>
-                        <li class="active"><a href="./index.html">1</a></li>
-                        <li class=""><a href="./index2.html">2</a></li>
-                        <li class=""><a href="./index3.html">3</a></li>
-                        <li class=""><a href="./index4.html">4</a></li>
-                        <li class=""><a href="./index5.html">5</a></li>
-                        <li class="next"><a href="./index2.html">Next &rarr;</a></li>
-        </ul>
-        </div>
-
-        </div><!--/span-->
-
-                <div class="span3 well sidebar-nav" id="sidebar">
-<ul class="nav nav-list">
-<li class="nav-header"><h4><i class="icon-external-link"></i>blogroll</h4></li>
-    <li><a href="http://blog.chmouel.com/"><i class="icon-external-link"></i>Chmouel's Blog</a></li>
-    <li><a href="http://dachary.org/"><i class="icon-external-link"></i>Loïc Dachary's Blog</a></li>
-
-<li class="nav-header"><h4><i class="icon-folder-close icon-large"></i>Categories</h4></li>
-<li>
-<a href="./category/misc.html">
-    <i class="icon-folder-open icon-large"></i>misc
-</a>
+<p>At 00:56:51 <code>mon.cephpi</code> was seen down by <code>mon.ceph-mon0</code></p>
 </li>
 <li>
-<a href="./category/openstack.html">
-    <i class="icon-folder-open icon-large"></i>OpenStack
-</a>
+<p>between 00:56:56 and 00:57:03 <code>ceph-osd@0</code> obtained expired keys
+  when trying to rotate them.</p>
 </li>
-
-<li class="nav-header"><h4><i class="icon-tags icon-large"></i>Tags</h4></li>
-<li class="tag-2">
-    <a href="./tag/amd.html">
-        <i class="icon-tag icon-large"></i>AMD
-    </a>
+<li>
+<p>At 00:57:04 <code>mon.cephpi</code> was seen up by <code>mon.ceph-mon0</code> and
+  <code>ceph-osd@0</code> could rotate its keys succesfully.</p>
 </li>
-<li class="tag-4">
-    <a href="./tag/atmega.html">
-        <i class="icon-tag icon-large"></i>ATmega
-    </a>
+</ul>
+<p>It looks like between 00:56:51 and 00:57:04 <code>mon.cephpi</code> was out of
+the quorum for 13 seconds and kept issuing expired keys to
+<code>ceph-osd@0</code> during that period.</p>
+<p>Let's have a look at the logs of <code>mon.cephpi</code>:</p>
+<ul>
+<li>
+<p>Between 00:56:35 and 00:56:57, <code>mon.cephpi</code> was apparently writing
+  to its rocksdb database, and it took 22 seconds to write 49442280
+  bytes (i.e 50MB). This is why it missed the leader election that
+  happened between 00:56:46 and 00:56:51, which resulted in
+  <code>mon.cephpi</code> being flagged at down by the leader.</p>
 </li>
-<li class="tag-2">
-    <a href="./tag/ay-3-8910.html">
-        <i class="icon-tag icon-large"></i>AY-3-8910
-    </a>
+<li>
+<p>At 00:56:57, when going back online, <code>mon.cephpi</code> triggered a new
+  election, which ended at 00:57:04, with <code>mon.cephpi</code> being back in
+  the monitors quorum, and able to issue valid keys again.</p>
 </li>
-<li class="tag-4">
-    <a href="./tag/apple.html">
-        <i class="icon-tag icon-large"></i>Apple
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/arduino.html">
-        <i class="icon-tag icon-large"></i>Arduino
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/benchmark.html">
-        <i class="icon-tag icon-large"></i>Benchmark
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/ceph.html">
-        <i class="icon-tag icon-large"></i>Ceph
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/chef.html">
-        <i class="icon-tag icon-large"></i>Chef
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/cinder.html">
-        <i class="icon-tag icon-large"></i>Cinder
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/costs.html">
-        <i class="icon-tag icon-large"></i>Costs
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/cryptocurrency.html">
-        <i class="icon-tag icon-large"></i>Cryptocurrency
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-safety.html">
-        <i class="icon-tag icon-large"></i>Data Safety
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-security.html">
-        <i class="icon-tag icon-large"></i>Data Security
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/data-management.html">
-        <i class="icon-tag icon-large"></i>Data management
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/docker.html">
-        <i class="icon-tag icon-large"></i>Docker
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/documentation.html">
-        <i class="icon-tag icon-large"></i>Documentation
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/gf7050t-m5.html">
-        <i class="icon-tag icon-large"></i>GF7050T-M5
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/gpu.html">
-        <i class="icon-tag icon-large"></i>GPU
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/git.html">
-        <i class="icon-tag icon-large"></i>Git
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/hardware.html">
-        <i class="icon-tag icon-large"></i>Hardware
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/irc.html">
-        <i class="icon-tag icon-large"></i>IRC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/kvm.html">
-        <i class="icon-tag icon-large"></i>KVM
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/kernel.html">
-        <i class="icon-tag icon-large"></i>Kernel
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/keystone.html">
-        <i class="icon-tag icon-large"></i>Keystone
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/linux.html">
-        <i class="icon-tag icon-large"></i>Linux
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/microsft.html">
-        <i class="icon-tag icon-large"></i>Microsft
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/old-hardware.html">
-        <i class="icon-tag icon-large"></i>Old Hardware
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/opencl.html">
-        <i class="icon-tag icon-large"></i>OpenCL
-    </a>
-</li>
-<li class="tag-1">
-    <a href="./tag/openstack.html">
-        <i class="icon-tag icon-large"></i>OpenStack
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/policies.html">
-        <i class="icon-tag icon-large"></i>Policies
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/printers.html">
-        <i class="icon-tag icon-large"></i>Printers
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/rx-480.html">
-        <i class="icon-tag icon-large"></i>RX 480
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/radeon.html">
-        <i class="icon-tag icon-large"></i>Radeon
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/raspberry-pi.html">
-        <i class="icon-tag icon-large"></i>Raspberry Pi
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/raspbian.html">
-        <i class="icon-tag icon-large"></i>Raspbian
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ring.html">
-        <i class="icon-tag icon-large"></i>Ring
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/sndh.html">
-        <i class="icon-tag icon-large"></i>SNDH
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ssh.html">
-        <i class="icon-tag icon-large"></i>SSH
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/swift.html">
-        <i class="icon-tag icon-large"></i>Swift
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/ubuntu.html">
-        <i class="icon-tag icon-large"></i>Ubuntu
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/vm.html">
-        <i class="icon-tag icon-large"></i>VM
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/virtualization.html">
-        <i class="icon-tag icon-large"></i>Virtualization
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/windows.html">
-        <i class="icon-tag icon-large"></i>Windows
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/ym2149.html">
-        <i class="icon-tag icon-large"></i>YM2149
-    </a>
-</li>
-<li class="tag-2">
-    <a href="./tag/ym2149f.html">
-        <i class="icon-tag icon-large"></i>YM2149F
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/znc.html">
-        <i class="icon-tag icon-large"></i>ZNC
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/bug.html">
-        <i class="icon-tag icon-large"></i>bug
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/libvirt.html">
-        <i class="icon-tag icon-large"></i>libvirt
-    </a>
-</li>
-<li class="tag-4">
-    <a href="./tag/operations.html">
-        <i class="icon-tag icon-large"></i>operations
-    </a>
-</li>
-
-<li class="nav-header">
-<a href="https://twitter.com/florentflament_" class="twitter-follow-button" data-show-count="false">Follow @florentflament_</a>
-</li>
-<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-
-</ul>        </div><!--/.well -->
-
-      </div><!--/row-->
-
-      <hr>
-
-      <footer>
-        <address id="about">
-        </address><!-- /#about -->
-        <p>Powered by <a href="http://blog.getpelican.com/">Pelican<i class="icon-external-link"></i></a></p>
-      </footer>
-
-    </div><!--/.fluid-container-->
+</ul>
+<div class="highlight"><pre><span></span>2020-05-30T00:56:35.549+0200 ffffad98b400  4 rocksdb: [db/compaction_job.cc:1649] [default] Compaction start summary: Base version 1187 Base level 0, inputs: [48626(8490KB)], [48624(43MB)]
+2020-05-30T00:56:35.549+0200 ffffad98b400  4 rocksdb: EVENT_LOG_v1 {&quot;time_micros&quot;: 1590792995552781, &quot;job&quot;: 1188, &quot;event&quot;: &quot;compaction_started&quot;, &quot;compaction_reason&quot;: &quot;ManualCompaction&quot;, &quot;files_L0&quot;: [48626], &quot;files_L6&quot;: [48624], &quot;score&quot;: -1, &quot;input_data_size&quot;: 53833362}
+2020-05-30T00:56:57.853+0200 ffffad98b400  4 rocksdb: [db/compaction_job.cc:1332] [default] [JOB 1188] Generated table #48627: 4687 keys, 49442280 bytes
+2020-05-30T00:56:57.853+0200 ffffad98b400  4 rocksdb: EVENT_LOG_v1 {&quot;time_micros&quot;: 1590793017855925, &quot;cf_name&quot;: &quot;default&quot;, &quot;job&quot;: 1188, &quot;event&quot;: &quot;table_file_creation&quot;, &quot;file_number&quot;: 48627, &quot;file_size&quot;: 49442280, &quot;table_properties&quot;: {&quot;data_size&quot;: 49336024, &quot;index_size&quot;: 93526, &quot;filter_size&quot;: 11909, &quot;raw_key_size&quot;: 97594, &quot;raw_average_key_size&quot;: 20, &quot;raw_value_size&quot;: 49203175, &quot;raw_average_value_size&quot;: 10497, &quot;num_data_blocks&quot;: 2720, &quot;num_entries&quot;: 4687, &quot;filter_policy_name&quot;: &quot;rocksdb.BuiltinBloomFilter&quot;}}
+2020-05-30T00:56:57.905+0200 ffffa797f400  1 mon.cephpi@2(electing) e14 collect_metadata :  no unique device id for : fallback method has no model nor serial&#39;
+2020-05-30T00:56:57.905+0200 ffffad98b400  4 rocksdb: [db/compaction_job.cc:1395] [default] [JOB 1188] Compacted 1@0 + 1@6 files to L6 =&gt; 49442280 bytes
+2020-05-30T00:56:58.001+0200 ffffad98b400  4 rocksdb: (Original Log Time 2020/05/30-00:56:58.003695) [db/compaction_job.cc:768] [default] compacted to: base level 6 level multiplier 10.00 max bytes base 268435456 files[0 0 0 0 0 0 1] max score 0.00, MB/sec: 2.4 rd, 2.2 wr, level 6, files in(1, 1) out(1) MB in(8.3, 43.0) out(47.2), read-write-amplify(11.9) write-amplify(5.7) OK, records in: 5202, records dropped: 515 output_compression: NoCompression
+2020-05-30T00:56:58.001+0200 ffffad98b400  4 rocksdb: (Original Log Time 2020/05/30-00:56:58.003819) EVENT_LOG_v1 {&quot;time_micros&quot;: 1590793018003758, &quot;job&quot;: 1188, &quot;event&quot;: &quot;compaction_finished&quot;, &quot;compaction_time_micros&quot;: 22303522, &quot;compaction_time_cpu_micros&quot;: 1184121, &quot;output_level&quot;: 6, &quot;num_output_files&quot;: 1, &quot;total_output_size&quot;: 49442280, &quot;num_input_records&quot;: 5202, &quot;num_output_records&quot;: 4687, &quot;num_subcompactions&quot;: 1, &quot;output_compression&quot;: &quot;NoCompression&quot;, &quot;num_single_delete_mismatches&quot;: 0, &quot;num_single_delete_fallthrough&quot;: 0, &quot;lsm_state&quot;: [0, 0, 0, 0, 0, 0, 1]}
+2020-05-30T00:56:58.005+0200 ffffad98b400  4 rocksdb: EVENT_LOG_v1 {&quot;time_micros&quot;: 1590793018011605, &quot;job&quot;: 1188, &quot;event&quot;: &quot;table_file_deletion&quot;, &quot;file_number&quot;: 48626}
+2020-05-30T00:56:58.021+0200 ffffad98b400  4 rocksdb: EVENT_LOG_v1 {&quot;time_micros&quot;: 1590793018027883, &quot;job&quot;: 1188, &quot;event&quot;: &quot;table_file_deletion&quot;, &quot;file_number&quot;: 48624}
+2020-05-30T00:56:58.025+0200 ffffa3176400  4 rocksdb: [db/db_impl_compaction_flush.cc:1403] [default] Manual compaction starting
+2020-05-30T00:56:58.025+0200 ffffa3176400  4 rocksdb: [db/db_impl_compaction_flush.cc:1403] [default] Manual compaction starting
+2020-05-30T00:56:58.025+0200 ffffa3176400  4 rocksdb: [db/db_impl_compaction_flush.cc:1403] [default] Manual compaction starting
+2020-05-30T00:56:58.025+0200 ffffa3176400  4 rocksdb: [db/db_impl_compaction_flush.cc:1403] [default] Manual compaction starting
+2020-05-30T00:56:58.025+0200 ffffa3176400  4 rocksdb: [db/db_impl_compaction_flush.cc:1403] [default] Manual compaction starting
+2020-05-30T00:57:03.905+0200 ffffaa184400  1 paxos.2).electionLogic(33771) init, last seen epoch 33771, mid-election, bumping
+2020-05-30T00:57:04.045+0200 ffffaa184400  1 mon.cephpi@2(electing) e14 collect_metadata :  no unique device id for : fallback method has no model nor serial&#39;
+2020-05-30T00:57:04.125+0200 ffffa797f400  1 mon.cephpi@2(electing) e14 collect_metadata :  no unique device id for : fallback method has no model nor serial&#39;
+2020-05-30T00:57:07.905+0200 ffffaa184400  1 mon.cephpi@2(peon).osd e4911 _set_new_cache_sizes cache_size:1020054731 inc_alloc: 71303168 full_alloc: 71303168 kv_alloc: 876609536
+</pre></div>
 
 
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-	var pageTracker = _gat._getTracker("UA-23791515-4");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<script type="text/javascript">
-    var disqus_shortname = 'florentflament';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
+<p>Let's do a quick check to see if how long it takes for cephpi to write
+on the monitor's partition:</p>
+<div class="highlight"><pre><span></span>root@cephpi:~# time sh -c &quot;dd if=/dev/zero of=test bs=1M count=50; sync&quot;
+50+0 records in
+50+0 records out
+52428800 bytes (52 MB, 50 MiB) copied, 9.84231 s, 5.3 MB/s
 
-    <!-- Le javascript -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="./theme/js/jquery-1.7.2.min.js"></script>
-    <script src="./theme/js/bootstrap.min.js"></script>
-  </body>
+real    0m10.375s
+user    0m0.001s
+sys     0m0.290s
+</pre></div>
+
+
+<p>Indeed, it takes <code>cephpi</code> 10 seconds to write 50MB of zeros. Which
+makes sense because it is a Raspberry Pi with a MicroSD card used to
+store the monitor's database. On the other hand writing 50MB to a
+standard spinning disk takes less than 2 seconds:</p>
+<div class="highlight"><pre><span></span>svc@yumy:/tmp$ time sh -c &quot;dd if=/dev/zero of=test bs=1M count=50; sync&quot;
+50+0 records in
+50+0 records out
+52428800 bytes (52 MB, 50 MiB) copied, 0.111206 s, 471 MB/s
+
+real    0m1.492s
+user    0m0.003s
+sys 0m0.117s
+</pre></div>
+
+
+<h2>Resolution</h2>
+<p>I eventually plugged a USB disk on <code>cephpi</code> to store <code>mon.cephpi</code>
+data. It has been running for a few hour now, without any <code>MON_DOWN</code>
+event, nor any leader election triggered.</p>
+<p>In conclusion, one should avoid using slow storage devices (i.e SD
+cards or USB sticks) to store Ceph monitors data. Monitors need to
+write chunks of data (of 50MB in this case) at regular intervals in
+less than a few seconds (less than 5 seconds I guess); otherwise, they
+end up switching in and out of the monitors quorum and triggering many
+elections.</p>
+<!-- /content -->
+        <footer>
+          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2020-05-30T00:00:00+02:00">Sat 30 May 2020</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/ceph.html">Ceph</a>.</p>
+        </footer>
+      </article>
+      <article>
+        <header>
+          <h1><a href="http://www.florentflament.com/blog/attempting-to-mine-cryptocurrency-with-an-old-machine.html" rel="bookmark" title="Permalink to Attempting to mine Cryptocurrency with an old machine">
+            <time class="m-date" datetime="2019-04-13T00:00:00+02:00">
+              Apr <span class="m-date-day">13</span> 2019
+            </time>
+            Attempting to mine Cryptocurrency with an old machine
+          </a></h1>
+          <p>This is the story of me attempting to convert an old machine into a
+          Cryptocurrency miner. I basically tried to plug my AMD Radeon RX 480
+          graphic card into an old PC, a Core 2 duo with 4GB RAM and a
+          GF7050T-M5 motherboard.</p>
+          <ul>
+          <li>
+          <p>According to the <a href="https://www.manualslib.com/manual/451735/Ecs-Gf7050vt-M5.html">GF7050T-M5 manual</a>, its PCI …</p></li></ul>
+        </header>
+        <footer>
+          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2019-04-13T00:00:00+02:00">Sat 13 April 2019</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/amd.html">AMD</a>, <a href="http://www.florentflament.com/blog/tag/radeon.html">Radeon</a>, <a href="http://www.florentflament.com/blog/tag/rx-480.html">RX 480</a>, <a href="http://www.florentflament.com/blog/tag/gpu.html">GPU</a>, <a href="http://www.florentflament.com/blog/tag/old-hardware.html">Old Hardware</a>, <a href="http://www.florentflament.com/blog/tag/cryptocurrency.html">Cryptocurrency</a>, <a href="http://www.florentflament.com/blog/tag/gf7050t-m5.html">GF7050T-M5</a>.</p>
+        </footer>
+        <div class="m-clearfix-l"></div>
+      </article>
+      <article>
+        <header>
+          <h1><a href="http://www.florentflament.com/blog/amd-rx-480-gpu-opencl-benchmark.html" rel="bookmark" title="Permalink to AMD RX 480 GPU OpenCL benchmark">
+            <time class="m-date" datetime="2018-12-25T00:00:00+01:00">
+              Dec <span class="m-date-day">25</span> 2018
+            </time>
+            AMD RX 480 GPU OpenCL benchmark
+          </a></h1>
+          <p>This post summarizes the results of my <a href="https://github.com/FlorentFlament/amd-gpu-benchmark">AMD GPU benchmark code</a> to
+          benchmark the computing power of an AMD Radeon RX 480 GPU against an
+          Intel Core i5-7400 CPU.</p>
+          <p>The benchmarking code I am running on is the following code:</p>
+          <div class="highlight"><pre><span></span><span class="n">__kernel</span><span class="w"> </span><span class="n">void</span><span class="w"> </span><span class="n">kerntest</span><span class="p">(</span><span class="n">__global</span><span class="w"> </span><span class="nc">char</span><span class="o">*</span><span class="w"> </span><span class="k">data</span><span class="p">,</span><span class="w"> </span><span class="nc">int</span><span class="w"> </span><span class="n">loops_cnt</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+          <span class="w">  </span><span class="n">size_t</span><span class="w"> </span><span class="n">id …</span></pre></div>
+        </header>
+        <footer>
+          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2018-12-25T00:00:00+01:00">Tue 25 December 2018</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/amd.html">AMD</a>, <a href="http://www.florentflament.com/blog/tag/radeon.html">Radeon</a>, <a href="http://www.florentflament.com/blog/tag/rx-480.html">RX 480</a>, <a href="http://www.florentflament.com/blog/tag/gpu.html">GPU</a>, <a href="http://www.florentflament.com/blog/tag/opencl.html">OpenCL</a>, <a href="http://www.florentflament.com/blog/tag/benchmark.html">Benchmark</a>.</p>
+        </footer>
+        <div class="m-clearfix-l"></div>
+      </article>
+      <article>
+        <header>
+          <h1><a href="http://www.florentflament.com/blog/installing-a-vanilla-linux-kernel-on-fedora.html" rel="bookmark" title="Permalink to Installing a Vanilla Linux Kernel on Fedora">
+            <time class="m-date" datetime="2017-11-19T00:00:00+01:00">
+              Nov <span class="m-date-day">19</span> 2017
+            </time>
+            Installing a Vanilla Linux Kernel on Fedora
+          </a></h1>
+          <p>Updated on 2017-12-28</p>
+          <p>Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
+          knows how to do it..)</p>
+          <h2>Configuring &amp; Building Linux</h2>
+          <p>One can start by cloning Torvalds' Linux repository to fetch the
+          latest master (or we could fetch the latest stable release) :</p>
+          <div class="highlight"><pre><span></span>$ git clone https://github.com/torvalds …</pre></div>
+        </header>
+        <footer>
+          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2017-11-19T00:00:00+01:00">Sun 19 November 2017</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/linux.html">Linux</a>, <a href="http://www.florentflament.com/blog/tag/kernel.html">Kernel</a>.</p>
+        </footer>
+        <div class="m-clearfix-l"></div>
+      </article>
+      <article>
+        <header>
+          <h1><a href="http://www.florentflament.com/blog/a-couple-of-statistics-about-linux-kernel-documentation.html" rel="bookmark" title="Permalink to A couple of statistics about Linux kernel documentation">
+            <time class="m-date" datetime="2017-03-04T00:00:00+01:00">
+              Mar <span class="m-date-day">04</span> 2017
+            </time>
+            A couple of statistics about Linux kernel documentation
+          </a></h1>
+          <p>There is a whole lot of files in the <code>Documentation</code> directory of the
+          <a href="https://github.com/torvalds/linux">Linux kernel source</a>. Is it possible for a single person to read
+          the whole documentation ? Let's have a look at what's inside it.</p>
+          <div class="highlight"><pre><span></span>$ <span class="nb">pwd</span>
+          /home/florent/src/linux/linux-4.10/Documentation
+
+          $ find . -type f <span class="p">|</span> wc -l
+          <span class="m">5118 …</span></pre></div>
+        </header>
+        <footer>
+          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2017-03-04T00:00:00+01:00">Sat 04 March 2017</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/linux.html">Linux</a>, <a href="http://www.florentflament.com/blog/tag/kernel.html">Kernel</a>, <a href="http://www.florentflament.com/blog/tag/documentation.html">Documentation</a>.</p>
+        </footer>
+        <div class="m-clearfix-l"></div>
+      </article>
+      <article>
+        <header>
+          <h1><a href="http://www.florentflament.com/blog/playing-sndh-on-ym2149.html" rel="bookmark" title="Permalink to Playing SNDH on YM2149">
+            <time class="m-date" datetime="2016-10-15T00:00:00+02:00">
+              Oct <span class="m-date-day">15</span> 2016
+            </time>
+            Playing SNDH on YM2149
+          </a></h1>
+          <p>This is the sequel of the <a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html">Streaming music to YM2149</a> post. After
+          playing YM chip tunes on the YM2149, I wanted to take profit from the
+          <a href="http://sndh.atari.org/">super large database of SNDH files available online</a>, by being
+          able to play these tunes on my YM2149. This has been possible with the …</p>
+        </header>
+        <footer>
+          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2016-10-15T00:00:00+02:00">Sat 15 October 2016</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/arduino.html">Arduino</a>, <a href="http://www.florentflament.com/blog/tag/atmega.html">ATmega</a>, <a href="http://www.florentflament.com/blog/tag/ym2149.html">YM2149</a>, <a href="http://www.florentflament.com/blog/tag/ym2149f.html">YM2149F</a>, <a href="http://www.florentflament.com/blog/tag/ay-3-8910.html">AY-3-8910</a>, <a href="http://www.florentflament.com/blog/tag/sndh.html">SNDH</a>.</p>
+        </footer>
+        <div class="m-clearfix-l"></div>
+      </article>
+      <article>
+        <header>
+          <h1><a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html" rel="bookmark" title="Permalink to Streaming music to YM2149F">
+            <time class="m-date" datetime="2016-09-10T00:00:00+02:00">
+              Sep <span class="m-date-day">10</span> 2016
+            </time>
+            Streaming music to YM2149F
+          </a></h1>
+          <p>To follow-up on my previous blog post about <a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html">driving a YM2149F chip
+          with an Arduino</a>, I wrote an Arduino firmware that can be used
+          together with a PC side Python script to send music to the
+          YM2149F. All the code is available in the <a href="https://github.com/FlorentFlament/ym2149-streamer">ym2149-streamer
+          repository</a> on GitHub.</p>
+          <h2>Arduino Firmware …</h2>
+        </header>
+        <footer>
+          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2016-09-10T00:00:00+02:00">Sat 10 September 2016</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/arduino.html">Arduino</a>, <a href="http://www.florentflament.com/blog/tag/ym2149.html">YM2149</a>, <a href="http://www.florentflament.com/blog/tag/ym2149f.html">YM2149F</a>, <a href="http://www.florentflament.com/blog/tag/ay-3-8910.html">AY-3-8910</a>.</p>
+        </footer>
+        <div class="m-clearfix-l"></div>
+      </article>
+      <article>
+        <header>
+          <h1><a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html" rel="bookmark" title="Permalink to Driving YM2149F sound chip with an Arduino">
+            <time class="m-date" datetime="2016-09-03T00:00:00+02:00">
+              Sep <span class="m-date-day">03</span> 2016
+            </time>
+            Driving YM2149F sound chip with an Arduino
+          </a></h1>
+          <p>A few months ago, I had the opportunity to get a Yamaha YM2149F
+          chip. This chip is basically a clone of <a href="https://en.wikipedia.org/wiki/General_Instrument_AY-3-8910">General Instrument's
+          AY-3-8910</a>, "a 3 voices programmable sound generator" widely used
+          in the 80's in many arcade games and home computers (including the
+          Atari ST and Amstrad CPC).</p>
+          <p>The …</p>
+        </header>
+        <footer>
+          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2016-09-03T00:00:00+02:00">Sat 03 September 2016</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/arduino.html">Arduino</a>, <a href="http://www.florentflament.com/blog/tag/ym2149.html">YM2149</a>, <a href="http://www.florentflament.com/blog/tag/ym2149f.html">YM2149F</a>, <a href="http://www.florentflament.com/blog/tag/ay-3-8910.html">AY-3-8910</a>.</p>
+        </footer>
+        <div class="m-clearfix-l"></div>
+      </article>
+      <article>
+        <header>
+          <h1><a href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html" rel="bookmark" title="Permalink to Arduino Hello World without IDE">
+            <time class="m-date" datetime="2016-08-08T00:00:00+02:00">
+              Aug <span class="m-date-day">08</span> 2016
+            </time>
+            Arduino Hello World without IDE
+          </a></h1>
+          <p>There is already a number of resources available about programming the
+          Arduino with or without the IDE (I won't discuss here the pros and
+          cons of using it). This aims at being a quick memo for those who
+          already have some knowledge about C programming, and just want the
+          minimal …</p>
+        </header>
+        <footer>
+          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2016-08-08T00:00:00+02:00">Mon 08 August 2016</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/arduino.html">Arduino</a>.</p>
+        </footer>
+        <div class="m-clearfix-l"></div>
+      </article>
+      <article>
+        <header>
+          <h1><a href="http://www.florentflament.com/blog/inkjet-versus-laser-printer.html" rel="bookmark" title="Permalink to Inkjet versus laser printer">
+            <time class="m-date" datetime="2015-05-09T00:00:00+02:00">
+              May <span class="m-date-day">09</span> 2015
+            </time>
+            Inkjet versus laser printer
+          </a></h1>
+          <p>Contrary to what I found on most websites when googling about
+          comparisons between inkjet and laser printers, the cost per page on
+          high end inkjet printers is lower than that of laser printers.</p>
+          <p>Moreover, when buying a new printer one has to consider the number of
+          pages that will be …</p>
+        </header>
+        <footer>
+          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2015-05-09T00:00:00+02:00">Sat 09 May 2015</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/printers.html">Printers</a>, <a href="http://www.florentflament.com/blog/tag/costs.html">Costs</a>.</p>
+        </footer>
+        <div class="m-clearfix-l"></div>
+      </article>
+      <div class="m-article-pagination">page 1 | <a href="http://www.florentflament.com/blog/index2.html">older articles &raquo;</a></div>
+    </div>
+    <nav class="m-navpanel m-col-m-2">
+      <h3>Categories</h3>
+      <ol class="m-block-bar-m">
+        <li><a href="http://www.florentflament.com/blog/category/misc.html">misc</a></li>
+        <li><a href="http://www.florentflament.com/blog/category/openstack.html">OpenStack</a></li>
+      </ol>
+      <h3>Tag cloud</h3>
+      <ul class="m-tagcloud">
+        <li class="m-tag-2"><a href="http://www.florentflament.com/blog/tag/amd.html">AMD</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/apple.html">Apple</a></li>
+        <li class="m-tag-3"><a href="http://www.florentflament.com/blog/tag/arduino.html">Arduino</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/atmega.html">ATmega</a></li>
+        <li class="m-tag-3"><a href="http://www.florentflament.com/blog/tag/ay-3-8910.html">AY-3-8910</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/benchmark.html">Benchmark</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/bug.html">bug</a></li>
+        <li class="m-tag-2"><a href="http://www.florentflament.com/blog/tag/ceph.html">Ceph</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/chef.html">Chef</a></li>
+        <li class="m-tag-2"><a href="http://www.florentflament.com/blog/tag/cinder.html">Cinder</a></li>
+        <li class="m-tag-2"><a href="http://www.florentflament.com/blog/tag/costs.html">Costs</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/cryptocurrency.html">Cryptocurrency</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/data-management.html">Data management</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/data-safety.html">Data Safety</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/data-security.html">Data Security</a></li>
+        <li class="m-tag-2"><a href="http://www.florentflament.com/blog/tag/docker.html">Docker</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/documentation.html">Documentation</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/gf7050t-m5.html">GF7050T-M5</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/git.html">Git</a></li>
+        <li class="m-tag-2"><a href="http://www.florentflament.com/blog/tag/gpu.html">GPU</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/hardware.html">Hardware</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/irc.html">IRC</a></li>
+        <li class="m-tag-2"><a href="http://www.florentflament.com/blog/tag/kernel.html">Kernel</a></li>
+        <li class="m-tag-2"><a href="http://www.florentflament.com/blog/tag/keystone.html">Keystone</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/kvm.html">KVM</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/libvirt.html">libvirt</a></li>
+        <li class="m-tag-3"><a href="http://www.florentflament.com/blog/tag/linux.html">Linux</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/microsft.html">Microsft</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/old-hardware.html">Old Hardware</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/opencl.html">OpenCL</a></li>
+        <li class="m-tag-5"><a href="http://www.florentflament.com/blog/tag/openstack.html">OpenStack</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/operations.html">operations</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/policies.html">Policies</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/printers.html">Printers</a></li>
+        <li class="m-tag-2"><a href="http://www.florentflament.com/blog/tag/radeon.html">Radeon</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/raspberry-pi.html">Raspberry Pi</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/raspbian.html">Raspbian</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/ring.html">Ring</a></li>
+        <li class="m-tag-2"><a href="http://www.florentflament.com/blog/tag/rx-480.html">RX 480</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/sndh.html">SNDH</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/ssh.html">SSH</a></li>
+        <li class="m-tag-2"><a href="http://www.florentflament.com/blog/tag/swift.html">Swift</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/ubuntu.html">Ubuntu</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/virtualization.html">Virtualization</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/vm.html">VM</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/windows.html">Windows</a></li>
+        <li class="m-tag-3"><a href="http://www.florentflament.com/blog/tag/ym2149.html">YM2149</a></li>
+        <li class="m-tag-3"><a href="http://www.florentflament.com/blog/tag/ym2149f.html">YM2149F</a></li>
+        <li class="m-tag-1"><a href="http://www.florentflament.com/blog/tag/znc.html">ZNC</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+</main>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Florent Flament 2 cents. Powered by <a href="https://getpelican.com">Pelican</a> and <a href="https://mcss.mosra.cz">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
 </html>
