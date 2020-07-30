@@ -24,9 +24,9 @@ to generate its output (I used 1 of the 3 timers available on the
 ATmega to generate a 2 MHz clock in my former design). Besides, I
 replaced the Uno with a Nano, which fits on the bread board.&lt;/p&gt;
 &lt;p&gt;Hence this new schematic:&lt;/p&gt;
-&lt;p&gt;&lt;img src="static/ym2149-schematic-v2.png" alt="YM2149 schematic V2"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="static/ym2149-schematic-v2.png" alt="YM2149 schematic V2" width="100%"/&gt;&lt;/p&gt;
 &lt;p&gt;And the much nicer circuit there:&lt;/p&gt;
-&lt;p&gt;&lt;img src="static/ym2149-pic-v2.png" alt="YM2149 driven by Arduino Nano V2"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="static/ym2149-pic-v2.png" alt="YM2149 driven by Arduino Nano V2" width="100%"/&gt;&lt;/p&gt;
 &lt;h2&gt;Samples format&lt;/h2&gt;
 &lt;p&gt;Though I am super happy with my brand new circuit, the biggest change
 is in the firmware running on the AVR. It contains more logic, because
@@ -212,9 +212,9 @@ issue to switch BDIR and BC1 signals simultaneously.&lt;/p&gt;
 &lt;li&gt;A few wires&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Here's a picture of the circuit:&lt;/p&gt;
-&lt;p&gt;&lt;img src="static/ym2149-arduino-picture.png" alt="YM2149 - Arduino circuit picture"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="static/ym2149-arduino-picture.png" alt="YM2149 - Arduino circuit picture" width="100%"/&gt;&lt;/p&gt;
 &lt;p&gt;The corresponding schematic follows:&lt;/p&gt;
-&lt;p&gt;&lt;img src="static/ym2149-arduino-schematic.png" alt="YM2149 - Arduino circuit picture"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="static/ym2149-arduino-schematic.png" alt="YM2149 - Arduino circuit picture" width="100%"/&gt;&lt;/p&gt;
 &lt;p&gt;Note that we don't need to use a dedicated oscillator for the
 YM2149F. We can generate the required 2MHz clock with the Atmega328P
 on the Arduino board.&lt;/p&gt;
