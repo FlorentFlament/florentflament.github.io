@@ -43,5 +43,5 @@ M_THEME_COLOR = '#22272e'
 M_HIDE_ARTICLE_SUMMARY = True
 M_COLLAPSE_FIRST_ARTICLE = True
 
-M_LINKS_NAVBAR1 = [('Blog', '/', '[blog]', []),
+M_LINKS_NAVBAR1 = [('Blog', 'blog/', '[blog]', []),
                    ('About', 'pages/about.html', 'about', [])]
