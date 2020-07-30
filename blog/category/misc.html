@@ -5,7 +5,6 @@
   <title>misc | Florent Flament 2 cents</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="http://www.florentflament.com/blog/static/m-dark.css" />
-  <link rel="next" href="http://www.florentflament.com/blog/category/misc2.html" />
   <link href="http://www.florentflament.com/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Florent Flament 2 cents" />
   <link href="http://www.florentflament.com/blog/feeds/misc.atom.xml" type="application/atom+xml" rel="alternate" title="Florent Flament 2 cents | misc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -94,148 +93,32 @@
       </article>
       <article>
         <header>
-          <h1><a href="http://www.florentflament.com/blog/installing-a-vanilla-linux-kernel-on-fedora.html" rel="bookmark" title="Permalink to Installing a Vanilla Linux Kernel on Fedora">
-            <time class="m-date" datetime="2017-11-19T00:00:00+01:00">
-              Nov <span class="m-date-day">19</span> 2017
+          <h1><a href="http://www.florentflament.com/blog/macmini21-linux-dual-boot.html" rel="bookmark" title="Permalink to Macmini2,1 Linux dual boot">
+            <time class="m-date" datetime="2013-11-03T00:00:00+01:00">
+              Nov <span class="m-date-day">03</span> 2013
             </time>
-            Installing a Vanilla Linux Kernel on Fedora
+            Macmini2,1 Linux dual boot
           </a></h1>
-          <p>Updated on 2017-12-28</p>
-          <p>Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
-          knows how to do it..)</p>
-          <h2>Configuring &amp; Building Linux</h2>
-          <p>One can start by cloning Torvalds' Linux repository to fetch the
-          latest master (or we could fetch the latest stable release) :</p>
-          <div class="highlight"><pre><span></span>$ git clone https://github.com/torvalds …</pre></div>
+          <p>While online resources provide documentation about <a href="https://wiki.debian.org/MacMiniIntel">how to install
+          Linux on a Mac Mini</a>, this guide focuses on the Apple Macmini2,1
+          and its peculiarities. Please refer to <a href="http://en.wikipedia.org/wiki/Macmini#Specifications">these tables</a> to properly
+          identify your hardware.</p>
+          <h2>About Macmini2,1</h2>
+          <p>Apple provides <a href="http://support.apple.com/kb/HT1237">firmware updates</a> for most of its hardware. Most
+          Mac Minis …</p>
         </header>
         <footer>
-          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2017-11-19T00:00:00+01:00">Sun 19 November 2017</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/linux.html">Linux</a>, <a href="http://www.florentflament.com/blog/tag/kernel.html">Kernel</a>.</p>
+          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2013-11-03T00:00:00+01:00">Sun 03 November 2013</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/apple.html">Apple</a>, <a href="http://www.florentflament.com/blog/tag/linux.html">Linux</a>.</p>
         </footer>
         <div class="m-clearfix-l"></div>
       </article>
-      <article>
-        <header>
-          <h1><a href="http://www.florentflament.com/blog/a-couple-of-statistics-about-linux-kernel-documentation.html" rel="bookmark" title="Permalink to A couple of statistics about Linux kernel documentation">
-            <time class="m-date" datetime="2017-03-04T00:00:00+01:00">
-              Mar <span class="m-date-day">04</span> 2017
-            </time>
-            A couple of statistics about Linux kernel documentation
-          </a></h1>
-          <p>There is a whole lot of files in the <code>Documentation</code> directory of the
-          <a href="https://github.com/torvalds/linux">Linux kernel source</a>. Is it possible for a single person to read
-          the whole documentation ? Let's have a look at what's inside it.</p>
-          <div class="highlight"><pre><span></span>$ <span class="nb">pwd</span>
-          /home/florent/src/linux/linux-4.10/Documentation
-
-          $ find . -type f <span class="p">|</span> wc -l
-          <span class="m">5118 …</span></pre></div>
-        </header>
-        <footer>
-          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2017-03-04T00:00:00+01:00">Sat 04 March 2017</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/linux.html">Linux</a>, <a href="http://www.florentflament.com/blog/tag/kernel.html">Kernel</a>, <a href="http://www.florentflament.com/blog/tag/documentation.html">Documentation</a>.</p>
-        </footer>
-        <div class="m-clearfix-l"></div>
-      </article>
-      <article>
-        <header>
-          <h1><a href="http://www.florentflament.com/blog/playing-sndh-on-ym2149.html" rel="bookmark" title="Permalink to Playing SNDH on YM2149">
-            <time class="m-date" datetime="2016-10-15T00:00:00+02:00">
-              Oct <span class="m-date-day">15</span> 2016
-            </time>
-            Playing SNDH on YM2149
-          </a></h1>
-          <p>This is the sequel of the <a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html">Streaming music to YM2149</a> post. After
-          playing YM chip tunes on the YM2149, I wanted to take profit from the
-          <a href="http://sndh.atari.org/">super large database of SNDH files available online</a>, by being
-          able to play these tunes on my YM2149. This has been possible with the …</p>
-        </header>
-        <footer>
-          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2016-10-15T00:00:00+02:00">Sat 15 October 2016</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/arduino.html">Arduino</a>, <a href="http://www.florentflament.com/blog/tag/atmega.html">ATmega</a>, <a href="http://www.florentflament.com/blog/tag/ym2149.html">YM2149</a>, <a href="http://www.florentflament.com/blog/tag/ym2149f.html">YM2149F</a>, <a href="http://www.florentflament.com/blog/tag/ay-3-8910.html">AY-3-8910</a>, <a href="http://www.florentflament.com/blog/tag/sndh.html">SNDH</a>.</p>
-        </footer>
-        <div class="m-clearfix-l"></div>
-      </article>
-      <article>
-        <header>
-          <h1><a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html" rel="bookmark" title="Permalink to Streaming music to YM2149F">
-            <time class="m-date" datetime="2016-09-10T00:00:00+02:00">
-              Sep <span class="m-date-day">10</span> 2016
-            </time>
-            Streaming music to YM2149F
-          </a></h1>
-          <p>To follow-up on my previous blog post about <a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html">driving a YM2149F chip
-          with an Arduino</a>, I wrote an Arduino firmware that can be used
-          together with a PC side Python script to send music to the
-          YM2149F. All the code is available in the <a href="https://github.com/FlorentFlament/ym2149-streamer">ym2149-streamer
-          repository</a> on GitHub.</p>
-          <h2>Arduino Firmware …</h2>
-        </header>
-        <footer>
-          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2016-09-10T00:00:00+02:00">Sat 10 September 2016</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/arduino.html">Arduino</a>, <a href="http://www.florentflament.com/blog/tag/ym2149.html">YM2149</a>, <a href="http://www.florentflament.com/blog/tag/ym2149f.html">YM2149F</a>, <a href="http://www.florentflament.com/blog/tag/ay-3-8910.html">AY-3-8910</a>.</p>
-        </footer>
-        <div class="m-clearfix-l"></div>
-      </article>
-      <article>
-        <header>
-          <h1><a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html" rel="bookmark" title="Permalink to Driving YM2149F sound chip with an Arduino">
-            <time class="m-date" datetime="2016-09-03T00:00:00+02:00">
-              Sep <span class="m-date-day">03</span> 2016
-            </time>
-            Driving YM2149F sound chip with an Arduino
-          </a></h1>
-          <p>A few months ago, I had the opportunity to get a Yamaha YM2149F
-          chip. This chip is basically a clone of <a href="https://en.wikipedia.org/wiki/General_Instrument_AY-3-8910">General Instrument's
-          AY-3-8910</a>, "a 3 voices programmable sound generator" widely used
-          in the 80's in many arcade games and home computers (including the
-          Atari ST and Amstrad CPC).</p>
-          <p>The …</p>
-        </header>
-        <footer>
-          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2016-09-03T00:00:00+02:00">Sat 03 September 2016</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/arduino.html">Arduino</a>, <a href="http://www.florentflament.com/blog/tag/ym2149.html">YM2149</a>, <a href="http://www.florentflament.com/blog/tag/ym2149f.html">YM2149F</a>, <a href="http://www.florentflament.com/blog/tag/ay-3-8910.html">AY-3-8910</a>.</p>
-        </footer>
-        <div class="m-clearfix-l"></div>
-      </article>
-      <article>
-        <header>
-          <h1><a href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html" rel="bookmark" title="Permalink to Arduino Hello World without IDE">
-            <time class="m-date" datetime="2016-08-08T00:00:00+02:00">
-              Aug <span class="m-date-day">08</span> 2016
-            </time>
-            Arduino Hello World without IDE
-          </a></h1>
-          <p>There is already a number of resources available about programming the
-          Arduino with or without the IDE (I won't discuss here the pros and
-          cons of using it). This aims at being a quick memo for those who
-          already have some knowledge about C programming, and just want the
-          minimal …</p>
-        </header>
-        <footer>
-          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2016-08-08T00:00:00+02:00">Mon 08 August 2016</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/arduino.html">Arduino</a>.</p>
-        </footer>
-        <div class="m-clearfix-l"></div>
-      </article>
-      <article>
-        <header>
-          <h1><a href="http://www.florentflament.com/blog/inkjet-versus-laser-printer.html" rel="bookmark" title="Permalink to Inkjet versus laser printer">
-            <time class="m-date" datetime="2015-05-09T00:00:00+02:00">
-              May <span class="m-date-day">09</span> 2015
-            </time>
-            Inkjet versus laser printer
-          </a></h1>
-          <p>Contrary to what I found on most websites when googling about
-          comparisons between inkjet and laser printers, the cost per page on
-          high end inkjet printers is lower than that of laser printers.</p>
-          <p>Moreover, when buying a new printer one has to consider the number of
-          pages that will be …</p>
-        </header>
-        <footer>
-          <p>Posted by <a href="http://www.florentflament.com/blog/author/florent-flament.html">Florent Flament</a> on <time datetime="2015-05-09T00:00:00+02:00">Sat 09 May 2015</time> in <a href="http://www.florentflament.com/blog/category/misc.html">misc</a>. Tags: <a href="http://www.florentflament.com/blog/tag/printers.html">Printers</a>, <a href="http://www.florentflament.com/blog/tag/costs.html">Costs</a>.</p>
-        </footer>
-        <div class="m-clearfix-l"></div>
-      </article>
-      <div class="m-article-pagination">page 1 | <a href="http://www.florentflament.com/blog/category/misc2.html">older articles &raquo;</a></div>
     </div>
     <nav class="m-navpanel m-col-m-2">
       <h3>Categories</h3>
       <ol class="m-block-bar-m">
+        <li><a href="http://www.florentflament.com/blog/category/automation.html">automation</a></li>
+        <li><a href="http://www.florentflament.com/blog/category/hardware.html">hardware</a></li>
+        <li><a href="http://www.florentflament.com/blog/category/linux-kernel.html">linux-kernel</a></li>
         <li><a href="http://www.florentflament.com/blog/category/misc.html">misc</a></li>
         <li><a href="http://www.florentflament.com/blog/category/openstack.html">OpenStack</a></li>
         <li><a href="http://www.florentflament.com/blog/category/thoughts.html">thoughts</a></li>

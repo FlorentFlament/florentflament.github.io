@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament 2 cents - hardware</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/hardware.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2016-10-15T00:00:00+02:00</updated><entry><title>Playing SNDH on YM2149</title><link href="http://www.florentflament.com/blog/playing-sndh-on-ym2149.html" rel="alternate"></link><published>2016-10-15T00:00:00+02:00</published><updated>2016-10-15T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-10-15:/blog/playing-sndh-on-ym2149.html</id><summary type="html">&lt;p&gt;This is the sequel of the &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;Streaming music to YM2149&lt;/a&gt; post. After
+playing YM chip tunes on the YM2149, I wanted to take profit from the
+&lt;a href="http://sndh.atari.org/"&gt;super large database of SNDH files available online&lt;/a&gt;, by being
+able to play these tunes on my YM2149. This has been possible with the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is the sequel of the &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;Streaming music to YM2149&lt;/a&gt; post. After
+playing YM chip tunes on the YM2149, I wanted to take profit from the
+&lt;a href="http://sndh.atari.org/"&gt;super large database of SNDH files available online&lt;/a&gt;, by being
+able to play these tunes on my YM2149. This has been possible with the
+help of &lt;a href="https://sourceforge.net/projects/sc68/"&gt;the SC68 emulator&lt;/a&gt;. &lt;code&gt;sc68&lt;/code&gt; can interpret &lt;code&gt;sndh&lt;/code&gt; files and
+generate a dump of the samples to be played on the chip. While most
+&lt;code&gt;sndh&lt;/code&gt; files can be played by using the &lt;a href="https://github.com/FlorentFlament/ym2149-sndh"&gt;ym2149-sndh firmware and
+scripts&lt;/a&gt; available on GitHub, there are still a number of files
+that can't be played yet. This will be further discussed in the
+limitations section. A video of the &lt;a href="https://www.youtube.com/watch?v=JjofS8wdNEY"&gt;ATmega playing a Relix tune on
+the YM2149&lt;/a&gt; is available.&lt;/p&gt;
+&lt;h2&gt;New hardware design&lt;/h2&gt;
+&lt;p&gt;The previous circuit design described in &lt;a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html"&gt;Driving YM2149F sound chip
+with an Arduino&lt;/a&gt; would work for playing SNDH files. But I couldn't
+resist adding LEDs blinking in rhythm with the music played on the
+chip, hence this new design ; ). Since I am now using 2 timers to
+generate the 3 PWM signals used to light the LEDs + 1 timer to
+synchronize the samples, I added a 4 MHz oscillator feeding the YM2149
+to generate its output (I used 1 of the 3 timers available on the
+ATmega to generate a 2 MHz clock in my former design). Besides, I
+replaced the Uno with a Nano, which fits on the bread board.&lt;/p&gt;
+&lt;p&gt;Hence this new schematic:&lt;/p&gt;
+&lt;p&gt;&lt;img src="static/ym2149-schematic-v2.png" alt="YM2149 schematic V2"/&gt;&lt;/p&gt;
+&lt;p&gt;And the much nicer circuit there:&lt;/p&gt;
+&lt;p&gt;&lt;img src="static/ym2149-pic-v2.png" alt="YM2149 driven by Arduino Nano V2"/&gt;&lt;/p&gt;
+&lt;h2&gt;Samples format&lt;/h2&gt;
+&lt;p&gt;Though I am super happy with my brand new circuit, the biggest change
+is in the firmware running on the AVR. It contains more logic, because
+it bufferizes samples coming from the UART, and sends them to the
+YM2149 at the good timing.&lt;/p&gt;
+&lt;p&gt;The current implementation is based on the following mechanism. A tune
+is sent to the YM2149/ATmega board as a stream of samples, where each
+sample has the following format:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;2 bytes timestamp: This timestamp determines when the sample will be
+  sent to the YM2149. The value corresponds to a number of YM clock
+  cycles modulo 2^16. We can afford using a 2 bytes timestamp, because
+  what really matters is the timestamp difference between 2 successive
+  samples. This means that 2 samples can be theoretically spaced by 1
+  to 65536 YM clock cycles @2 MHz; so the maximum interval between 2
+  samples is 32 ms, corresponding to a minimum frequency of 31 Hz. This
+  is ok because most SNDH tunes refresh some registers at least at
+  50 Hz, and we can add empty samples if we really need.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;2 bytes per register to update (from 0 to 16 registers, though only
+  the 14 first registers are meaningful to play sound on the chip): 1
+  byte address, identifying the register to update; 1 byte value,
+  corresponding to the value that has to be stored at the address
+  specified right before&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;1 'end of sample' byte (0xff): This byte indicates the end of a
+  sample.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As a result, the smallest 'useful' sample is 5 bytes long for 1
+register update; a 2 registers update sample is 7 bytes long; and the
+longest sample is 31 bytes long (3 + 2*14, not considering registers
+15 &amp;amp; 16).&lt;/p&gt;
+&lt;h2&gt;Limitations&lt;/h2&gt;
+&lt;p&gt;The bottleneck to play sndh tunes to the YM2149 chip is the speed at
+which we can update the chip's registers. New tunes use so called
+'digital' sounds, that may have intervals as small as 90 clock cycles
+(i.e 22 KHz).&lt;/p&gt;
+&lt;p&gt;We have 2 limitations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;The speed at which the AVR can get a sample from the UART and update
+  the YM2149 registers. Let's consider a 1 register sample of 5 bytes
+  length. With this implementation, the AVR needs around 150 AVR clock
+  cycles (@16 MHz) to transfer 1 byte from the UART to the buffer,
+  hence 750 clock cycles for 5 bytes. Then it needs some additional
+  300 clock cycles (rough estimate) to update the YM register from the
+  data stored in the buffer. Therefore, we need a total of 1050 clock
+  cycles @16 MHz per sample, corresponding to 131 clock cycles at 2
+  MHz, or 15 KHz max for digital sounds.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The UART speed. The ATmega328p together with the CH340 USB to serial
+  chip can transfer data at a 1 Mbps rate without error (There is a 2x
+  speed mode in the ATmega, but I incurred a significant amount of
+  errors on the data transferred at that speed). With 10 bits per
+  byte, the theoretical transfer rate is 100 KBytes/sec. In practice,
+  the maximum speed depends on the size of data blocks sent (processes
+  context switching on the OS is very expensive when doing I/Os with
+  small blocks). I reached around 60 KBytes/sec using a 1500 buffer in
+  the AVR. Considering 5 bytes per sample, we can stream samples at a
+  maximum speed of 12 KHz.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;With this implementation and its corresponding limitations, we can
+play digital sounds at up to 12 KHz. This can be improved by many ways:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;by optimizing/redesign the code running on the AVR to reduce the
+  number of cycles needed per sample&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;by reworking the samples format to reduce the average number bytes
+  per sample, especially for small samples&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;by using a faster CPU, more RAM (bigger buffer), and possibly faster
+  communication channel&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A first compromise would be to write a PC side code to downsample
+tunes with a too high sample rate (i.e playing at 12 KHz sounds
+normally played at 22 KHz). This would lower the sound quality of the
+tunes downsampled, but would allow us to play them on this
+YM2149/ATmega implementation.&lt;/p&gt;
+&lt;p&gt;The schematic and &lt;a href="https://github.com/FlorentFlament/ym2149-sndh"&gt;source code to play sndh files on the YM2149&lt;/a&gt; is
+available on GitHub.&lt;/p&gt;</content><category term="hardware"></category><category term="Arduino"></category><category term="ATmega"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category><category term="SNDH"></category></entry><entry><title>Streaming music to YM2149F</title><link href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html" rel="alternate"></link><published>2016-09-10T00:00:00+02:00</published><updated>2016-09-10T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-09-10:/blog/streaming-music-to-ym2149f.html</id><summary type="html">&lt;p&gt;To follow-up on my previous blog post about &lt;a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html"&gt;driving a YM2149F chip
+with an Arduino&lt;/a&gt;, I wrote an Arduino firmware that can be used
+together with a PC side Python script to send music to the
+YM2149F. All the code is available in the &lt;a href="https://github.com/FlorentFlament/ym2149-streamer"&gt;ym2149-streamer
+repository&lt;/a&gt; on GitHub.&lt;/p&gt;
+&lt;h2&gt;Arduino Firmware …&lt;/h2&gt;</summary><content type="html">&lt;p&gt;To follow-up on my previous blog post about &lt;a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html"&gt;driving a YM2149F chip
+with an Arduino&lt;/a&gt;, I wrote an Arduino firmware that can be used
+together with a PC side Python script to send music to the
+YM2149F. All the code is available in the &lt;a href="https://github.com/FlorentFlament/ym2149-streamer"&gt;ym2149-streamer
+repository&lt;/a&gt; on GitHub.&lt;/p&gt;
+&lt;h2&gt;Arduino Firmware&lt;/h2&gt;
+&lt;p&gt;The first piece of code is the firmware. This is the code that runs in
+the Arduino and drives the YM2149 chip. Most of the code is in the
+&lt;code&gt;ym2149&lt;/code&gt; library, which exports functions such as &lt;code&gt;send_data(char
+addr, char data)&lt;/code&gt; to write in the YM2149 registers, while complying
+with the signals timings specified in the &lt;a href="http://www.ym2149.com/ym2149.pdf"&gt;YM2149 datasheet&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Basically, the firmware continuously reads the Arduino serial
+line. Each time it has received 16 bytes, the firmware uses them to
+set the 16 YM2149 registers (To be more precise only the first 14
+registers are used, the 2 last registers are useless to play music).&lt;/p&gt;
+&lt;p&gt;Note that this code is specific to the circuit, and depends on how the
+Arduino is wired to the YM2149. It has been written for (and tested
+with) the circuit described in the blog post about &lt;a href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html"&gt;driving the YM2149
+from an Arduino&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To flash the Arduino with the firmware:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;clone the &lt;a href="https://github.com/FlorentFlament/ym2149-streamer"&gt;ym2149-streamer repository&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;and launch &lt;code&gt;make flash&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A couple of libraries need to be installed in order for the firmware
+to compile and be uploaded to the Arduino. To setup your environment,
+one can follow the instruction of the &lt;a href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html"&gt;Arduino Hello World without
+IDE&lt;/a&gt; blog post.&lt;/p&gt;
+&lt;h2&gt;Playing music from a computer&lt;/h2&gt;
+&lt;p&gt;What remains to be done, is sending to the Arduino, the values of the
+registers to be set in the YM2149. Here we can build on the &lt;a href="http://leonard.oxg.free.fr/ymformat.html"&gt;YM file
+format created by Arnaud Carré&lt;/a&gt;. The file format is quite straight
+forward. It contains a header providing all the required information
+about the tune, then a snapshot of the YM2149's 16 registers at
+regular intervals (usually 50 times per second). To play the tune, we
+have to send back the content of the YM2149 registers (sometimes
+referred as the samples) at the appropriate frequency.&lt;/p&gt;
+&lt;p&gt;I wrote a small Python script, available in the &lt;a href="https://github.com/FlorentFlament/ym2149-streamer"&gt;ym2149-streamer
+repository&lt;/a&gt;, that parses a YM file and sends it to the Arduino
+board. The syntax is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python streamer.py &amp;lt;output_device&amp;gt; &amp;lt;ym_filepath&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that &lt;code&gt;streamer.py&lt;/code&gt; may work with other circuits driving a
+YM2149. The only thing required is that the circuit be able to receive
+a stream of YM2149's registers snapshots and send it to the chip each
+time it receives a sample.&lt;/p&gt;
+&lt;p&gt;To illustrate this work, I published a video of the &lt;a href="https://www.youtube.com/watch?v=MTRJdDbY048"&gt;YM2149F playing
+Lemmings&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;A &lt;a href="http://pacidemo.planet-d.net/html.html"&gt;large YM tunes archive&lt;/a&gt; allows playing old school musics on the
+YM2149 chip. Note that the files in the zip archives are compressed
+with &lt;code&gt;lha&lt;/code&gt; (which can be installed through the Fedora &lt;code&gt;lha&lt;/code&gt;
+package). Therefore, one has to uncompress the &lt;code&gt;ym&lt;/code&gt; files before
+playing them with &lt;code&gt;streamer.py&lt;/code&gt;. I may try to handle the decompression
+directly in the script some day.&lt;/p&gt;
+&lt;p&gt;Besides, another &lt;a href="http://sndh.atari.org/"&gt;large archive of Atari ST music&lt;/a&gt; is around there,
+with a more dynamic community. Though the tunes are in the &lt;code&gt;sndh&lt;/code&gt;
+format, which is harder to interpret and stream to a YM2149 chip. A
+nice thing would be to find a way to have these &lt;code&gt;sndh&lt;/code&gt; files played on
+the sound chip!&lt;/p&gt;</content><category term="hardware"></category><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Driving YM2149F sound chip with an Arduino</title><link href="http://www.florentflament.com/blog/driving-ym2149f-sound-chip-with-an-arduino.html" rel="alternate"></link><published>2016-09-03T00:00:00+02:00</published><updated>2016-09-03T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-09-03:/blog/driving-ym2149f-sound-chip-with-an-arduino.html</id><summary type="html">&lt;p&gt;A few months ago, I had the opportunity to get a Yamaha YM2149F
+chip. This chip is basically a clone of &lt;a href="https://en.wikipedia.org/wiki/General_Instrument_AY-3-8910"&gt;General Instrument's
+AY-3-8910&lt;/a&gt;, "a 3 voices programmable sound generator" widely used
+in the 80's in many arcade games and home computers (including the
+Atari ST and Amstrad CPC).&lt;/p&gt;
+&lt;p&gt;The …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A few months ago, I had the opportunity to get a Yamaha YM2149F
+chip. This chip is basically a clone of &lt;a href="https://en.wikipedia.org/wiki/General_Instrument_AY-3-8910"&gt;General Instrument's
+AY-3-8910&lt;/a&gt;, "a 3 voices programmable sound generator" widely used
+in the 80's in many arcade games and home computers (including the
+Atari ST and Amstrad CPC).&lt;/p&gt;
+&lt;p&gt;The YM2149F chip (and its clones) can be found easily online, on
+auction websites. The challenge is then to be able to drive the chip
+and play some music with it. There are several blog posts out there
+describing circuits to have the chip driven by a PC.&lt;/p&gt;
+&lt;p&gt;The blog post &lt;a href="https://electronicfields.wordpress.com/2012/04/09/ym2149-sound-generator-arduino-fast-pin-switching/"&gt;YM2149 sound generator, Arduino and fast pin switching,
+from Mr Megahertz&lt;/a&gt; has been very inspirational for this work. It
+contains a lot useful information. On the other hand, by programming
+the Arduino without using the provided SDK (as described on the
+&lt;a href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html"&gt;Arduino Hello World without IDE&lt;/a&gt; blog post), we don't have any
+issue to switch BDIR and BC1 signals simultaneously.&lt;/p&gt;
+&lt;h2&gt;The circuit&lt;/h2&gt;
+&lt;p&gt;After many experiments, I came out with a simple circuit composed of:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A Yamaha YM2149F&lt;/li&gt;
+&lt;li&gt;An Arduino Uno board (or clone)&lt;/li&gt;
+&lt;li&gt;4 resistors (3&amp;times;1K + 1&amp;times;100 Ohms)&lt;/li&gt;
+&lt;li&gt;A mini jack female connector&lt;/li&gt;
+&lt;li&gt;A breadboard&lt;/li&gt;
+&lt;li&gt;A few wires&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here's a picture of the circuit:&lt;/p&gt;
+&lt;p&gt;&lt;img src="static/ym2149-arduino-picture.png" alt="YM2149 - Arduino circuit picture"/&gt;&lt;/p&gt;
+&lt;p&gt;The corresponding schematic follows:&lt;/p&gt;
+&lt;p&gt;&lt;img src="static/ym2149-arduino-schematic.png" alt="YM2149 - Arduino circuit picture"/&gt;&lt;/p&gt;
+&lt;p&gt;Note that we don't need to use a dedicated oscillator for the
+YM2149F. We can generate the required 2MHz clock with the Atmega328P
+on the Arduino board.&lt;/p&gt;
+&lt;h2&gt;The output stage&lt;/h2&gt;
+&lt;p&gt;I made a lot of experiments on the output stage. The 4 resistors
+between the 3 YM2149F outputs and the line output is a good
+compromise. This forms a &lt;a href="https://en.wikipedia.org/wiki/Electronic_mixer"&gt;passive mixer&lt;/a&gt;, which significantly
+improves the quality of the sound compared to the 1 resistor stage
+that can be found in most YM2149 circuits available online. The lower
+the value of RL, the less distortion we have on the output, but the
+lower the signal strength. I found that 100 ohms is a good
+compromise. In that case, the load perceived from an output of the
+YM2149F fluctuates between 1.1 and 1.6 kOhms, depending on the values
+of the other channels (if my computations as correct). And according
+to the &lt;a href="http://www.ym2149.com/ym2149.pdf"&gt;YM2149 datasheet&lt;/a&gt; page 9, the expected load for a YM2149
+output is 1kOhms. The distortion comes from the fact that the
+equivalent resistance seen from a YM2149F output channel is dependent
+on the other channels. The sound may be further improved by using an
+active mixer, including an operational amplifier (To be tested some
+day).&lt;/p&gt;
+&lt;h2&gt;Testing the circuit&lt;/h2&gt;
+&lt;p&gt;The &lt;a href="https://github.com/FlorentFlament/ym2149-test"&gt;code to drive the YM2149F from the Arduino&lt;/a&gt; is available on
+GitHub. One can compile and upload the code to the Arduino by
+following the instructions of the &lt;a href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html"&gt;Arduino Hello World without IDE&lt;/a&gt;
+post. The code will have the YM2149F play continuously the C major
+gamut. This code can be freely reused, especially the &lt;code&gt;ym2149&lt;/code&gt;
+library, which allows to drive the YM2149F chip.&lt;/p&gt;
+&lt;p&gt;Note that in order to have the ym2149-test binary work on a circuit,
+one has to follow the connections described on the schematic above.&lt;/p&gt;
+&lt;h2&gt;What next&lt;/h2&gt;
+&lt;p&gt;The next blog post describes how to have &lt;a href="http://www.florentflament.com/blog/streaming-music-to-ym2149f.html"&gt;YM files streamed to the
+YM2149F chip&lt;/a&gt;. Besides, a video of my &lt;a href="https://www.youtube.com/watch?v=MTRJdDbY048"&gt;YM2149F chip playing some
+tune&lt;/a&gt; is available online.&lt;/p&gt;</content><category term="hardware"></category><category term="Arduino"></category><category term="YM2149"></category><category term="YM2149F"></category><category term="AY-3-8910"></category></entry><entry><title>Arduino Hello World without IDE</title><link href="http://www.florentflament.com/blog/arduino-hello-world-without-ide.html" rel="alternate"></link><published>2016-08-08T00:00:00+02:00</published><updated>2016-08-08T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2016-08-08:/blog/arduino-hello-world-without-ide.html</id><summary type="html">&lt;p&gt;There is already a number of resources available about programming the
+Arduino with or without the IDE (I won't discuss here the pros and
+cons of using it). This aims at being a quick memo for those who
+already have some knowledge about C programming, and just want the
+minimal …&lt;/p&gt;</summary><content type="html">&lt;p&gt;There is already a number of resources available about programming the
+Arduino with or without the IDE (I won't discuss here the pros and
+cons of using it). This aims at being a quick memo for those who
+already have some knowledge about C programming, and just want the
+minimal information required to compile C code and upload it to an
+Arduino board. This is basically a compilation of chunks of code
+retrieved here and there a couple of months ago and possibly updated.&lt;/p&gt;
+&lt;h2&gt;Packages to install&lt;/h2&gt;
+&lt;p&gt;To be able to compile and upload C code to an Arduino board, one has
+to install the following packages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;avr-gcc&lt;/code&gt; : Cross Compiling GNU GCC targeted at avr&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;avr-libc&lt;/code&gt; : C library for use with GCC on Atmel AVR microcontrollers&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;avrdude&lt;/code&gt; : Software for programming Atmel AVR microcontroller&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Note the &lt;code&gt;avr-libc&lt;/code&gt; (and to some extend &lt;code&gt;avr-gcc&lt;/code&gt;) install a lot of
+interesting libraries. Corresponding headers can be found in the
+following directory: &lt;code&gt;/usr/avr/include/&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Makefile&lt;/h2&gt;
+&lt;p&gt;The following Makefile summarizes the commands (with parameters)
+needed to compile a C project and upload it to an Arduino board:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;baud&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;115200&lt;/span&gt;
+&lt;span class="nv"&gt;avrType&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;atmega328p
+&lt;span class="nv"&gt;avrFreq&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;16000000&lt;/span&gt; &lt;span class="c1"&gt;# 16 Mhz&lt;/span&gt;
+&lt;span class="nv"&gt;programmerDev&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/ttyUSB0
+&lt;span class="nv"&gt;programmerType&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;arduino
+
+&lt;span class="nv"&gt;cflags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-DF_CPU&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;avrFreq&lt;span class="k"&gt;)&lt;/span&gt; -mmcu&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;avrType&lt;span class="k"&gt;)&lt;/span&gt; -Wall -Werror -Wextra -Os
+&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;patsubst %.c,%.o,&lt;span class="k"&gt;$(&lt;/span&gt;wildcard *.c&lt;span class="k"&gt;))&lt;/span&gt;
+
+&lt;span class="nf"&gt;.PHONY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;flash&lt;/span&gt; &lt;span class="n"&gt;clean&lt;/span&gt;
+
+&lt;span class="nf"&gt;all&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;.&lt;span class="n"&gt;hex&lt;/span&gt;
+
+&lt;span class="nf"&gt;%.o&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; %.&lt;span class="n"&gt;c&lt;/span&gt;
+    avr-gcc &lt;span class="k"&gt;$(&lt;/span&gt;cflags&lt;span class="k"&gt;)&lt;/span&gt; -c $&amp;lt; -o &lt;span class="nv"&gt;$@&lt;/span&gt;
+
+&lt;span class="nf"&gt;main.elf&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+    avr-gcc &lt;span class="k"&gt;$(&lt;/span&gt;cflags&lt;span class="k"&gt;)&lt;/span&gt; -o &lt;span class="nv"&gt;$@&lt;/span&gt; $^
+
+&lt;span class="nf"&gt;main.hex&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;.&lt;span class="n"&gt;elf&lt;/span&gt;
+    avr-objcopy -j .text -j .data -O ihex $^ &lt;span class="nv"&gt;$@&lt;/span&gt;
+
+&lt;span class="nf"&gt;flash&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;.&lt;span class="n"&gt;hex&lt;/span&gt;
+    avrdude -p&lt;span class="k"&gt;$(&lt;/span&gt;avrType&lt;span class="k"&gt;)&lt;/span&gt; -c&lt;span class="k"&gt;$(&lt;/span&gt;programmerType&lt;span class="k"&gt;)&lt;/span&gt; -P&lt;span class="k"&gt;$(&lt;/span&gt;programmerDev&lt;span class="k"&gt;)&lt;/span&gt; -b&lt;span class="k"&gt;$(&lt;/span&gt;baud&lt;span class="k"&gt;)&lt;/span&gt; -v -U flash:w:$&amp;lt;
+
+&lt;span class="nf"&gt;clean&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    rm -f main.hex main.elf &lt;span class="k"&gt;$(&lt;/span&gt;objects&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To compile and upload a C project, one has to type the following
+commands (actually the last one is enough, since it will automatically
+build the &lt;code&gt;main.hex&lt;/code&gt; file if required):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  $ make
+  ...
+  $ make flash
+  ...
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Depending on the board being used, one may have to tune the parameters
+at the beginning of the file. For instance, the &lt;code&gt;avrType&lt;/code&gt; must reflect
+the type of AVR microcontroller on the board. The following header
+contains an extensive list of the supported hardware:
+&lt;code&gt;/usr/avr/include/avr/io.h&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Arduino Hello World&lt;/h2&gt;
+&lt;p&gt;The minimal program on an Arduino consists in having a LED blink. I
+found this code somewhere (though I couldn't recover where from..):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;util/delay.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;avr/io.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define LED PORTB5&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;DDRB&lt;/span&gt; &lt;span class="o"&gt;|=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;LED&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="cm"&gt;/*ever*/&lt;/span&gt;&lt;span class="p"&gt;(;;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;|=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;LED&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;_delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;LED&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;_delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's all folks. With the packages installed and the Makefile
+described earlier, one can compile this little C code and upload it to
+an Arduino board and see the little red LED blinking. From this
+starting point, one can easily work on bigger Arduino based projects.&lt;/p&gt;</content><category term="hardware"></category><category term="Arduino"></category></entry></feed>

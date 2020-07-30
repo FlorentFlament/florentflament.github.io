@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament 2 cents - linux-kernel</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/linux-kernel.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2017-11-19T00:00:00+01:00</updated><entry><title>Installing a Vanilla Linux Kernel on Fedora</title><link href="http://www.florentflament.com/blog/installing-a-vanilla-linux-kernel-on-fedora.html" rel="alternate"></link><published>2017-11-19T00:00:00+01:00</published><updated>2017-11-19T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2017-11-19:/blog/installing-a-vanilla-linux-kernel-on-fedora.html</id><summary type="html">&lt;p&gt;Updated on 2017-12-28&lt;/p&gt;
+&lt;p&gt;Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
+knows how to do it..)&lt;/p&gt;
+&lt;h2&gt;Configuring &amp;amp; Building Linux&lt;/h2&gt;
+&lt;p&gt;One can start by cloning Torvalds' Linux repository to fetch the
+latest master (or we could fetch the latest stable release) :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git clone https://github.com/torvalds …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Updated on 2017-12-28&lt;/p&gt;
+&lt;p&gt;Installing a Vanilla Linux Kernel on Fedora is quite simple (once one
+knows how to do it..)&lt;/p&gt;
+&lt;h2&gt;Configuring &amp;amp; Building Linux&lt;/h2&gt;
+&lt;p&gt;One can start by cloning Torvalds' Linux repository to fetch the
+latest master (or we could fetch the latest stable release) :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git clone https://github.com/torvalds/linux.git
+$ cd linux
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I like setting &lt;code&gt;EXTRAVERSION&lt;/code&gt; in the &lt;code&gt;Makefile&lt;/code&gt; to be able to identify
+which kernel I am testing. That can be done by opening the &lt;code&gt;Makefile&lt;/code&gt;
+with one's favorite editor or replacing the &lt;code&gt;EXTRAVERSION&lt;/code&gt; line with
+&lt;code&gt;sed&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sed -i &amp;quot;s/^EXTRAVERSION = .*$/EXTRAVERSION = name_of_my_version/&amp;quot; Makefile
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now we need to generate the &lt;code&gt;.config&lt;/code&gt; Linux kernel configuration
+file. We can start from the default one:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ make defconfig
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Or we can reuse configuration files from the local installation with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ make olddefconfig
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that &lt;code&gt;make help&lt;/code&gt; provides the list of possible &lt;code&gt;make&lt;/code&gt; commands.&lt;/p&gt;
+&lt;p&gt;For computers using (U)EFI, one may need to update the &lt;code&gt;.config&lt;/code&gt; file
+to support &lt;code&gt;EFI handover&lt;/code&gt;. This is done by setting &lt;code&gt;EFI stub support&lt;/code&gt;
+when configuring the kernel (for instance with &lt;code&gt;make menuconfig&lt;/code&gt;).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Processor type and features  ---&amp;gt;
+    [*] EFI runtime service support
+    [*]   EFI stub support
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Sources: &lt;a href="https://stackoverflow.com/questions/40344484/cant-load-self-compiled-linux-kernel#40344635"&gt;stackoverflow&lt;/a&gt; and &lt;a href="https://wiki.gentoo.org/wiki/EFI_stub_kernel#Configuration"&gt;gentoo linux wiki&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Without that option activated, I ended up having the following error
+message when trying to boot my new kernel:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;error: kernel doesn&amp;#39;t support EFI handover
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This option isn't required when building a kernel for a virtual
+machine.&lt;/p&gt;
+&lt;p&gt;In order to compile the kernel, (at least) the following dependencies
+are required:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;git&lt;/li&gt;
+&lt;li&gt;gcc&lt;/li&gt;
+&lt;li&gt;ncurses-devel&lt;/li&gt;
+&lt;li&gt;elfutils-libelf-devel&lt;/li&gt;
+&lt;li&gt;openssl-devel&lt;/li&gt;
+&lt;li&gt;perl-interpreter&lt;/li&gt;
+&lt;li&gt;rpm-build (if building rpm packages)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Then we can build the kernel as simply as that:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ make
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The straight forward approach to install the Kernel, if it has been
+built on the target machine is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo make install
+$ sudo make modules_install
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We can now reboot on the newly built Kernel.&lt;/p&gt;
+&lt;h2&gt;Building RPM package&lt;/h2&gt;
+&lt;p&gt;We can even make RPMs to install the new kernel on any RPM based
+machine:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ make binrpm-pkg
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The packages are available in the &lt;code&gt;~/rpmbuild/RPMS/x86_64&lt;/code&gt; directory:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ls ~/rpmbuild/RPMS/x86_64/
+kernel-4.14.0efistub+-3.x86_64.rpm  kernel-headers-4.14.0efistub+-3.x86_64.rpm
+$
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The newly built kernel can be installed with the standard rpm install
+command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ cd ~/rpmbuild/RPMS/x86_64/
+$ sudo rpm -i kernel-4.14.0efistub+-3.x86_64.rpm
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's it, when rebooting, the new kernel is available in the grub
+menu (together with the previously installed kernels) .&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ dmesg | head -3
+[    0.000000] microcode: microcode updated early to revision 0x1c, date = 2015-02-26
+[    0.000000] Linux version 4.14.0efistub+ (florent@amn) (gcc version 7.2.1 20170915 (Red Hat 7.2.1-2) (GCC)) #3 SMP Sun Nov 19 22:52:23 CET 2017
+[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-4.14.0efistub+ root=/dev/mapper/fedora-root ro rd.lvm.lv=fedora/root rd.lvm.lv=fedora/swap rhgb quiet LANG=en_US.UTF-8
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Tested with Linux 4.14.0 hash ed30b147e1f6e396e70a52dbb6c7d66befedd786&lt;/p&gt;</content><category term="linux-kernel"></category><category term="Linux"></category><category term="Kernel"></category></entry><entry><title>A couple of statistics about Linux kernel documentation</title><link href="http://www.florentflament.com/blog/a-couple-of-statistics-about-linux-kernel-documentation.html" rel="alternate"></link><published>2017-03-04T00:00:00+01:00</published><updated>2017-03-04T00:00:00+01:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2017-03-04:/blog/a-couple-of-statistics-about-linux-kernel-documentation.html</id><summary type="html">&lt;p&gt;There is a whole lot of files in the &lt;code&gt;Documentation&lt;/code&gt; directory of the
+&lt;a href="https://github.com/torvalds/linux"&gt;Linux kernel source&lt;/a&gt;. Is it possible for a single person to read
+the whole documentation ? Let's have a look at what's inside it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;pwd&lt;/span&gt;
+/home/florent/src/linux/linux-4.10/Documentation
+
+$ find . -type f &lt;span class="p"&gt;|&lt;/span&gt; wc -l
+&lt;span class="m"&gt;5118 …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;There is a whole lot of files in the &lt;code&gt;Documentation&lt;/code&gt; directory of the
+&lt;a href="https://github.com/torvalds/linux"&gt;Linux kernel source&lt;/a&gt;. Is it possible for a single person to read
+the whole documentation ? Let's have a look at what's inside it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;pwd&lt;/span&gt;
+/home/florent/src/linux/linux-4.10/Documentation
+
+$ find . -type f &lt;span class="p"&gt;|&lt;/span&gt; wc -l
+&lt;span class="m"&gt;5118&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;There are 5118 files in the Documentation directory&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ wc  &lt;span class="k"&gt;$(&lt;/span&gt;find . -type f&lt;span class="k"&gt;)&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; tail -1
+  &lt;span class="m"&gt;661911&lt;/span&gt;  &lt;span class="m"&gt;3175886&lt;/span&gt; &lt;span class="m"&gt;24210712&lt;/span&gt; total
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;These files account for roughly 3.200.000 words spread among 660.000
+lines. With a &lt;a href="https://en.wikipedia.org/wiki/Word_count"&gt;typical novel's size&lt;/a&gt; of 70.000 words, the Linux
+documentation is equivalent to roughly 46 such novels. So the answer
+is yes, it is possible to read the whole Linux documentation (though
+it may take some time).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ find . -type f &lt;span class="p"&gt;|&lt;/span&gt; awk -F. &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;print $3&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sort &lt;span class="p"&gt;|&lt;/span&gt; uniq -c &lt;span class="p"&gt;|&lt;/span&gt; sort -n &lt;span class="p"&gt;|&lt;/span&gt; tail -5
+     &lt;span class="m"&gt;24&lt;/span&gt; tmpl
+     &lt;span class="m"&gt;30&lt;/span&gt; svg
+     &lt;span class="m"&gt;650&lt;/span&gt; rst
+     &lt;span class="m"&gt;703&lt;/span&gt;
+     &lt;span class="m"&gt;3565&lt;/span&gt; txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Just to have an idea of the most common files' extensions. Mostly
+&lt;code&gt;.txt&lt;/code&gt; files, plus some extensionless and &lt;code&gt;.rst&lt;/code&gt; files.&lt;/p&gt;
+&lt;p&gt;Let's consider the 3 main topics as documented in the &lt;a href="https://raw.githubusercontent.com/torvalds/linux/master/Documentation/index.rst"&gt;&lt;code&gt;index.rst&lt;/code&gt;
+file&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ wc admin-guide/* &lt;span class="p"&gt;|&lt;/span&gt; tail -1
+ &lt;span class="m"&gt;14131&lt;/span&gt;  &lt;span class="m"&gt;73455&lt;/span&gt; &lt;span class="m"&gt;517546&lt;/span&gt; total
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;73.000 words (1 novel) for the 'User-oriented documentation'.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ wc process/* dev-tools/* doc-guide/* &lt;span class="p"&gt;|&lt;/span&gt; tail -1
+ &lt;span class="m"&gt;11899&lt;/span&gt;  &lt;span class="m"&gt;72020&lt;/span&gt; &lt;span class="m"&gt;487333&lt;/span&gt; total
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;72.000 words (1 novel) for the 'Introduction to kernel development'.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ wc &lt;span class="k"&gt;$(&lt;/span&gt;find driver-api/ core-api/ media/ gpu/ security/ sound/ crypto/ -type f&lt;span class="k"&gt;)&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; tail -1
+ &lt;span class="m"&gt;132770&lt;/span&gt;  &lt;span class="m"&gt;516405&lt;/span&gt; &lt;span class="m"&gt;4740930&lt;/span&gt; total
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;520.000 word (Roughly &lt;a href="https://electricliterature.com/infographic-word-counts-of-famous-books-161f025a6b09"&gt;equilvalent to reading 'The Lord of the
+Rings'&lt;/a&gt;) for the 'Kernel API documentation'.&lt;/p&gt;</content><category term="linux-kernel"></category><category term="Linux"></category><category term="Kernel"></category><category term="Documentation"></category></entry></feed>
