@@ -1,4 +1,3 @@
-PY=python
 PELICAN=pelican
 PELICANOPTS=
 
@@ -28,8 +27,6 @@ help:
 	@echo '   make regenerate                  regenerate files upon modification '
 	@echo '   make publish                     generate using production settings '
 	@echo '   make serve [PORT=8000]           serve site at http://localhost:8000'
-	@echo '   make devserver [PORT=8000]       start/restart develop_server.sh    '
-	@echo '   make stopserver                  stop local server                  '
 	@echo '   make sftp_upload                 upload the web site via SFTP       '
 	@echo '                                                                       '
 	@echo 'Set the DEBUG variable to 1 to enable debugging, e.g. make DEBUG=1 html'
@@ -46,15 +43,10 @@ regenerate:
 
 serve:
 ifdef PORT
-	cd $(OUTPUTDIR) && $(PY) -m pelican.server $(PORT)
+	$(PELICAN) -l -r $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS) -p $(PORT)
 else
-	cd $(OUTPUTDIR) && $(PY) -m pelican.server
+	$(PELICAN) -l -r $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 endif
-
-stopserver:
-	kill -9 `cat pelican.pid`
-	kill -9 `cat srv.pid`
-	@echo 'Stopped Pelican and SimpleHTTPServer processes running in background.'
 
 publish:
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
@@ -62,4 +54,4 @@ publish:
 sftp_upload: publish
 	lftp -u $(FTP_USER),${FTP_PASS} sftp://$(FTP_HOST) -e "mirror -R $(OUTPUTDIR) $(FTP_TARGET_DIR) ; quit"
 
-.PHONY: html help clean regenerate serve devserver publish sftp_upload
+.PHONY: html help clean regenerate serve publish sftp_upload
