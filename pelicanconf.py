@@ -6,11 +6,9 @@ AUTHOR = u'Florent Flament'
 SITENAME = u"Florent Flament"
 SITEURL = ''
 
-PATH = 'content'
 STATIC_PATHS = ['static']
 
 TIMEZONE = 'Europe/Paris'
-
 DEFAULT_LANG = u'en'
 
 # Feed generation is usually not desired when developing
