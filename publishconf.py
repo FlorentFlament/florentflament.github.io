@@ -10,9 +10,7 @@ import sys
 sys.path.append(os.curdir)
 from pelicanconf import *
 
-
 # Publishing specifics
-
 SITEURL = 'http://www.florentflament.com/blog'
 RELATIVE_URLS = False
 
@@ -26,5 +24,5 @@ M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i
 # This removes the previously generated content
 DELETE_OUTPUT_DIRECTORY = True
 
+# TODO: Integrate new website with Disqus
 DISQUS_SITENAME = "florentflament"
-GOOGLE_ANALYTICS = "UA-23791515-4"
