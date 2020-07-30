@@ -37,6 +37,7 @@ M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i
                '/static/m-dark.css']
 M_THEME_COLOR = '#22272e'
 M_HIDE_ARTICLE_SUMMARY = True
+M_COLLAPSE_FIRST_ARTICLE = True
 
 PLUGIN_PATHS = ['m.css/plugins']
 PLUGINS = ['m.htmlsanity']
