@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 AUTHOR = u'Florent Flament'
 SITENAME = u"Florent Flament"
-SITEURL = '' # Empty site for development purpose
+SITEURL = ''
 
 PATH = 'content'
-STATIC_PATHS = ['images', 'static']
+STATIC_PATHS = ['static']
 
 TIMEZONE = 'Europe/Paris'
 
