@@ -9,9 +9,10 @@ OUTPUTDIR=$(BASEDIR)/../florentflament.github.io-blog/blog
 CONFFILE=$(BASEDIR)/pelicanconf.py
 PUBLISHCONF=$(BASEDIR)/publishconf.py
 
-FTP_HOST=localhost
-FTP_USER=florent
-FTP_TARGET_DIR=/www/blog
+FTP_HOST=${BLOG_FTP_SERVER}
+FTP_USER=${BLOG_FTP_USER}
+FTP_PASS=${BLOG_FTP_PASSWORD}
+FTP_TARGET_DIR=${BLOG_FTP_DIRECTORY}
 
 SSH_HOST=localhost
 SSH_PORT=22
@@ -45,7 +46,7 @@ help:
 	@echo '   make ssh_upload                  upload the web site via SSH        '
 	@echo '   make rsync_upload                upload the web site via rsync+ssh  '
 	@echo '   make dropbox_upload              upload the web site via Dropbox    '
-	@echo '   make ftp_upload                  upload the web site via FTP        '
+	@echo '   make sftp_upload                 upload the web site via SFTP       '
 	@echo '   make s3_upload                   upload the web site via S3         '
 	@echo '   make cf_upload                   upload the web site via Cloud Files'
 	@echo '   make github                      upload the web site via gh-pages   '
@@ -93,8 +94,8 @@ rsync_upload: publish
 dropbox_upload: publish
 	cp -r $(OUTPUTDIR)/* $(DROPBOX_DIR)
 
-ftp_upload: publish
-	lftp -u $(FTP_USER) ftp://$(FTP_HOST) -e "mirror -R $(OUTPUTDIR) $(FTP_TARGET_DIR) ; quit"
+sftp_upload: publish
+	lftp -u $(FTP_USER),${FTP_PASS} sftp://$(FTP_HOST) -e "mirror -R $(OUTPUTDIR) $(FTP_TARGET_DIR) ; quit"
 
 s3_upload: publish
 	s3cmd sync $(OUTPUTDIR)/ s3://$(S3_BUCKET) --acl-public --delete-removed
@@ -106,4 +107,4 @@ github: publish
 	ghp-import $(OUTPUTDIR)
 	git push origin gh-pages
 
-.PHONY: html help clean regenerate serve devserver publish ssh_upload rsync_upload dropbox_upload ftp_upload s3_upload cf_upload github
+.PHONY: html help clean regenerate serve devserver publish ssh_upload rsync_upload dropbox_upload sftp_upload s3_upload cf_upload github
