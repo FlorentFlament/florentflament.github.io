@@ -44,4 +44,5 @@ M_HIDE_ARTICLE_SUMMARY = True
 M_COLLAPSE_FIRST_ARTICLE = True
 
 M_LINKS_NAVBAR1 = [('Blog', '', '[blog]', []),
+                   ('Demoscene', 'pages/demoscene.html', 'demoscene', []),
                    ('About', 'pages/about.html', 'about', [])]
