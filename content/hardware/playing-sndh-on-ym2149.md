@@ -30,11 +30,11 @@ replaced the Uno with a Nano, which fits on the bread board.
 
 Hence this new schematic:
 
-<img src="static/ym2149-schematic-v2.png" alt="YM2149 schematic V2"/>
+<img src="static/ym2149-schematic-v2.png" alt="YM2149 schematic V2" width="100%"/>
 
 And the much nicer circuit there:
 
-<img src="static/ym2149-pic-v2.png" alt="YM2149 driven by Arduino Nano V2"/>
+<img src="static/ym2149-pic-v2.png" alt="YM2149 driven by Arduino Nano V2" width="100%"/>
 
 
 Samples format

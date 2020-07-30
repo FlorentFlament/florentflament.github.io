@@ -34,11 +34,11 @@ After many experiments, I came out with a simple circuit composed of:
 
 Here's a picture of the circuit:
 
-<img src="static/ym2149-arduino-picture.png" alt="YM2149 - Arduino circuit picture"/>
+<img src="static/ym2149-arduino-picture.png" alt="YM2149 - Arduino circuit picture" width="100%"/>
 
 The corresponding schematic follows:
 
-<img src="static/ym2149-arduino-schematic.png" alt="YM2149 - Arduino circuit picture"/>
+<img src="static/ym2149-arduino-schematic.png" alt="YM2149 - Arduino circuit picture" width="100%"/>
 
 Note that we don't need to use a dedicated oscillator for the
 YM2149F. We can generate the required 2MHz clock with the Atmega328P
