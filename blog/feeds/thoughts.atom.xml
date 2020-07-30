@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Florent Flament 2 cents - thoughts</title><link href="http://www.florentflament.com/blog/" rel="alternate"></link><link href="http://www.florentflament.com/blog/feeds/thoughts.atom.xml" rel="self"></link><id>http://www.florentflament.com/blog/</id><updated>2020-07-30T00:00:00+02:00</updated><entry><title>Static websites generators</title><link href="http://www.florentflament.com/blog/static-websites-generators.html" rel="alternate"></link><published>2020-07-30T00:00:00+02:00</published><updated>2020-07-30T00:00:00+02:00</updated><author><name>Florent Flament</name></author><id>tag:www.florentflament.com,2020-07-30:/blog/static-websites-generators.html</id><summary type="html">&lt;p&gt;Recently, I have been thinking about how to organize the things I've
+been doing over the last years. I happened to post a little article on
+&lt;a href="http://www.florentflament.com/blog"&gt;my blog&lt;/a&gt; from time to time, but I feel that this format becomes a
+bit messy as time goes by, and that it doesn't …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently, I have been thinking about how to organize the things I've
+been doing over the last years. I happened to post a little article on
+&lt;a href="http://www.florentflament.com/blog"&gt;my blog&lt;/a&gt; from time to time, but I feel that this format becomes a
+bit messy as time goes by, and that it doesn't fit well for all kind
+of content. So time to think about how to improve the situation.&lt;/p&gt;
+&lt;h2&gt;Tools available&lt;/h2&gt;
+&lt;p&gt;Since 2013, I have been using &lt;a href="https://blog.getpelican.com/"&gt;Pelican&lt;/a&gt; to generate static HTML
+pages from text files using the &lt;a href="https://daringfireball.net/projects/markdown/"&gt;Markdown&lt;/a&gt; syntax. And after
+looking around at what others are doing, I still very much like this
+idea. All the computation required to generate the HTML documents
+interpreted by our browsers is actually performed only once, during
+the site/blog generation phase (and not each time a user is requesting
+a page). The static files can then be uploaded anywhere, and be served
+without wasting precious computing power and energy. &lt;a href="https://mcss.mosra.cz/why/"&gt;Vladimír Vondruš
+explains a similar point of view&lt;/a&gt; quite well, &lt;a href="https://blog.invisiblethings.org/2015/02/09/my-new-git-based-blog.html"&gt;Joanna Rutkowska&lt;/a&gt;
+as well.&lt;/p&gt;
+&lt;p&gt;I like writing (and reading) text files with &lt;a href="https://www.gnu.org/software/emacs/"&gt;my favorite
+editor&lt;/a&gt;. And these last years, a few text formats and tools have
+appeared, allowing the translation of 'easy-to-read, easy-to-write
+plain text' files to HTML. &lt;a href="https://mcss.mosra.cz/why/"&gt;Some people&lt;/a&gt; prefer
+&lt;a href="https://docutils.sourceforge.io/rst.html"&gt;reStructuredText&lt;/a&gt;, I have a (visual) preference for &lt;a href="https://daringfireball.net/projects/markdown/"&gt;Markdown&lt;/a&gt;,
+though both are very good fits for the purpose of writing content for
+websites.&lt;/p&gt;
+&lt;p&gt;Regarding the generation of the website/blog, a lot of tools are
+available in the wild, like &lt;a href="https://jekyllrb.com/"&gt;Jekyll&lt;/a&gt;, &lt;a href="https://blog.getpelican.com/"&gt;Pelican&lt;/a&gt; and &lt;a href="https://gohugo.io/"&gt;Hugo&lt;/a&gt;,
+respectively written in Ruby, Python and Go. I haven't seen any unique
+feature in these tools, so any of them should work for our use
+case. Well, there are some little differences though: Jekyll has a
+larger community, as it seems to be the most popular static blog
+generator. That is a first reason to not use Jekyll ; ). Also I'm more
+familiar with Python, which naturally leads me towards Pelican. A lot
+of &lt;a href="http://pelicanthemes.com/"&gt;themes are available for Pelican&lt;/a&gt; as well as for the other
+sites generators. The choice of the theme may also influence the
+choice of the tool.&lt;/p&gt;
+&lt;h2&gt;Website versus Blog&lt;/h2&gt;
+&lt;p&gt;As part of the current reflection was the idea of improving the
+organization of my things. I like the idea of being able to structure
+my content using folders and sub-folders, like most websites are
+structured, rather than a pure blog-like chronological setup. However,
+most of the tools for generating static pages are primarily targeting
+blogs. Jekyll documents the ability to &lt;a href="https://jekyllrb.com/docs/pages/"&gt;organize pages into
+sub-folders&lt;/a&gt; out of the box, while Pelican seems to provide that
+feature through (currently not so well documented) &lt;a href="https://github.com/getpelican/pelican/issues/1065"&gt;customization of
+its configuration file&lt;/a&gt;. That said, &lt;a href="https://docs.getpelican.com/en/stable/content.html#file-metadata"&gt;Pelican exposes a notion of
+category&lt;/a&gt;, that can be used to organize blog articles; filesystem
+folders can be used to represent this organization. There's also the
+&lt;a href="https://docs.getpelican.com/en/stable/content.html#pages"&gt;notion of pages&lt;/a&gt; for non-temporal content. So by default (i.e
+without customization), Pelican allows 1-level folders for articles,
+plus direct access to 'special' pages. These features alone probably
+cover most of my needs for the near future.&lt;/p&gt;
+&lt;p&gt;Eventually, I discovered &lt;a href="https://mcss.mosra.cz/themes/pelican/"&gt;Vladimír Vondruš m.css Pelican
+theme&lt;/a&gt;. It has a clean and simple look and feel, is well
+documented and can be extensively customized. The author uses it to
+generate &lt;a href="https://magnum.graphics/"&gt;his own websites&lt;/a&gt;. This 'theme' kind of transforms
+Pelican into a generic website generator, at the cost of &lt;a href="https://github.com/mosra/m.css/blob/master/site/pelicanconf.py"&gt;crafting
+Pelican's configuration file&lt;/a&gt;. I'm wondering to what extent this
+customization could be simplified, by adding a better support for
+sub-folders into Pelican. Anyway, &lt;a href="https://blog.getpelican.com/"&gt;Pelican&lt;/a&gt; + &lt;a href="https://mcss.mosra.cz"&gt;m.css&lt;/a&gt; is the
+perfect match for my use case for the foreseeable future.&lt;/p&gt;
+&lt;h2&gt;Github pages&lt;/h2&gt;
+&lt;p&gt;A word on &lt;a href="https://pages.github.com/"&gt;GitHub Pages&lt;/a&gt;, which is a free service from Github,
+allowing to publish one static website per account; it uses Jekyll
+under the hood. That is a decent place to start, but I don't really
+like the idea of being too tied with a commercial organization and
+provide more personal data to a &lt;a href="https://blogs.microsoft.com/blog/2018/10/26/microsoft-completes-github-acquisition/"&gt;web giant&lt;/a&gt;. Besides, this limits
+the choice of the tools one can use for their personal blog or
+website.&lt;/p&gt;
+&lt;p&gt;I'll rather move towards the use of commodity services, that I'll be
+able to change at any moment if one of the service providers is down
+or changes its policy. Two services are actually required:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Git repository (could be &lt;a href="https://about.gitlab.com/"&gt;gitlab&lt;/a&gt;, &lt;a href="https://bitbucket.org/"&gt;bitbucket&lt;/a&gt;,
+  &lt;a href="https://github.com/"&gt;github&lt;/a&gt;, or a privately hosted ssh based repository), supposing
+  one would use a git repository to store their content;&lt;/li&gt;
+&lt;li&gt;Web host (Any basic web hosting service would do).&lt;/li&gt;
+&lt;/ul&gt;</content><category term="thoughts"></category><category term="Website generator"></category><category term="Pelican"></category><category term="Jekyll"></category><category term="m.css"></category></entry></feed>
