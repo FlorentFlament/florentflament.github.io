@@ -4,6 +4,7 @@ PELICANOPTS=
 BASEDIR=$(CURDIR)
 INPUTDIR=$(BASEDIR)/content
 OUTPUTDIR=$(BASEDIR)/website/blog
+WEBSITEDIR=$(BASEDIR)/website
 CONFFILE=$(BASEDIR)/pelicanconf.py
 PUBLISHCONF=$(BASEDIR)/publishconf.py
 
@@ -51,6 +52,6 @@ publish:
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
 
 sftp_upload: publish
-	lftp -u $(FTP_USER),${FTP_PASS} sftp://$(FTP_HOST) -e "mirror -R $(OUTPUTDIR) $(FTP_TARGET_DIR) ; quit"
+	lftp -u $(FTP_USER),${FTP_PASS} sftp://$(FTP_HOST) -e "mirror -R $(WEBSITEDIR) $(FTP_TARGET_DIR) ; quit"
 
 .PHONY: html help clean regenerate serve publish sftp_upload
