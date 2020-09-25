@@ -24,5 +24,4 @@ M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i
 # This removes the previously generated content
 DELETE_OUTPUT_DIRECTORY = True
 
-# TODO: Integrate new website with Disqus
 DISQUS_SITENAME = "florentflament"
