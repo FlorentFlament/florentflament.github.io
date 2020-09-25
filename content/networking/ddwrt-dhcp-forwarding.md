@@ -1,6 +1,7 @@
 Title: Broken DHCP forwarding with dd-wrt
 Date: 2020-09-23
-Tags: network, dd-wrt, linksys, wrt54gl, dhcp, dhcp-forwarding
+Updated: 2020-09-25
+Tags: dd-wrt, linksys, wrt54gl, dhcp, dhcp-forwarding, networking
 
 Lately, I've been playing with a (15 years old) [Linksys WRT54GL][4]
 router (which still has decent hardware), running [dd-wrt][2] instead
@@ -277,6 +278,12 @@ Setting the `dhcpfwd_ifname` to `vlan2` would then have the
 for this use case. So next step would probably be to propose that
 change to dd-wrt maintainers and see what happens..
 
+# Update of 25-09-2020
+
+I created a [ticket][10] on the project's tracker, and the maintainer
+*brainslayer* already [implemented the fix][9] in dd-wrt's
+codebase. Thanks!
+
 [1]: https://svn.dd-wrt.com/browser/src/router/services/services/dhcpforward.c#L38
 [2]: https://dd-wrt.com/site/
 [3]: https://svn.dd-wrt.com/browser
@@ -285,3 +292,5 @@ change to dd-wrt maintainers and see what happens..
 [6]: https://openwrt.org/
 [7]: https://www.mankier.com/1/dhcp-fwd
 [8]: https://openwrt.org/toh/linksys/wrt54g#internal_architecture_-_wrt54g_v4_wrt54gs_v3
+[9]: https://svn.dd-wrt.com/changeset/44468
+[10]: https://svn.dd-wrt.com/ticket/7241
