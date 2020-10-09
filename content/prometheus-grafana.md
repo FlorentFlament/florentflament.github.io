@@ -67,19 +67,19 @@ I am currently using the following exporters:
 
 * [Prometheus Blackbox exporter][4]: "The blackbox exporter allows
   blackbox probing of endpoints over HTTP, HTTPS, DNS, TCP and ICMP."
-  This exporter makes (HTTP in my case) requests to chosen endpoints,
+  This exporter makes (ICMP in my case) requests to chosen endpoints,
   and exposes metrics like (requests duration, requests
   success/failure status, ...). This is great to monitor the
   availability of a service from the point of view of the the blackbox
-  exporter probe. The mechanic there is a bit more complex that with
-  the previous exporters, as shown in the next figure.
+  exporter probe. The behavior there is a bit more complex that with
+  the previous exporters, as shown in the next figure:
 
-Blackbox exporter mechanic (although not limited to HTTP endpoints):
+Blackbox exporter interactions:
 
-    +---------+     +------------+     +----------+     +----------+
-    | Grafana |--<--| Prometheus |--<--| Blackbox |-->--| HTTP     |
-    +---------+     +------------+     | Exporter |     | Endpoint |
-                                       +----------+     +----------+
+    +---------+     +------------+     +----------+     +-----------+
+    | Grafana |--<--| Prometheus |--<--| Blackbox |-->--| Monitored |
+    +---------+     +------------+     | Exporter |     | Endpoint  |
+                                       +----------+     +-----------+
 
 ## Prometheus Node exporter
 
@@ -160,17 +160,17 @@ HTTP endpoint providing us with metrics about target endpoints. The
 targets are provided as argument when querying the Blackbox
 exporter. Here's an example:
 
-    $ curl -s "http://blackbox.w.lan/probe?target=kynwrt.lan&module=http_2xx" | head
+    $ curl -s "http://blackbox.w.lan/probe?target=kynwrt.lan&module=icmp" | head
     # HELP probe_dns_lookup_time_seconds Returns the time taken for probe dns lookup in seconds
     # TYPE probe_dns_lookup_time_seconds gauge
-    probe_dns_lookup_time_seconds 0.007699142
+    probe_dns_lookup_time_seconds 0.0150718
     # HELP probe_duration_seconds Returns how long the probe took to complete in seconds
     # TYPE probe_duration_seconds gauge
-    probe_duration_seconds 0.020027102
-    # HELP probe_failed_due_to_regex Indicates if probe failed due to regex
-    # TYPE probe_failed_due_to_regex gauge
-    probe_failed_due_to_regex 0
-    # HELP probe_http_content_length Length of http content response
+    probe_duration_seconds 0.019866343
+    # HELP probe_icmp_duration_seconds Duration of icmp request by phase
+    # TYPE probe_icmp_duration_seconds gauge
+    probe_icmp_duration_seconds{phase="resolve"} 0.0150718
+    probe_icmp_duration_seconds{phase="rtt"} 0.004375455
 
 
 # Prometheus
@@ -202,12 +202,12 @@ From now on, we can connect to Prometheus web UI and perform some
 queries on our time series using PromQL (Prometheus Query
 Language). For instance:
 
-    probe_http_duration_seconds{phase="processing"}
+    node_memory_MemFree_bytes{instance="kube-worker0.lan:9100"}
 
-A time series is identified by a metric
-(`probe_http_duration_seconds`) and possibly one or more labels
-(`phase="processing"`). As stated by [Prometheus Data Model
-documentation][5]:
+A time series is identified by a metric (`node_memory_MemFree_bytes`)
+and possibly one or more labels
+(`instance="kube-worker0.lan:9100"`). As stated by [Prometheus Data
+Model documentation][5]:
 
 * "The metric name specifies the general feature of a system that is
   measured (e.g. http_requests_total - the total number of HTTP
@@ -288,15 +288,15 @@ look to get more clues. Here are the requests I use:
 * For monitoring the routers availability:
 
 ```
-A = avg_over_time(probe_success{instance="http://kynwrt.lan/"}[2m])
-B = avg_over_time(probe_success{instance="http://edgewrt.lan/"}[2m])
+A = avg_over_time(probe_success{instance="kynwrt.lan"}[2m])
+B = avg_over_time(probe_success{instance="edgewrt.lan"}[2m])
 ```
 
 * For monitoring the latency between the probe and the routers:
 
 ```
-A = sum(probe_http_duration_seconds{instance="http://kynwrt.lan/", phase=~"connect|processing|transfer"})
-B = sum(probe_http_duration_seconds{instance="http://edgewrt.lan/", phase=~"connect|processing|transfer"})
+A = probe_icmp_duration_seconds{instance="kynwrt.lan", phase="rtt"}
+B = probe_icmp_duration_seconds{instance="edgewrt.lan", phase="rtt"}
 ```
 
 ![Probe-Routers Latency graph](static/grafana-probe-routers-latency.png)
