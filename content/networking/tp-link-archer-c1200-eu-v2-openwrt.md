@@ -1,5 +1,6 @@
 Title: OpenWrt and tp-link Archer C1200 EU v2
 Date: 2020-09-28
+Modified: 2020-11-24
 Tags: networking, tp-link, archer c1200, openwrt, firmware
 
 Subtitled "How to brick a tp-link Archer C1200 EU v2"
@@ -17,6 +18,11 @@ A first glance at [OpenWrt supported devices][1] let us understand
 that the *tp-link Archer C1200* is not officially supported by
 OpenWrt.. But sometimes perseverance pays off !
 
+# November 24th 2020 update
+
+Thanks to the firmware backups _Rk Dev_ sent me, I have been able to
+unbrick my router, and boot it back on its factory operating
+system. Thanks dude !
 
 # Resources
 
@@ -407,12 +413,49 @@ load, save) can connect to a TFTP server to get or put some data.
 
 # Flashing the firmware
 
-## Setting up a TFTP server
+## Network setup
 
 In order to exchange files with the router (for instance to flash a
-firmware), I had to setup a TFTP service on my laptop and connect it
-to one of the Archer router's (yellow) LAN ports with an ethernet
-cable.
+firmware), I had to setup a TFTP service on my laptop (though could be
+any computer) and connect it to one of the Archer router's (yellow)
+LAN ports with an ethernet cable.
+
+The laptop's network interface has to be set an IP in the
+192.168.0.0/24 network to talk with the router, which default IP is
+192.168.0.1. I'm setting the IP 192.168.0.20 using netplan and
+network-manager here:
+
+    $ cat /etc/netplan/config.yaml
+    ---
+    network:
+      version: 2
+      renderer: NetworkManager
+      ethernets:
+        enp0s25:
+          dhcp4: false
+          addresses: [192.168.0.20/24]
+
+Then launching a `netplan apply` updates the network interface configuration.
+
+    $ sudo netplan apply
+    $ ip address show dev enp0s25
+    2: enp0s25: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+        link/ether aa:bb:cc:dd:ee:ff brd ff:ff:ff:ff:ff:ff
+        inet 192.168.0.20/24 brd 192.168.0.255 scope global noprefixroute enp0s25
+           valid_lft forever preferred_lft forever
+
+Now, by connecting an ethernet cable from my laptop to any yellow port
+of the router allows me to ping it:
+
+    $ ping 192.168.0.1 -c 1
+    PING 192.168.0.1 (192.168.0.1) 56(84) bytes of data.
+    64 bytes from 192.168.0.1: icmp_seq=1 ttl=100 time=0.357 ms
+
+    --- 192.168.0.1 ping statistics ---
+    1 packets transmitted, 1 received, 0% packet loss, time 0ms
+    rtt min/avg/max/mdev = 0.357/0.357/0.357/0.000 ms
+
+## Setting up a TFTP service
 
 Here's how to install such a TFTP service (on Ubuntu 20.04):
 
@@ -1352,17 +1395,60 @@ can tell, they seem to point to the exact same region of the flash
     CFE>
 
 
+# Eventually restoring the factory firmware
+
+I've eventually been sent a backup of the router's factory firmware by
+_Rk Dev_, a fellow OpenWrt hacker, which allowed me to restore the
+router to its initial setup.
+
+Restoring the firmware:
+
+    CFE> show devices
+    Device Name          Description
+    -------------------  ---------------------------------------------------------
+    uart0                NS16550 UART at 0x18000300
+    flash0               ST Compatible Serial flash size 16384KB
+    flash0.boot          ST Compatible Serial flash offset 00000000 size 256KB
+    flash0.boot2         ST Compatible Serial flash offset 00040000 size 256KB
+    flash0.trx           ST Compatible Serial flash offset 00080000 size 1KB
+    flash0.os            ST Compatible Serial flash offset 0008001C size 15808KB
+    flash0.nvram         ST Compatible Serial flash offset 00FF0000 size 64KB
+    flash1.boot          ST Compatible Serial flash offset 00000000 size 256KB
+    flash1.boot2         ST Compatible Serial flash offset 00040000 size 256KB
+    flash1.trx           ST Compatible Serial flash offset 00080000 size 15808KB
+    flash1.nvram         ST Compatible Serial flash offset 00FF0000 size 64KB
+    eth0                 Broadcom BCM47XX 10/100/1000 Mbps Ethernet Controller
+    *** command status = 0
+    CFE> flash -noheader 192.168.0.20:mtdblock1.bin flash0.trx
+    Reading 192.168.0.20:mtdblock1.bin: Done. 16187392 bytes read
+    Programming...done. 16187392 bytes written
+    *** command status = 0
+    CFE> flash -noheader 192.168.0.20:mtdblock5.bin flash0.nvram
+    Reading 192.168.0.20:mtdblock5.bin: Done. 65536 bytes read
+    Programming...done. 65536 bytes written
+    *** command status = 0
+    CFE> reboot
+
+After rebooting, the router could boot normally on its factory
+operating system... Yey !
+
+
 # Final word
 
 Bricking this tp-link Archer C1200 EU V2 router was actually good fun
-(well I'm glad it was cheap). If by chance someone happens to be able
-to dump their factory firmware or knows how to extract the trx binary
-from the firmware available on tp-link official page or has any other
-idea, I'd be happy to try to unblock my router.
+(well I'm glad it was cheap). Eventually, I've been lucky that a
+fellow hacker found my blog post and sent me a copy of his factory
+firmware.
+
+I am now using the tp-link Archer as an access point, combined with an
+Ubiquiti Edgerouter X, that I could flash with OpenWrt seamlessly (so
+that I can configure it easily with Ansible).
+
+Finally, I'm eager to see OpenWrt working on the Archer C1200 EU V2 (I
+read some people are giving it a try ; ).
 
 Note that all the dumps are raw copies from the router's console,
-except the MAC addresses that have been masked for privacy reason ; )
-Who knows, maybe some day I'll be able to unbrick the device !
+except the MAC addresses that have been masked for privacy reason.
 
 
 
