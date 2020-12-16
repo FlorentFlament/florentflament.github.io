@@ -1,7 +1,7 @@
 Title: About
 
-I like Chiptune, Coding, Demoscene, Hardware hacking, Linux, Open
-Source
+I like Chiptune, Coding, Demoscene, Free Software, Hardware hacking,
+Linux
 
 I don't like Energy/Resources waste, Obsolescence, Privacy threatening
 software/hardware
