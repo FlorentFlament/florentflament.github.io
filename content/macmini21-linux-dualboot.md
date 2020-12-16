@@ -1,5 +1,6 @@
-Date: 2013-11-03
 Title: Macmini2,1 Linux dual boot
+Date: 2013-11-03
+Modified: 2020-12-16
 Tags: Apple, Linux
 
 While online resources provide documentation about [how to install
@@ -7,8 +8,13 @@ Linux on a Mac Mini][0], this guide focuses on the Apple Macmini2,1
 and its peculiarities. Please refer to [these tables][1] to properly
 identify your hardware.
 
+2020-12-16 update
+-----------------
 
-About Macmini2,1 
+I wrote an update about [how to install a GNU/Linux OS on the Macmini
+using PXE][8].
+
+About Macmini2,1
 ----------------
 
 Apple provides [firmware updates][2] for most of its hardware. Most
@@ -84,3 +90,4 @@ X and Linux.
 [5]: https://discussions.apple.com/message/17645953#17645953
 [6]: http://refit.sourceforge.net/
 [7]: http://rom-o-matic.net/gpxe/gpxe-git/gpxe.git/contrib/rom-o-matic/
+[8]: {filename}macmini21-pxe-install.md
